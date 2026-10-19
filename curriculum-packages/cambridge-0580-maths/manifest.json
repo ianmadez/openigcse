@@ -1,0 +1,10 @@
+﻿{
+  "provider": "Cambridge Assessment International Education",
+  "qualification": "Cambridge IGCSE",
+  "subject": "Mathematics",
+  "code": "0580",
+  "syllabus_years": "2026-2028",
+  "tiers": ["Core", "Extended"],
+  "topics_count": 9,
+  "package_version": "1.0.0"
+}

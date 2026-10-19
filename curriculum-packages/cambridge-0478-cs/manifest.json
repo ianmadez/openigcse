@@ -1,0 +1,28 @@
+{
+  "provider": "Cambridge Assessment International Education",
+  "qualification": "Cambridge IGCSE",
+  "subject": "Computer Science",
+  "code": "0478",
+  "syllabus_years": "2026-2028",
+  "tiers": ["Both"],
+  "components": [
+    {
+      "code": "Paper 1",
+      "name": "Computer Systems",
+      "duration_minutes": 105,
+      "max_marks": 75,
+      "weighting_percent": 50,
+      "calculator_allowed": false
+    },
+    {
+      "code": "Paper 2",
+      "name": "Algorithms, Programming and Logic",
+      "duration_minutes": 105,
+      "max_marks": 75,
+      "weighting_percent": 50,
+      "calculator_allowed": false
+    }
+  ],
+  "topics_count": 10,
+  "package_version": "1.0.0"
+}
