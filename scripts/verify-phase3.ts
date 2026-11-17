@@ -92,7 +92,8 @@ async function household(label: string): Promise<Household> {
 async function run() {
   const { data: objectives } = await admin.from("learning_objectives").select("id").limit(2);
   if (!objectives || objectives.length < 2) throw new Error("Need two learning objectives in the project to probe with.");
-  const [objectiveOne, objectiveTwo] = objectives.map((row) => row.id as string);
+  const objectiveOne = objectives[0]!.id as string;
+  const objectiveTwo = objectives[1]!.id as string;
 
   const a = await household("a");
   const b = await household("b");
@@ -138,6 +139,7 @@ async function run() {
   check("guardian writes three questions", !bankError && bank?.length === 3, bankError?.message);
   if (!bank) return;
   const [mcq, short, structured] = bank as Array<{ id: string; max_marks: number }>;
+  if (!mcq || !short || !structured) return;
 
   const { data: quiz, error: quizError } = await a.guardian.client
     .from("term_assessments")
@@ -357,7 +359,7 @@ async function run() {
     admin.from("learning_events").select("objective_id, score_ratio").eq("term_assessment_id", quiz.id),
     admin.from("term_assessments").select("status, student_score").eq("id", quiz.id).single(),
   ]);
-  check("exactly one mistake after a re-save", mistakes?.length === 1 && mistakes[0].question_template_id === structured.id, JSON.stringify(mistakes));
+  check("exactly one mistake after a re-save", mistakes?.length === 1 && mistakes[0]?.question_template_id === structured.id, JSON.stringify(mistakes));
   const ratios = new Map((events ?? []).map((event) => [event.objective_id, Number(event.score_ratio)]));
   check(
     "one Formal_Assessment event per objective with its ratio",
@@ -368,7 +370,7 @@ async function run() {
 
   // ---- learner A reviews and resolves
   const { data: notebook } = await learner.from("mistake_notebook").select("id, resolved").eq("student_id", a.learner.profileId);
-  check("mistake appears in the learner's notebook", notebook?.length === 1 && notebook[0].resolved === false);
+  check("mistake appears in the learner's notebook", notebook?.length === 1 && notebook[0]?.resolved === false);
 
   const { data: resolved } = await learner
     .from("mistake_notebook")

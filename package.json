@@ -18,7 +18,8 @@
     "test:rls": "tsx scripts/verify-rls.ts",
     "check:contrast": "node scripts/check-contrast.mjs",
     "import": "tsx scripts/import-package.ts",
-    "verify:phase3": "tsx scripts/verify-phase3.ts"
+    "verify:phase3": "tsx scripts/verify-phase3.ts",
+    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
