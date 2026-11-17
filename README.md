@@ -38,16 +38,38 @@ than sample content. `DEMO_MODE=true` swaps in a fixed demo queue on `/today` fo
 | `pnpm ingest --subject=0580` | Deterministic PDF extraction for one syllabus               |
 | `pnpm ingest:list`           | Registry of subjects, versions and expected PDF filenames   |
 | `pnpm test:parser`           | Unit tests for the syllabus parser                          |
+| `pnpm test:unit`             | Unit tests for marking, questions, sittings and uploads     |
+| `pnpm verify:phase3`         | Phase 3 exit gate with real JWTs on throwaway households    |
+| `pnpm dev:household create`  | Throwaway household for browser checks (`delete` removes)   |
 | `pnpm test:rls`              | Proves the tenant policies hold against the linked project  |
 | `pnpm check:contrast`        | Measures every declared colour pair in both appearances     |
 | `pnpm sync:packages`         | Regenerates manifests and routes from topics and objectives |
 
 ## Two areas, one app
 
-**Student** - `/today`, `/subjects`, `/review`, `/plan`, `/progress`, `/trivia`.
+**Student** - `/today`, `/timetable`, `/subjects`, `/assessments`, `/review`, `/evidence`, `/plan`, `/progress`,
+`/trivia`. A paper opens at `/assessments/[id]`, outside the shell.
 
-**Parent** - `/parent`, `/parent/term-planner`, `/parent/marking-desk`, `/parent/focus`, `/parent/progress`,
-`/parent/onboarding`, `/parent/settings`.
+**Parent** - `/parent`, `/parent/timetable`, `/parent/term-planner`, `/parent/questions`, `/parent/assessments`,
+`/parent/marking-desk`, `/parent/focus`, `/parent/progress`, `/parent/onboarding`, `/parent/settings`.
+
+## Assessments and marking
+
+The parent writes questions at `/parent/questions` (multiple choice, short answer, structured with marked parts,
+calculation; Markdown with KaTeX maths; diagrams uploaded to the private `household-files` bucket), each tagged to one
+syllabus objective. `/parent/assessments` builds a weekly quiz, topic test, mid-term, final or past paper from the bank,
+can auto-pick from the learner's weakest objectives, records grade thresholds the parent types in, and schedules the
+paper onto the learner's day plan.
+
+The learner sits it at `/assessments/[id]`: the clock runs from the server's start time, answers autosave every 10
+seconds, photos of working upload to the learner's own folder, and the paper hands itself in when time runs out. The
+database refuses answers after that, and a learner can never write marks or reopen a handed-in paper.
+
+The marking desk shows each answer beside the model answer and marking guide. Every dropped mark needs a reason. One
+save calls `save_assessment_marks`, which writes the marks, one notebook mistake per dropped mark and one
+`Formal_Assessment` learning event per objective in a single transaction, so a refused save writes nothing and a
+re-save updates in place. Learners send other work from `/evidence`; the parent approves it or asks for changes from
+the overview.
 
 ### Identity
 
@@ -147,8 +169,8 @@ is gone.
 ## The data layer
 
 There is no demo seam left. `src/lib/data/` holds one repository module per entity (`terms`, `enrollments`,
-`curriculum`, `assessments`, `mistakes`, `events`, `retention`, `questions`, `timetable`, `requests`, `devices`,
-`focus`, `trivia`), and every one of them talks to Postgres through the session-bound server client, so RLS is what
+`curriculum`, `objectives`, `assessments`, `assessment-builder`, `question-bank`, `sittings`, `marking`, `evidence`,
+`files`, `mistakes`, `events`, `retention`, `questions`, `timetable`, `requests`, `devices`, `focus`, `trivia`), and every one of them talks to Postgres through the session-bound server client, so RLS is what
 decides which rows exist. `getLearnerWorkspace(learnerId, date)` composes them for the screens that need the whole
 picture: `/today`, `/review` and `/progress`.
 
@@ -165,7 +187,9 @@ documented in `.env.example` and nothing else reads it.
 The schema is applied through `supabase/migrations/` and pushed with `supabase db push`. The first file is the base
 hierarchy; the `20261021…` files are additive extensions for extraction gaps, resource activity keys, onboarding and
 trivia; `20261026000001_phase0_identity_and_v1_tables.sql` adds the auth link, the tightened tenant policies and the V1
-tables; `20261026000002_phase2_timetable_columns.sql` adds the timetable columns the editor and the generator need.
+tables; `20261026000002_phase2_timetable_columns.sql` adds the timetable columns the editor and the generator need;
+`20261117000001_phase3_authoring_and_marking.sql` adds sittings, responses, the storage bucket and the marking function,
+and scopes question templates to their household.
 
 ```
 awarding_bodies -> qualifications -> subjects -> syllabus_versions
@@ -195,7 +219,8 @@ and attempts writes to parent-only tables (expects them refused). Set `RLS_TEST_
 `RLS_TEST_STUDENT_PASSWORD` to add the same checks for a real learner session. The write probes use values that cannot
 satisfy the foreign keys, so a failed probe cannot leave a row behind.
 
-Question banks are never stored in the repository. They live in `question_templates` and are authored at the marking desk.
+Question banks are never stored in the repository. They live in `question_templates`, scoped to one household, and are
+authored at `/parent/questions`.
 
 ## Design system
 

@@ -14,7 +14,7 @@ Last checked: 2026-11-17.
 | 0     | Real identity and multi-device foundations | Built; exit gate needs two browsers and two accounts |
 | 1     | Repositories replace the demo seam         | Done                                                 |
 | 2     | Parent timetable, student follows it       | Built; exit gate needs a phone and a student device  |
-| 3     | Parent authoring and the marking desk      | Not started                                          |
+| 3     | Parent authoring and the marking desk      | Done (exit gate observed 2026-11-17); build pending  |
 | 4     | The student learning loop                  | Partial: events are written, retention is not        |
 | 5     | Messaging, requests and remote monitoring  | Scaffolding only                                     |
 | 6     | Curriculum extraction for ten packages     | Partial: five drafts, three have no route            |
@@ -41,11 +41,20 @@ equivalents), `/parent/timetable` overrides replace a single date, `/timetable` 
 unfinished items forward, and leans on the unique index on `(student_id, plan_date, slot_id)` for idempotency. Student
 reordering inside a period is React state only; it does not write `day_plan_items.student_reordered`.
 
+**Phase 3 - authoring and marking.** Term planner writes (3.1), question bank (3.2), assessment builder (3.3), sitting
+screen (3.4), marking desk through `save_assessment_marks` (3.5) and evidence review (3.6). Exit gate run verbatim in
+two browser sessions on a throwaway household: 3-question quiz, sat, one question marked down, mistake on `/review`,
+Resolve persisted. Plan and rulings: `docs/superpowers/plans/2026-11-17-phase3-authoring-and-marking.md`.
+
 ## What still looks finished but is not
 
-- **Marking desk (Phase 3).** `MarkingDesk.tsx` is a `localStorage` draft over read-only checkpoints from
-  `question_templates`. Nothing writes `assessment_item_marks`, `mistake_notebook` or a `Formal_Assessment` event, and
-  there is no question bank, assessment builder, sitting screen or evidence portfolio.
+- **Answer keys (Phase 3, fix in 4.2/8).** Pages never send answer keys, but RLS lets any household member read
+  `question_templates` columns through the REST API with their own token.
+- **Forms that lose input on error (Phase 0-2).** Onboarding, pairing, settings, PIN gate and overrides use
+  `<form action>`, which React 19 resets even when the server refuses.
+- **Real household terms 2 and 3** carry Term 1's mid-term and final weeks (old onboarding bug, now fixed); the term
+  planner flags them and refuses to save until a parent corrects them.
+- **AO tagging** waits for assessment objectives to be imported (none are yet).
 - **Review (Phase 4.3).** `/review` lists mistakes and lets the learner resolve one, but there is no FSRS tab.
   `getRetention()` only reads `fsrs_retention_items`; nothing writes it, so mastery renders as zero.
 - **Checkpoints (Phase 4.2).** The stopwatch posts `Exposure_Lesson`, and the stuck button posts an
@@ -76,14 +85,18 @@ Every command below passed on 2026-11-17 at the current tree:
 pnpm typecheck      # clean
 pnpm test:parser    # 7 passed
 pnpm validate       # 5 packages structurally valid
+pnpm test:unit      # 53 passed
+pnpm test:rls       # 22/22
+pnpm verify:phase3  # 34/34, 0 leftovers
 ```
+
+Not yet run for Phase 3: `pnpm build`, `pnpm check:contrast`, and the final whole-branch review.
 
 `pnpm check:contrast` and `pnpm test:rls` need a built tree and a linked Supabase project respectively; run them before
 claiming a UI or policy change is done. `pnpm build` is the last check, not the first.
 
 ## Next, in order
 
-Phase 3 first: persist the marking desk (marks, mistake rows with real UUIDs, one `Formal_Assessment` event per
-objective) and delete its draft. Then Phase 4 (FSRS with `ts-fsrs`, the mastery view, checkpoint events), then Phase 5.
+Finish Phase 3: `pnpm build`, `pnpm check:contrast`, final review, delete the dev household. Then Phase 4 (FSRS with `ts-fsrs`, the mastery view, checkpoint events), then Phase 5.
 Phase 6 runs alongside all of them, starting with the heading and Core/Supplement parser variants that leave 0455 with no
 topics and 0460, 0470, 0530 without packages.
