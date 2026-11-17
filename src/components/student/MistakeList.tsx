@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 import { resolveMistakeAction } from "@/app/(student)/review/actions";
 import { ActionButton } from "@/components/ui/Button";
 import { EmptyState, Status } from "@/components/ui/primitives";
+import { ERROR_TAGS } from "@/lib/assessment/marking";
 import type { Mistake } from "@/lib/data/mistakes";
 import { cn } from "@/lib/utils/cn";
 
@@ -57,7 +58,7 @@ export function MistakeList({ mistakes }: { mistakes: Mistake[] }) {
                 <span className="chip tabular">{mistake.objectiveCode}</span>
                 <Status tone={tagTone[mistake.errorTag]}>
                   <Tag aria-hidden="true" className="size-3" strokeWidth={2.2} />
-                  {mistake.errorTag}
+                  {ERROR_TAGS.find((tag) => tag.value === mistake.errorTag)?.label ?? mistake.errorTag}
                 </Status>
                 {done && <Status tone="success">Resolved</Status>}
               </div>
