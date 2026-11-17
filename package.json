@@ -19,7 +19,8 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "import": "tsx scripts/import-package.ts",
     "verify:phase3": "tsx scripts/verify-phase3.ts",
-    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts"
+    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/planning/series.test.ts",
+    "dev:household": "tsx scripts/dev-household.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
@@ -41,6 +42,7 @@
     "@types/react-dom": "^19.0.3",
     "autoprefixer": "^10.4.20",
     "pdfjs-dist": "^6.4.299",
+    "playwright": "1.60.0",
     "postcss": "^8.4.49",
     "prettier": "^3.9.10",
     "tailwindcss": "^3.4.17",

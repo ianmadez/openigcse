@@ -13,6 +13,7 @@ export type EnrolledSubject = {
   isElective: boolean;
   weeklyMinutes: number;
   targetGrade: string | null;
+  targetExamSeries: string | null;
   routeId: string;
   routeCode: string;
   routeName: string;
@@ -28,6 +29,7 @@ type EnrollmentRow = {
   is_elective: boolean | null;
   weekly_allocated_minutes: number | null;
   target_grade: string | null;
+  target_exam_series: string | null;
 };
 
 /**
@@ -42,7 +44,7 @@ export async function getEnrollments(learnerId: string, termId: string): Promise
 
   const { data: enrollments } = await supabase
     .from("learner_term_enrollments")
-    .select("id, entry_route_id, is_elective, weekly_allocated_minutes, target_grade")
+    .select("id, entry_route_id, is_elective, weekly_allocated_minutes, target_grade, target_exam_series")
     .eq("student_id", learnerId)
     .eq("academic_term_id", termId);
 
@@ -98,6 +100,7 @@ export async function getEnrollments(learnerId: string, termId: string): Promise
       isElective: Boolean(enrollment.is_elective),
       weeklyMinutes: enrollment.weekly_allocated_minutes ?? 0,
       targetGrade: enrollment.target_grade,
+      targetExamSeries: enrollment.target_exam_series,
       routeId: route.id,
       routeCode: route.route_code,
       routeName: route.name,
@@ -111,19 +114,108 @@ export async function getEnrollments(learnerId: string, termId: string): Promise
   return resolved.sort((a, b) => a.subjectCode.localeCompare(b.subjectCode));
 }
 
-/** Elective options for the term planner: the subject families a family can add. */
-export async function getElectiveOptions() {  const supabase = await createServerClientInstance();
-  const { data } = await supabase
-    .from("subjects")
-    .select("subject_code, subject_name, category")
-    .eq("category", "Languages")
-    .order("subject_code", { ascending: true });
+export type RouteOption = {
+  subjectId: string;
+  subjectCode: string;
+  subjectName: string;
+  category: string;
+  versionLabel: string;
+  versionStatus: string;
+  routes: Array<{
+    id: string;
+    code: string;
+    name: string;
+    tier: string;
+    privateCandidateEligible: boolean;
+    notes: string | null;
+  }>;
+};
 
-  return (data ?? []).map((row) => ({
-    code: row.subject_code as string,
-    name: row.subject_name as string,
-    slug: slugify(row.subject_name as string),
-  }));
+/** Every subject that has at least one entry route, with all of its routes. */
+export async function getRouteOptions(): Promise<RouteOption[]> {
+  const supabase = await createServerClientInstance();
+
+  const [{ data: subjects }, { data: versions }, { data: routes }] = await Promise.all([
+    supabase.from("subjects").select("id, subject_code, subject_name, category"),
+    supabase.from("syllabus_versions").select("id, subject_id, version_label, status"),
+    supabase.from("entry_routes").select("id, syllabus_version_id, route_code, name, tier, private_candidate_eligible, notes"),
+  ]);
+
+  const subjectById = new Map((subjects ?? []).map((subject) => [subject.id, subject]));
+  const options = new Map<string, RouteOption>();
+
+  for (const version of versions ?? []) {
+    const subject = subjectById.get(version.subject_id);
+    const versionRoutes = (routes ?? []).filter((route) => route.syllabus_version_id === version.id);
+    if (!subject || versionRoutes.length === 0) continue;
+
+    options.set(version.id, {
+      subjectId: subject.id,
+      subjectCode: subject.subject_code,
+      subjectName: subject.subject_name,
+      category: subject.category,
+      versionLabel: version.version_label,
+      versionStatus: version.status ?? "draft",
+      routes: versionRoutes
+        .map((route) => ({
+          id: route.id,
+          code: route.route_code,
+          name: route.name,
+          tier: route.tier ?? "Untiered",
+          privateCandidateEligible: route.private_candidate_eligible !== false,
+          notes: route.notes ?? null,
+        }))
+        .sort((a, b) => a.code.localeCompare(b.code)),
+    });
+  }
+
+  return [...options.values()].sort((a, b) => a.subjectCode.localeCompare(b.subjectCode));
+}
+
+export type EnrollmentInput = {
+  routeId: string;
+  isElective: boolean;
+  weeklyMinutes: number;
+  targetGrade: string;
+  targetExamSeries: string | null;
+};
+
+/**
+ * Makes the learner's enrolments for one term exactly `rows`: upserted on
+ * (student, term, route), and any route no longer chosen removed afterwards so
+ * a failed upsert never leaves the learner with nothing.
+ */
+export async function replaceEnrollments(learnerId: string, termId: string, rows: EnrollmentInput[]) {
+  const supabase = await createServerClientInstance();
+
+  if (rows.length > 0) {
+    const { data, error } = await supabase
+      .from("learner_term_enrollments")
+      .upsert(
+        rows.map((row) => ({
+          student_id: learnerId,
+          academic_term_id: termId,
+          entry_route_id: row.routeId,
+          is_elective: row.isElective,
+          weekly_allocated_minutes: row.weeklyMinutes,
+          target_grade: row.targetGrade,
+          target_exam_series: row.targetExamSeries,
+        })),
+        { onConflict: "student_id,academic_term_id,entry_route_id" },
+      )
+      .select("id");
+
+    if (error) return { ok: false as const, error: error.message };
+    if ((data ?? []).length !== rows.length) {
+      return { ok: false as const, error: "Some subjects were not saved. Sign in as the guardian and try again." };
+    }
+  }
+
+  let removal = supabase.from("learner_term_enrollments").delete().eq("student_id", learnerId).eq("academic_term_id", termId);
+  if (rows.length > 0) removal = removal.not("entry_route_id", "in", `(${rows.map((row) => row.routeId).join(",")})`);
+
+  const { error: removeError } = await removal;
+  return removeError ? { ok: false as const, error: removeError.message } : { ok: true as const };
 }
 
 export { collect };

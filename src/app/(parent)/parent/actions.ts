@@ -377,8 +377,9 @@ export async function completeOnboardingAction(
         name: `${input.seriesYear} - ${TERM_LABEL[term.sequence - 1]}`,
         start_date: term.start,
         end_date: term.end,
-        midterm_exam_start: input.midtermWeek,
-        final_exam_start: input.finalWeek,
+        // Onboarding asks for one mid-term and one final week, which belong to
+        // the first term. Later terms keep whatever the term planner set.
+        ...(term.sequence === 1 ? { midterm_exam_start: input.midtermWeek, final_exam_start: input.finalWeek } : {}),
         study_days: input.studyDays.split(",").filter(Boolean),
         daily_minutes_cap: input.dailyMinutesCap,
         status: term.sequence === 1 ? "active" : "upcoming",
