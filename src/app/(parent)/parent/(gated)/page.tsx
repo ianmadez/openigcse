@@ -2,10 +2,12 @@ import Link from "next/link";
 import { ArrowRight, ClipboardCheck, LifeBuoy, ShieldCheck, TriangleAlert } from "lucide-react";
 
 import { NeedsSignIn } from "@/components/auth/NeedsSignIn";
+import { EvidenceQueue } from "@/components/parent/EvidenceQueue";
 import { EmptyState, PageHeading, Panel, Status } from "@/components/ui/primitives";
 import { getTermAssessments } from "@/lib/data/assessments";
 import { getAvailableSubjects, getEnrolledCurriculum } from "@/lib/data/curriculum";
 import { getDevices, onlineCount } from "@/lib/data/devices";
+import { listEvidenceQueue } from "@/lib/data/evidence";
 import { getFocusPolicy } from "@/lib/data/focus";
 import { countOpen, getMistakes } from "@/lib/data/mistakes";
 import { getRequests } from "@/lib/data/requests";
@@ -31,7 +33,7 @@ export default async function ParentOverviewPage() {
     );
   }
 
-  const [subjects, mistakes, assessments, devices, requests, focus, available] = await Promise.all([
+  const [subjects, mistakes, assessments, devices, requests, focus, available, evidence] = await Promise.all([
     state.activeTermId ? getEnrolledCurriculum(state.learnerId, state.activeTermId) : Promise.resolve([]),
     getMistakes(state.learnerId),
     state.activeTermId ? getTermAssessments(state.activeTermId) : Promise.resolve([]),
@@ -39,6 +41,7 @@ export default async function ParentOverviewPage() {
     getRequests(state.householdId, 5),
     getFocusPolicy(state.householdId),
     getAvailableSubjects(),
+    listEvidenceQueue(state.householdId),
   ]);
 
   const openMistakes = countOpen(mistakes);
@@ -51,6 +54,16 @@ export default async function ParentOverviewPage() {
       <PageHeading eyebrow={`${state.householdName} - ${state.term?.name ?? "no active term"}`} title="Parent overview">
         Everything here is a live read. An empty panel means nothing has happened yet, not that the data is missing.
       </PageHeading>
+
+      <div className="mb-4">
+        <Panel
+          title="Work to review"
+          description="Photos, PDFs and write-ups the learner sent. Approve them or send them back with notes."
+          action={<Status tone={evidence.length > 0 ? "warning" : "success"}>{evidence.length} waiting</Status>}
+        >
+          <EvidenceQueue items={evidence} />
+        </Panel>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel

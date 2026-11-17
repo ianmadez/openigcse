@@ -19,6 +19,7 @@ import {
   X,
   FileQuestion,
   ClipboardList,
+  Paperclip,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -46,6 +47,7 @@ const studentNav: NavItem[] = [
   { label: "Trivia", href: "/trivia", icon: Clapperboard },
   { label: "Assessments", href: "/assessments", icon: ClipboardList },
   { label: "Review", href: "/review", icon: Target },
+  { label: "Evidence", href: "/evidence", icon: Paperclip },
   { label: "Plan", href: "/plan", icon: MapPin },
   { label: "Progress", href: "/progress", icon: Gauge },
 ];
