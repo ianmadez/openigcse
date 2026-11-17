@@ -3,11 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { questionEditBlock } from "@/lib/assessment/builder";
 import { questionInputSchema, toQuestionRow } from "@/lib/assessment/question";
 import { requireGuardianSession } from "@/lib/auth/guardian-session";
 import { removeHouseholdFiles, signedUrls, uploadHouseholdFile } from "@/lib/data/files";
 import { describeObjectives, getAssessmentObjectives } from "@/lib/data/objectives";
-import { deleteQuestion, saveQuestion } from "@/lib/data/question-bank";
+import { deleteQuestion, questionUsageStates, saveQuestion } from "@/lib/data/question-bank";
 
 type Result<T = object> = ({ ok: true; message?: string } & T) | { ok: false; error: string };
 
@@ -27,6 +28,11 @@ export async function saveQuestionAction(input: unknown): Promise<Result<{ id: s
     if (!aos.some((ao) => ao.id === parsed.data.assessmentObjectiveId)) {
       return { ok: false, error: "That assessment objective belongs to a different syllabus." };
     }
+  }
+
+  if (parsed.data.id) {
+    const blocked = questionEditBlock(await questionUsageStates(parsed.data.id));
+    if (blocked) return { ok: false, error: blocked };
   }
 
   const built = toQuestionRow(parsed.data, householdId);

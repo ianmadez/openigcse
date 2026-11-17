@@ -70,3 +70,13 @@ export function sittingState(
   const endsAt = Date.parse(input.sitting.startedAt) + input.durationMinutes * 60_000;
   return now.getTime() >= endsAt ? "handed_in" : "in_progress";
 }
+
+/**
+ * A question on a paper that has been sat or marked is part of the record:
+ * changing its objective, key or marks would rewrite what was marked.
+ */
+export function questionEditBlock(states: SittingState[]): string | null {
+  return states.some((state) => state === "in_progress" || state === "handed_in" || state === "marked")
+    ? "This question is on a paper that has been sat or marked, so it can no longer change. Copy it into a new question instead."
+    : null;
+}

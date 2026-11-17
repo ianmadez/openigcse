@@ -56,3 +56,21 @@ export function secondsLeft(startedAt: string, durationMinutes: number, now: Dat
   const endsAt = Date.parse(startedAt) + durationMinutes * 60_000;
   return Math.max(0, Math.floor((endsAt - now.getTime()) / 1000));
 }
+
+/**
+ * Only the answers this device changed. Sending every answer let a stale second
+ * device (or its automatic hand-in) overwrite work done elsewhere with blanks.
+ */
+export function pendingResponses<T>(answers: Record<string, T>, dirty: Set<string>): T[] {
+  return Object.entries(answers)
+    .filter(([questionId]) => dirty.has(questionId))
+    .map(([, answer]) => answer);
+}
+
+/**
+ * Hand in only when the final save worked, or when time is already up (the
+ * paper then keeps its last saved answers). Otherwise the learner retries.
+ */
+export function handInAfterSave(saveOk: boolean, sittingOpen: boolean): "submit" | "retry" {
+  return saveOk || !sittingOpen ? "submit" : "retry";
+}

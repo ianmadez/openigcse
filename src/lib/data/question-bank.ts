@@ -1,3 +1,4 @@
+import { sittingState } from "@/lib/assessment/builder";
 import type { QuestionInput, QuestionKind, QuestionRow } from "@/lib/assessment/question";
 import { signedUrls } from "@/lib/data/files";
 import { describeObjectives, type ObjectiveLabel } from "@/lib/data/objectives";
@@ -198,5 +199,31 @@ export function objectiveTree(
       versionId: subject.versionId,
       topics: [...topics.values()],
     };
+  });
+}
+
+/** Where each assessment that uses this question stands, for the edit lock. */
+export async function questionUsageStates(questionId: string, now: Date = new Date()) {
+  const supabase = await createServerClientInstance();
+  const { data: items } = await supabase.from("assessment_items").select("assessment_id").eq("question_template_id", questionId);
+  const ids = (items ?? []).map((item) => item.assessment_id as string);
+  if (ids.length === 0) return [];
+
+  const [{ data: assessments }, { data: sittings }] = await Promise.all([
+    supabase.from("term_assessments").select("id, status, duration_minutes").in("id", ids),
+    supabase.from("assessment_sittings").select("assessment_id, started_at, submitted_at").in("assessment_id", ids),
+  ]);
+  const sittingById = new Map((sittings ?? []).map((row) => [row.assessment_id, row]));
+
+  return (assessments ?? []).map((assessment) => {
+    const sitting = sittingById.get(assessment.id);
+    return sittingState(
+      {
+        status: assessment.status ?? "Scheduled",
+        durationMinutes: assessment.duration_minutes,
+        sitting: sitting ? { startedAt: sitting.started_at, submittedAt: sitting.submitted_at } : null,
+      },
+      now,
+    );
   });
 }

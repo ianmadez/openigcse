@@ -497,8 +497,8 @@ export function QuestionEditor({ initial, tree, assessmentObjectives }: Props) {
         </div>
         {initial && initial.usedIn > 0 && (
           <p className="text-caption text-muted">
-            On {initial.usedIn} assessment{initial.usedIn === 1 ? "" : "s"}. Edits change those papers too; it cannot be deleted
-            while in use.
+            On {initial.usedIn} assessment{initial.usedIn === 1 ? "" : "s"}. Edits change any unsat paper too; once a paper using it
+            has been sat, it is locked and cannot be deleted.
           </p>
         )}
       </form>

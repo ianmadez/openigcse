@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { parseThresholds, sittingState } from "./builder";
+import { parseThresholds, questionEditBlock, sittingState } from "./builder";
 
 describe("parseThresholds", () => {
   test("keeps valid rows, highest first, and drops blank rows", () => {
@@ -67,5 +67,17 @@ describe("sittingState", () => {
   test("handed in when the time ran out without a submit", () => {
     const sitting = { startedAt: "2026-11-17T09:00:00Z", submittedAt: null };
     assert.equal(sittingState({ ...base, sitting }, now), "handed_in");
+  });
+});
+
+describe("questionEditBlock", () => {
+  test("a question on drafts or scheduled papers can change", () => {
+    assert.equal(questionEditBlock(["draft", "scheduled"]), null);
+  });
+
+  test("a question on a paper being sat, handed in or marked cannot", () => {
+    for (const state of ["in_progress", "handed_in", "marked"] as const) {
+      assert.match(questionEditBlock(["scheduled", state]) ?? "", /sat|marked/);
+    }
   });
 });

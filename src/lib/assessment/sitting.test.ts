@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { secondsLeft, toSittingQuestion } from "./sitting";
+import { handInAfterSave, pendingResponses, secondsLeft, toSittingQuestion } from "./sitting";
 
 describe("toSittingQuestion", () => {
   const row = {
@@ -51,5 +51,34 @@ describe("secondsLeft", () => {
 
   test("never goes below zero", () => {
     assert.equal(secondsLeft("2026-11-17T10:00:00Z", 30, new Date("2026-11-17T11:00:00Z")), 0);
+  });
+});
+
+describe("pendingResponses", () => {
+  const answers = {
+    q1: { questionId: "q1", selectedOption: null, answerText: "mine", photoPaths: [] },
+    q2: { questionId: "q2", selectedOption: null, answerText: "", photoPaths: [] },
+  };
+
+  test("sends only the answers this device changed", () => {
+    assert.deepEqual(pendingResponses(answers, new Set(["q1"])), [answers.q1]);
+  });
+
+  test("an untouched device sends nothing, so it cannot blank another device's work", () => {
+    assert.deepEqual(pendingResponses(answers, new Set()), []);
+  });
+});
+
+describe("handInAfterSave", () => {
+  test("a good save hands in", () => {
+    assert.equal(handInAfterSave(true, true), "submit");
+  });
+
+  test("a failed save with time left is refused so the learner can retry", () => {
+    assert.equal(handInAfterSave(false, true), "retry");
+  });
+
+  test("a failed save after time is up still hands in the last saved answers", () => {
+    assert.equal(handInAfterSave(false, false), "submit");
   });
 });

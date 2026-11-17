@@ -13,7 +13,7 @@ import {
 import { ActionButton } from "@/components/ui/Button";
 import { MathMarkdown } from "@/components/ui/MathMarkdown";
 import { Callout, Status } from "@/components/ui/primitives";
-import { secondsLeft } from "@/lib/assessment/sitting";
+import { pendingResponses, secondsLeft } from "@/lib/assessment/sitting";
 import type { SittingResponse, SittingView } from "@/lib/data/sittings";
 import { ACCEPT } from "@/lib/storage/rules";
 import { cn } from "@/lib/utils/cn";
@@ -52,7 +52,8 @@ export function SittingRunner({ view, serverNow }: { view: SittingView; serverNo
   const [handedIn, setHandedIn] = useState<string | null>(null);
   const [uploadingFor, setUploadingFor] = useState<string | null>(null);
 
-  const dirty = useRef(false);
+  // Question ids changed on this device and not yet saved. Only these are ever sent.
+  const dirty = useRef(new Set<string>());
   const saving = useRef(false);
   const submitting = useRef(false);
   const answersRef = useRef(answers);
@@ -65,43 +66,49 @@ export function SittingRunner({ view, serverNow }: { view: SittingView; serverNo
     view.sitting ? secondsLeft(view.sitting.startedAt, view.durationMinutes, new Date(Date.now() + skew)) : 0,
   );
 
-  const payload = useCallback(
-    () => ({ assessmentId: view.assessmentId, responses: Object.values(answersRef.current) }),
-    [view.assessmentId],
-  );
+  /** Takes the changed answers out of the dirty set; `restore` puts them back if the save fails. */
+  const takePending = useCallback(() => {
+    const ids = new Set(dirty.current);
+    dirty.current.clear();
+    return {
+      payload: { assessmentId: view.assessmentId, responses: pendingResponses(answersRef.current, ids) },
+      restore: () => ids.forEach((id) => dirty.current.add(id)),
+    };
+  }, [view.assessmentId]);
 
   const flush = useCallback(async () => {
-    if (!dirty.current || saving.current || submitting.current) return;
+    if (dirty.current.size === 0 || saving.current || submitting.current) return;
     saving.current = true;
-    dirty.current = false;
+    const pending = takePending();
     setSave({ kind: "saving" });
-    const result = await autosaveAction(payload());
+    const result = await autosaveAction(pending.payload);
     saving.current = false;
     if (result.ok) {
       setSave({ kind: "saved", at: new Date(result.savedAt).toLocaleTimeString("en-GB") });
     } else {
-      dirty.current = true;
+      pending.restore();
       setSave({ kind: "error", message: result.error });
     }
-  }, [payload]);
+  }, [takePending]);
 
   const handIn = useCallback(
     (automatic: boolean) => {
       if (submitting.current) return;
       submitting.current = true;
+      const pending = takePending();
       startTransition(async () => {
-        const result = await submitSittingAction(payload());
+        const result = await submitSittingAction({ ...pending.payload, automatic });
         if (result.ok) {
-          dirty.current = false;
           setHandedIn(result.note ?? (automatic ? "Time is up. Your paper has been handed in." : "Handed in. Well done."));
           router.refresh();
         } else {
+          pending.restore();
           submitting.current = false;
           setProblem(result.error);
         }
       });
     },
-    [payload, router],
+    [takePending, router],
   );
 
   useEffect(() => {
@@ -114,7 +121,7 @@ export function SittingRunner({ view, serverNow }: { view: SittingView; serverNo
     const autosave = window.setInterval(() => void flush(), AUTOSAVE_MS);
     const onHide = () => document.visibilityState === "hidden" && void flush();
     const onLeave = (event: BeforeUnloadEvent) => {
-      if (dirty.current) event.preventDefault();
+      if (dirty.current.size > 0) event.preventDefault();
     };
     document.addEventListener("visibilitychange", onHide);
     window.addEventListener("beforeunload", onLeave);
@@ -127,7 +134,7 @@ export function SittingRunner({ view, serverNow }: { view: SittingView; serverNo
   }, [running, view.sitting, view.durationMinutes, skew, flush, handIn]);
 
   const change = (questionId: string, patch: Partial<SittingResponse>) => {
-    dirty.current = true;
+    dirty.current.add(questionId);
     setAnswers((current) => ({ ...current, [questionId]: { ...current[questionId]!, ...patch } }));
   };
 

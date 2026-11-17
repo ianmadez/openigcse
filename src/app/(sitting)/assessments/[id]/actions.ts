@@ -5,7 +5,8 @@ import { z } from "zod";
 
 import { requireLearnerSession } from "@/lib/auth/learner-session";
 import { signedUrls, uploadHouseholdFile } from "@/lib/data/files";
-import { saveResponses, startSitting, submitSitting, type SittingResponse } from "@/lib/data/sittings";
+import { handInAfterSave } from "@/lib/assessment/sitting";
+import { saveResponses, sittingIsOpen, startSitting, submitSitting, type SittingResponse } from "@/lib/data/sittings";
 
 type Result<T = object> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -55,13 +56,22 @@ export async function submitSittingAction(input: unknown): Promise<Result<{ note
   const learner = await requireLearnerSession();
   if (!learner.ok) return learner;
 
-  const parsed = z.object({ assessmentId: z.string().uuid(), responses: responsesSchema }).safeParse(input);
+  const parsed = z
+    .object({ assessmentId: z.string().uuid(), responses: responsesSchema, automatic: z.boolean().default(false) })
+    .safeParse(input);
   if (!parsed.success) return { ok: false, error: "Those answers could not be read." };
   if (!ownPhotos(parsed.data.responses, learner.householdId, learner.learnerId)) {
     return { ok: false, error: "A photo is not in your own folder." };
   }
 
   const saved = await saveResponses(learner.householdId, learner.learnerId, parsed.data.assessmentId, parsed.data.responses);
+  if (!saved.ok) {
+    // The automatic hand-in fires because time is up, so it never waits for a retry.
+    const open = parsed.data.automatic ? false : await sittingIsOpen(parsed.data.assessmentId, learner.learnerId);
+    if (handInAfterSave(false, open) === "retry") {
+      return { ok: false, error: `Not handed in, because your latest answers did not save: ${saved.error} Try again.` };
+    }
+  }
   const submitted = await submitSitting(parsed.data.assessmentId, learner.learnerId);
   if (!submitted.ok) return { ok: false, error: `Not handed in: ${submitted.error}` };
 

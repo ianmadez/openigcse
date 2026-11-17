@@ -187,3 +187,11 @@ export async function submitSitting(assessmentId: string, learnerId: string) {
   // No row updated means it was already handed in, which is the outcome we wanted.
   return { ok: true as const, alreadySubmitted: !data?.length };
 }
+
+/** The database's own answer (duration plus grace), so app and RLS never disagree. */
+export async function sittingIsOpen(assessmentId: string, learnerId: string) {
+  const supabase = await createServerClientInstance();
+  const { data, error } = await supabase.rpc("sitting_is_open", { p_assessment_id: assessmentId, p_student_id: learnerId });
+  // If the question cannot be answered, assume open: refusing a hand-in is recoverable, losing answers is not.
+  return error ? true : Boolean(data);
+}
