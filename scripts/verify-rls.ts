@@ -47,6 +47,14 @@ const TENANT_TABLES = [
   "focus_policies",
   "requests",
   "devices",
+  "question_templates",
+  "assessment_items",
+  "assessment_item_marks",
+  "assessment_sittings",
+  "assessment_responses",
+  "mistake_notebook",
+  "learning_events",
+  "evidence_portfolio",
 ];
 
 type Result = { name: string; ok: boolean; detail: string };
@@ -65,7 +73,9 @@ function isDenied(error: { code?: string; message: string } | null) {
 }
 
 async function readProbe(client: SupabaseClient, table: string) {
-  const { data, error, count } = await client.from(table).select("id", { count: "exact", head: true });
+  // Not a HEAD request: a HEAD on a missing table has no body to carry the
+  // PGRST205 error, so it would read as "0 rows" and pass.
+  const { data, error, count } = await client.from(table).select("id", { count: "exact" }).limit(1);
 
   if (error) {
     return {
@@ -115,6 +125,24 @@ function writeProbes(): Probe[] {
         mark_scheme_rubric: "rls probe",
         max_marks: 1,
       },
+    },
+    {
+      table: "assessment_sittings",
+      row: { household_id: missingHousehold, student_id: randomUUID(), assessment_id: randomUUID() },
+    },
+    {
+      table: "assessment_responses",
+      row: {
+        household_id: missingHousehold,
+        student_id: randomUUID(),
+        assessment_id: randomUUID(),
+        question_template_id: randomUUID(),
+        answer_text: "rls probe",
+      },
+    },
+    {
+      table: "assessment_item_marks",
+      row: { assessment_id: randomUUID(), question_template_id: randomUUID(), marks_awarded: 1 },
     },
   ];
 }

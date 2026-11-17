@@ -17,7 +17,8 @@
     "test:parser": "tsx --test scripts/lib/syllabusParser.test.ts",
     "test:rls": "tsx scripts/verify-rls.ts",
     "check:contrast": "node scripts/check-contrast.mjs",
-    "import": "tsx scripts/import-package.ts"
+    "import": "tsx scripts/import-package.ts",
+    "verify:phase3": "tsx scripts/verify-phase3.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
