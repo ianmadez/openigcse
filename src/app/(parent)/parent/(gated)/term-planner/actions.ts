@@ -3,9 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { authorizeGuardian } from "@/lib/auth/guard";
+import { requireGuardianSession } from "@/lib/auth/guardian-session";
 import { getRouteOptions, replaceEnrollments } from "@/lib/data/enrollments";
-import { getSetupState } from "@/lib/data/session";
 import { getTerms, saveTerms } from "@/lib/data/terms";
 
 const DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Pick a date.");
@@ -54,14 +53,9 @@ const planSchema = z.object({
 export type TermPlanResult = { ok: true; message: string } | { ok: false; error: string };
 
 export async function saveTermPlanAction(input: unknown): Promise<TermPlanResult> {
-  const active = await authorizeGuardian();
-  if (!active) return { ok: false, error: "Unlock the parent area before changing the term plan." };
-
-  const state = await getSetupState();
-  if (state.status !== "configured") {
-    return { ok: false, error: "Sign in with the guardian account to save. The PIN alone cannot write to the database." };
-  }
-  if (state.householdId !== active.householdId) return { ok: false, error: "This session belongs to another household." };
+  const guard = await requireGuardianSession();
+  if (!guard.ok) return guard;
+  const state = guard.session;
 
   const parsed = planSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Check the plan." };

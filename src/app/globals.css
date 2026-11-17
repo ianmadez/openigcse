@@ -242,6 +242,23 @@
     @apply text-caption font-medium uppercase tracking-[0.06em] text-muted;
   }
 
+  /* Rendered question text: Tailwind's reset flattens lists and spacing. */
+  .math-markdown > * + * {
+    @apply mt-2;
+  }
+  .math-markdown ul {
+    @apply list-disc pl-5;
+  }
+  .math-markdown ol {
+    @apply list-decimal pl-5;
+  }
+  .math-markdown code {
+    @apply rounded bg-sunken px-1 text-[0.8125rem];
+  }
+  .math-markdown .katex-display {
+    @apply overflow-x-auto overflow-y-hidden py-1;
+  }
+
   .chip {
     @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-subtle bg-sunken px-2.5 py-0.5 text-caption font-medium text-secondary;
   }

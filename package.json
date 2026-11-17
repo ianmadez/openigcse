@@ -19,7 +19,7 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "import": "tsx scripts/import-package.ts",
     "verify:phase3": "tsx scripts/verify-phase3.ts",
-    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/planning/series.test.ts",
+    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/assessment/question.test.ts src/lib/planning/series.test.ts src/lib/storage/rules.test.ts",
     "dev:household": "tsx scripts/dev-household.ts"
   },
   "dependencies": {
@@ -28,10 +28,14 @@
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "cuelume": "^0.2.8",
+    "katex": "0.16.22",
     "lucide-react": "^0.469.0",
     "next": "15.5.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "10.1.0",
+    "rehype-katex": "7.0.1",
+    "remark-math": "6.0.0",
     "tailwind-merge": "^2.6.0",
     "zod": "^4.6.7"
   },

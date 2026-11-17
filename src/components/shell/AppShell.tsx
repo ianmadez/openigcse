@@ -17,6 +17,7 @@ import {
   Sparkles,
   Target,
   X,
+  FileQuestion,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -51,6 +52,7 @@ const parentNav: NavItem[] = [
   { label: "Overview", href: "/parent", icon: Home },
   { label: "Timetable", href: "/parent/timetable", icon: CalendarRange },
   { label: "Term planner", href: "/parent/term-planner", icon: MapPin },
+  { label: "Questions", href: "/parent/questions", icon: FileQuestion },
   { label: "Marking desk", href: "/parent/marking-desk", icon: ClipboardCheck },
   { label: "Focus", href: "/parent/focus", icon: ShieldCheck },
   { label: "Progress", href: "/parent/progress", icon: Gauge },
