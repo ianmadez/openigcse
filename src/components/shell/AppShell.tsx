@@ -44,6 +44,7 @@ const studentNav: NavItem[] = [
   { label: "Timetable", href: "/timetable", icon: CalendarRange },
   { label: "Subjects", href: "/subjects", icon: BookOpen },
   { label: "Trivia", href: "/trivia", icon: Clapperboard },
+  { label: "Assessments", href: "/assessments", icon: ClipboardList },
   { label: "Review", href: "/review", icon: Target },
   { label: "Plan", href: "/plan", icon: MapPin },
   { label: "Progress", href: "/progress", icon: Gauge },
