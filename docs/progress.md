@@ -102,6 +102,7 @@ claiming a UI or policy change is done. `pnpm build` is the last check, not the 
 
 ## Next, in order
 
-Phase 4 next, starting with Step 4.2 RLS tightening (answer keys, learner-writable events and mistakes). Then Phase 4 (FSRS with `ts-fsrs`, the mastery view, checkpoint events), then Phase 5.
+Phase 4 next: start with the RLS tightening Step 4.2 needs (answer keys, learner-writable events and mistakes), then
+FSRS with `ts-fsrs`, the mastery view and checkpoint events. Then Phase 5.
 Phase 6 runs alongside all of them, starting with the heading and Core/Supplement parser variants that leave 0455 with no
 topics and 0460, 0470, 0530 without packages.
