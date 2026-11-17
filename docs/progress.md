@@ -14,7 +14,7 @@ Last checked: 2026-11-17.
 | 0     | Real identity and multi-device foundations | Built; exit gate needs two browsers and two accounts |
 | 1     | Repositories replace the demo seam         | Done                                                 |
 | 2     | Parent timetable, student follows it       | Built; exit gate needs a phone and a student device  |
-| 3     | Parent authoring and the marking desk      | Done (exit gate observed 2026-11-17); build pending  |
+| 3     | Parent authoring and the marking desk      | Done (exit gate observed 2026-11-17)                 |
 | 4     | The student learning loop                  | Partial: events are written, retention is not        |
 | 5     | Messaging, requests and remote monitoring  | Scaffolding only                                     |
 | 6     | Curriculum extraction for ten packages     | Partial: five drafts, three have no route            |
@@ -88,15 +88,20 @@ pnpm validate       # 5 packages structurally valid
 pnpm test:unit      # 53 passed
 pnpm test:rls       # 22/22
 pnpm verify:phase3  # 34/34, 0 leftovers
+pnpm test:unit      # 60 passed after the review fixes
+pnpm check:contrast # 56/56 pairs
+pnpm build          # clean
 ```
 
-Not yet run for Phase 3: `pnpm build`, `pnpm check:contrast`, and the final whole-branch review.
+A fresh whole-branch review found one critical and two important issues (a stale second device could blank
+answers, hand-in after a failed save, editing questions on sat papers); all three are fixed with tests and re-checked in
+the browser. Deferred minors and every ruling are in `docs/superpowers/plans/2026-11-17-phase3-ledger.md`.
 
 `pnpm check:contrast` and `pnpm test:rls` need a built tree and a linked Supabase project respectively; run them before
 claiming a UI or policy change is done. `pnpm build` is the last check, not the first.
 
 ## Next, in order
 
-Finish Phase 3: `pnpm build`, `pnpm check:contrast`, final review, delete the dev household. Then Phase 4 (FSRS with `ts-fsrs`, the mastery view, checkpoint events), then Phase 5.
+Phase 4 next, starting with Step 4.2 RLS tightening (answer keys, learner-writable events and mistakes). Then Phase 4 (FSRS with `ts-fsrs`, the mastery view, checkpoint events), then Phase 5.
 Phase 6 runs alongside all of them, starting with the heading and Core/Supplement parser variants that leave 0455 with no
 topics and 0460, 0470, 0530 without packages.
