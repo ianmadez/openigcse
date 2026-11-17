@@ -1,0 +1,705 @@
+===============================================================================
+OPENIGCSE - GROUND-TRUTH ARCHITECTURE MAP
+Written 2026-10-20. Describes the repository exactly as it sits on disk.
+No application code was changed to produce this document, except the one data
+correction noted in section 1.6 (History 0470 version window).
+===============================================================================
+
+HOW TO READ THIS DOCUMENT
+-------------------------
+Every file carries a one-line note plus a status tag:
+
+  LIVE     Reads or writes the real Supabase database at request time.
+  HYBRID   Real data at build time (bundled JSON), demo data at runtime.
+  STUB     Hardcoded in the file, localStorage, or UI-only. No database.
+  INPUT    Data consumed by a script, never imported by the app.
+  CONFIG   Environment, build or tooling configuration.
+
+"Bundled JSON" is important: src/lib/curriculum/index.ts imports the five
+package JSON files with static `import` statements. Next.js compiles them into
+the server bundle. The app therefore renders curriculum from disk at build
+time, not from Supabase at run time.
+
+
+===============================================================================
+1. DELIVERABLE 1 - COMPLETE REPOSITORY FILE TREE
+===============================================================================
+
+1.1 ROOT
+--------
+.env.example                        CONFIG  Contract for every env var the app reads.
+.env.local                          CONFIG  Real values incl. service-role secret. Gitignored.
+.gitignore                          CONFIG  Ignores node_modules, .next, .env.local, .temp.
+.prettierignore                     CONFIG  Prettier exclusions.
+.prettierrc.json                    CONFIG  Prettier rules (printWidth 120).
+LICENSE                             CONFIG  MIT.
+README.md                           CONFIG  Run instructions, pipeline, design system, sound.
+package.json                        CONFIG  Scripts: dev, build, typecheck, validate, ingest,
+                                            ingest:list, fetch:syllabuses, import, sync:packages,
+                                            test:parser, check:contrast. Deps include next 15.5.9,
+                                            react 19, supabase-js, @supabase/ssr, zod, pdfjs-dist,
+                                            lucide-react, cuelume, canvas-confetti.
+pnpm-lock.yaml                      CONFIG  Lockfile.
+pnpm-workspace.yaml                 CONFIG  Single-package workspace.
+postcss.config.mjs                  CONFIG  Tailwind + autoprefixer.
+tailwind.config.ts                  CONFIG  Semantic colour keys (muted = TEXT token, sunken =
+                                            SURFACE token), radii, type scale, subject palette.
+tsconfig.json                       CONFIG  Strict TS, path alias @/* -> src/*.
+tsconfig.tsbuildinfo                CONFIG  Incremental build cache. Ignorable.
+next-env.d.ts                       CONFIG  Next type shims.
+next.config.mjs                     CONFIG  Image allow-list, framework defaults.
+skills-lock.json                    CONFIG  Lock for installed .agents skills.
+ARCHITECTURE_MAP.txt                CONFIG  This document.
+
+1.2 .agents/  (agent skills, no runtime effect)
+-----------------------------------------------
+.agents/skills/anti-slop/SKILL.md              STUB  Prose de-slopping reference.
+.agents/skills/anti-slop/references/tells.md   STUB  Catalogue of AI prose tells.
+.agents/skills/better-colors/SKILL.md          STUB  Colour system guidance.
+.agents/skills/better-colors/*.md (6 files)    STUB  Palette, contrast, token naming, formats.
+.agents/skills/better-interface/SKILL.md       STUB  Interface review guidance.
+.agents/skills/better-interface/review-format.md STUB Review output template.
+.agents/skills/better-typography/SKILL.md      STUB  Typography guidance.
+.agents/skills/better-typography/*.md (6)      STUB  Font choice, scale, wrapping, a11y.
+.agents/skills/better-ui/SKILL.md              STUB  Surfaces, icons, motion guidance.
+.agents/skills/better-ui/*.md (6)              STUB  Animations, enter/exit, performance.
+.agents/skills/*/agents/openai.yaml (4)        STUB  Skill metadata for other harnesses.
+
+1.3 raw-syllabuses/  (pipeline input, downloaded 2026-10-20)
+------------------------------------------------------------
+0580-mathematics-2028-2030.pdf          INPUT  CAIE 0580 syllabus, 1053 kB.
+0478-computer-science-2026-2028.pdf     INPUT  CAIE 0478 syllabus, 785 kB.
+0610-biology-2026-2028.pdf              INPUT  CAIE 0610 syllabus, 841 kB.
+0620-chemistry-2026-2028.pdf            INPUT  CAIE 0620 syllabus, 1095 kB.
+0625-physics-2026-2028.pdf              INPUT  CAIE 0625 syllabus, 775 kB.
+0500-english-first-language-2027-2029.pdf INPUT CAIE 0500 syllabus, 730 kB.
+0460-geography-2027-2029.pdf            INPUT  CAIE 0460 syllabus, 877 kB.
+0470-history-2027-2028.pdf              INPUT  CAIE 0470 syllabus, 744 kB.
+0455-economics-2027-2029.pdf            INPUT  CAIE 0455 syllabus, 679 kB.
+0530-spanish-2028-2030.pdf              INPUT  CAIE 0530 syllabus, 564 kB.
+README.md                               INPUT  Notes on file naming and provenance.
+
+1.4 curriculum-packages/  (five packages; five subjects have no package yet)
+---------------------------------------------------------------------------
+0478-computer-science-2026-2028/
+  manifest.json                 HYBRID  Identity, version, tiers, provenance.verified=false.
+  topics.json                   HYBRID  10 topics + 26 subtopics, hand-authored draft.
+  objectives.json               HYBRID  15 objectives, draft.
+  routes.json                   HYBRID  0 rows. Empty; 0478 has no extracted components.
+  resources.json                HYBRID  Lesson video rows keyed by objective_code.
+  assessment_objectives.json    HYBRID  0 rows.
+0500-english-first-language-2027-2029/  same six files, 15 objectives, 0 routes.
+0580-mathematics-2028-2030/             same six files, 15 objectives, 0 routes.
+0610-biology-2026-2028/                 same six files, 15 objectives, 3 routes.
+0625-physics-2026-2028/                 same six files, 15 objectives, 3 routes.
+NOTE: 0620 Chemistry, 0460 Geography, 0470 History, 0455 Economics and 0530 Spanish
+have a registry entry but NO package folder. They render as "Awaiting PDF".
+
+1.5 scripts/  (tooling; never imported by the app)
+--------------------------------------------------
+fetch-syllabuses.ts            TOOL    NEW. Reads registry.syllabus_page, scrapes /Images/*.pdf,
+                                       scores by version label, saves to raw-syllabuses/<pdf_hint>.
+                                       Flags: --subject=, --dry-run. Exports nothing.
+ingest-syllabus.ts             TOOL    Reads a PDF with pdfjs-dist, runs the parser, writes the
+                                       six package JSON files. Flags: --subject= --pdf= --url=
+                                       --years= --dry-run --list. Exits non-zero on structural miss.
+lib/syllabusParser.ts          TOOL    export parseSubjectContent(items), commandWordOf(text).
+                                       Column/heading regex parser for Cambridge numbering.
+lib/syllabusParser.test.ts     TOOL    node:test suite, 7 passing cases on synthetic text.
+validate-packages.ts           TOOL    Zod-validates every package, prints a table, exits 1 on error.
+import-package.ts              TOOL    CLI wrapper over packageImporter. --subject= --package=
+                                       --allow-draft --dry-run. Requires service-role key.
+sync-package-manifests.ts      TOOL    Recomputes manifest counts and routes from the other files.
+check-contrast.mjs             TOOL    Resolves the token chain, measures 56 declared pairs in
+                                       light and dark, and fails if any surface utility uses the
+                                       `muted` text token.
+
+1.6 src/app/  (routing)
+-----------------------
+layout.tsx                     LIVE    Root html/body, Bricolage + Inter fonts, inline theme
+                                       bootstrap script reading localStorage.
+page.tsx                       STUB    Redirects "/" to /today.
+not-found.tsx                  STUB    404 screen with links to /today and /subjects.
+globals.css                    STUB    Design tokens (primitives + semantic), .btn/.chip/.field/
+                                       .skeleton/.page-enter, subject accent classes, summary
+                                       marker reset.
+(student)/layout.tsx           LIVE    Calls getSetupState(); redirects to /parent/onboarding when
+                                       unconfigured and bypass is off. force-dynamic. Renders
+                                       AppShell with the configured learner name.
+(student)/loading.tsx          STUB    Skeleton page shown during student route transitions.
+(student)/today/page.tsx       HYBRID  getWorkspace() demo learner/term/tasks + bundled curriculum.
+(student)/subjects/page.tsx    HYBRID  Lists packages via lib/curriculum (bundled).
+(student)/subjects/[slug]/page.tsx HYBRID Topics, subtopics, objectives, draft banner.
+                                       generateStaticParams over the five packages.
+(student)/review/page.tsx      STUB    Renders workspace.mistakes (demo rows).
+(student)/plan/page.tsx        STUB    Renders demo term, enrolments and assessments.
+(student)/progress/page.tsx    STUB    Mastery averaged from synthetic demo signals.
+(student)/trivia/page.tsx      STUB    Renders triviaModules from lib/data/trivia.ts.
+(student)/trivia/[documentaryId]/page.tsx STUB Static demo module, generateStaticParams.
+(parent)/loading.tsx           STUB    Skeleton for parent routes.
+(parent)/parent/layout.tsx     STUB    AppShell wrapper only. No gate.
+(parent)/parent/actions.ts     LIVE    Server actions: unlockParent, lockParent,
+                                       completeOnboardingAction, setGuardianPin. scrypt PIN hash,
+                                       httpOnly cookie openigcse_parent=1, writes households,
+                                       profiles, academic_terms, learner_term_enrollments.
+(parent)/parent/onboarding/page.tsx LIVE Wizard host. Reads getSetupState, warns when a household
+                                       already exists, mounts OnboardingWizard.
+(parent)/parent/(gated)/layout.tsx LIVE Reads the cookie + setup state and renders ParentGate when
+                                       unlocked is false.
+(parent)/parent/(gated)/page.tsx   STUB Parent overview: satisfaction counts, next assessment,
+                                       focus summary, package status. Demo values.
+(parent)/parent/(gated)/term-planner/page.tsx STUB Hosts TermPlanner.
+(parent)/parent/(gated)/marking-desk/page.tsx STUB Hosts MarkingDesk + trivia module list.
+(parent)/parent/(gated)/focus/page.tsx        STUB Hosts FocusControls.
+(parent)/parent/(gated)/progress/page.tsx     STUB Static parent progress view.
+api/curriculum/import/route.ts LIVE    POST {packageId}. Validates x-admin-token against
+                                       CURRICULUM_IMPORT_TOKEN, then importPackage().
+api/learning-events/route.ts   LIVE    POST {objectiveCode, kind, minutes, scoreRatio}. Finds the
+                                       single student profile, maps kind to learning_events.
+                                       event_type, inserts, and on "stuck" also inserts a
+                                       kiosk_sessions row with student_stuck_alert = true.
+api/mistakes/route.ts          LIVE    PATCH {id, resolved}. Updates mistake_notebook.
+                                       Only an update endpoint; there is no create or list.
+
+1.7 src/components/
+-------------------
+shell/AppShell.tsx             STUB    Sidebar, collapsible Subjects tree, Trivia nav, banner,
+                                       SoundToggle + ThemeToggle, page-enter animation. Mounts
+                                       SoundProvider around the whole shell.
+shell/ThemeToggle.tsx          STUB    Toggles .dark on <html>, persists openigcse-theme.
+sound/SoundProvider.tsx        STUB    The only cuelume wiring point. bind() plus a capture-phase
+                                       gesture tagger and an ARIA feedback observer.
+sound/SoundToggle.tsx          STUB    Mute switch, persists openigcse-sound.
+parent/ParentGate.tsx          LIVE    PIN form, useActionState(unlockParent), shows the dev hint.
+parent/OnboardingWizard.tsx    LIVE    4-step form (household, learner, calendar, subjects) posting
+                                       to completeOnboardingAction. Steps stay mounted so FormData
+                                       carries the whole wizard.
+parent/TermPlanner.tsx         STUB    Term dates, exam weeks, study days, elective. useLocalDraft
+                                       key "openigcse.term-plan". Nothing reaches Supabase.
+parent/MarkingDesk.tsx         STUB    Per-objective 0/1 buttons, error tags, "In the notebook"
+                                       labels. useLocalDraft key for marks/tags/logged. No writes.
+parent/FocusControls.tsx       STUB    Focus window and lock toggles. useLocalDraft "openigcse.focus".
+student/StudyBlock.tsx         STUB    Ranked queue, reorder buttons, checkpoint MCQ, video,
+                                       timer, stuck button. Reorder is component state only.
+student/StudyTimer.tsx         LIVE    Counts seconds, POST /api/learning-events on Finish, then
+                                       reports "saved" or "on this device" from the response.
+student/StuckButton.tsx        LIVE    POST /api/learning-events {kind:"stuck"}, shows a status line.
+student/MistakeList.tsx        HYBRID  Renders demo mistakes; Resolve calls PATCH /api/mistakes and
+                                       keeps the item resolved on screen.
+student/TriviaPlayer.tsx       STUB    Sandboxed video + timestamped checkpoint radios. Local state.
+player/SandboxedVideoPlayer.tsx STUB   Click-to-load youtube-nocookie iframe with modestbranding,
+                                       rel=0, iv_load_policy=3, start/end params. No fullscreen
+                                       or autoplay-next suppression beyond those params.
+ui/primitives.tsx              STUB    Panel, Status, Meter, Callout, PageHeading, EmptyState,
+                                       DemoNote, Skeleton, SkeletonPage, SubjectChip, SubjectDot.
+
+1.8 src/lib/
+------------
+config/site.ts                 STUB    Regions (with Cambridge zones), stages, candidate types,
+                                       exam series months/years, relationships, study days.
+curriculum/registry.ts         STUB    Ten subjects: code, slug, name, version window, tiers,
+                                       syllabus_page, pdf_hint, private_candidate components.
+                                       CORRECTED 2026-10-20: 0470 changed from 2027-2029 to
+                                       2027-2028 because CAIE publishes History in two windows.
+curriculum/schemas.ts          STUB    Zod contracts for manifest/topics/objectives/routes/
+                                       resources. SCHEMA_VERSION constant.
+curriculum/index.ts            HYBRID  Static imports of the five packages, zod-parsed at module
+                                       load, joined with registry into `subjects`.
+curriculum/packageImporter.ts  LIVE    readPackage(), importPackage(), resolvePackageDir().
+                                       Idempotent upserts: awarding_bodies -> qualifications ->
+                                       subjects -> syllabus_versions -> components -> entry_routes
+                                       -> entry_route_components -> assessment_objectives ->
+                                       topics -> learning_objectives -> resources -> activities.
+data/session.ts                LIVE    getSetupState() reads profiles joined to households;
+                                       onboardingBypass() reads ONBOARDING_BYPASS.
+data/workspace.ts              STUB    The demo seam. source:"demo". Learner from DEMO_* env,
+                                       term/assessments/mistakes/checkpoints/resources/events
+                                       hardcoded, mastery synthesised from a string hash,
+                                       then rankActivities() picks three tasks.
+data/trivia.ts                 STUB    Three hardcoded modules with checkpoints.
+hooks/useLocalDraft.ts         STUB    localStorage read/write with savedAt timestamp.
+planning/nextBestActivity.ts   STUB    Pure ranking function. gap*55 + mistakes*12 + proximity*30
+                                       + staleness bonus; mastery>=0.9 scaled by 0.35.
+supabase/admin.ts              LIVE    createAdminClient() with the service-role key. Bypasses RLS.
+supabase/client.ts             STUB    Browser client factory. UNUSED - nothing imports it.
+supabase/server.ts             STUB    Cookie-bound SSR client factory. UNUSED - nothing imports it.
+utils/cn.ts                    STUB    clsx + tailwind-merge.
+
+1.9 src/types/
+--------------
+assets.d.ts                    CONFIG  declare module "*.css" / "*.scss".
+curriculum.types.ts            STUB    Old shape (AwardingBody, Syllabus). UNUSED.
+trivia.types.ts                STUB    Old trivia shape. UNUSED.
+
+1.10 supabase/
+--------------
+config.toml                    CONFIG  Local CLI config (project ref, ports).
+migrations/20261020000001_initial_schema.sql        LIVE  23 tables + constraints.
+migrations/20261021000001_curriculum_extensions.sql LIVE  assessment_items, assessment_item_marks,
+                                                          resource columns, indexes, 32 RLS policies.
+migrations/20261021000002_extraction_gaps.sql       LIVE  Nullable max_marks, notes, supplement_text,
+                                                          exam_series, subjects.slug.
+migrations/20261021000003_resource_activity_keys.sql LIVE Unique activity key (objective_id,title).
+migrations/20261021000004_resource_conflict_key.sql  LIVE Recreates the resource index so it can be
+                                                          an ON CONFLICT target.
+migrations/20261021000005_onboarding_and_trivia.sql  LIVE Onboarding columns, guardian_pin_hash,
+                                                          candidate_type, target_exam_series,
+                                                          relationship, study_days, daily_minutes_cap,
+                                                          trivia_modules, trivia_questions.
+migrations/20261021000006_household_region.sql       LIVE country_code, cambridge_admin_zone.
+seeders/cambridge_base.sql     LIVE    Reference rows only: awarding body, qualification, subjects.
+                                       No household, no student, no learner data.
+.temp/*                        CONFIG  Supabase CLI cache incl. remote-schema.sql. Gitignored-ish.
+
+1.11 src-tauri/  (four files, all 0 bytes)
+------------------------------------------
+Cargo.toml                     STUB    EMPTY FILE. Not a valid manifest.
+tauri.conf.json                STUB    EMPTY FILE.
+src/main.rs                    STUB    EMPTY FILE.
+src/kiosk.rs                   STUB    EMPTY FILE.
+The Tauri shell does not exist yet. Nothing here compiles or runs.
+
+
+===============================================================================
+2. DELIVERABLE 2 - SYSTEM ARCHITECTURE AND DATA LAYER
+===============================================================================
+
+2.1 SHAPE OF THE APP
+--------------------
+        Browser
+           |
+           v
+  Next.js 15 App Router (server components by default)
+           |
+     +-----+---------------------+----------------------+
+     |                           |                      |
+  Bundled JSON            Server actions          Route handlers
+  (curriculum packages)   (parent area)           (/api/*)
+     |                           |                      |
+     |                           v                      v
+     |                    Supabase (service role, no RLS enforcement)
+     |                           |
+     +---------------------------+---> Postgres 27 tables
+
+Two data paths never meet:
+  - Curriculum is compiled into the bundle from curriculum-packages/*.json.
+  - Learner state is either the demo record in data/workspace.ts or a direct
+    service-role call from a server action / route handler.
+
+Nothing in the app reads the curriculum tables from Postgres. Importing a
+package into Supabase updates the database but changes nothing on screen until
+the app switches from bundled JSON to a repository read.
+
+2.2 TABLES DEFINED IN THE MIGRATIONS (27)
+-----------------------------------------
+Identity and household
+  households              PK id uuid. name, timezone, country_code, cambridge_admin_zone,
+                          onboarding_completed bool, guardian_pin_hash text, created_at.
+  profiles                PK id. FK household_id -> households. role in
+                          (developer_admin, parent_educator, student), display_name,
+                          year_group, candidate_type, target_exam_series, relationship.
+
+Curriculum catalogue
+  awarding_bodies         PK id. name, code.
+  qualifications          PK id. FK awarding_body_id. name, level.
+  subjects                PK id. FK qualification_id. subject_code, subject_name, slug.
+  syllabus_versions       PK id. FK subject_id. version_label, exam_series, notes.
+  components              PK id. FK syllabus_version_id. component_code, name, duration,
+                          max_marks (nullable), tier, notes.
+  entry_routes            PK id. FK syllabus_version_id. route_code, private_candidate_eligible.
+  entry_route_components  PK id. FK entry_route_id, FK component_id. weighting_percent.
+  assessment_objectives   PK id. FK syllabus_version_id. code (AO1..), description, weight,
+                          rubric.
+  topics                  PK id. FK syllabus_version_id, self FK parent_topic_id. topic_code,
+                          name, sequence.
+  learning_objectives     PK id. FK topic_id. objective_code, summary_title (NOT NULL),
+                          official_description, command_words jsonb, supplement_text, tier.
+  resources               PK id. FK learning_objective_id. title, provider, citation, kind,
+                          url, youtube_video_id, start/end seconds.
+  activities              PK id. FK objective_id. title, kind, url. Unique (objective_id, title).
+
+Planning and assessment
+  academic_terms          PK id. FK household_id. name, start_date, end_date,
+                          midterm_exam_start/end, final_exam_start/end, status, study_days[],
+                          daily_minutes_cap.
+  learner_term_enrollments PK id. FK student_id -> profiles, FK academic_term_id,
+                          FK entry_route_id. is_elective, weekly_allocated_minutes,
+                          target_grade, target_exam_series.
+  question_templates      PK id. FK learning_objective_id. kind, question_text, options jsonb,
+                          model_answer, marking_guide, difficulty, tier, marks.
+  term_assessments        PK id. FK academic_term_id, FK subject_id. kind, title, scheduled_for,
+                          duration_minutes, total_marks, status.
+  assessment_items        PK id. FK assessment_id, FK question_template_id. position, marks.
+  assessment_item_marks   PK id. FK assessment_item_id, FK student_id. awarded, error_tag,
+                          marked_at.
+  mistake_notebook        PK id. FK student_id, FK learning_objective_id, FK assessment_item_id.
+                          error_category in (ConceptGap, CommandWordMisread, CalculationSlip,
+                          IncompleteExplanation, TimePressure), note, resolved bool.
+  learning_events         PK id. FK student_id, FK objective_id. event_type in
+                          (Exposure_Lesson, Active_Recall, Application_Question,
+                          Formal_Assessment, Error_Correction), actual_minutes_spent int,
+                          score_ratio numeric NOT NULL, flagged_stuck bool.
+  fsrs_retention_items    PK id. FK student_id, FK objective_id. stability, difficulty,
+                          retrievability, reps, lapses, due_at.
+  evidence_portfolio      PK id. FK student_id. title, storage_path, notes.
+  kiosk_sessions          PK id. FK student_id. session_start, session_end, student_stuck_alert.
+
+Trivia
+  trivia_modules          PK id. slug, title, summary, provider, youtube_video_id, duration,
+                          area, published.
+  trivia_questions        PK id. FK module_id. at_seconds, prompt, options jsonb,
+                          correct_letter, explanation.
+
+32 RLS policies exist on these tables. They are not the access-control mechanism
+in practice: every server call uses the service-role key, which bypasses RLS.
+
+2.3 AUTHENTICATION AND THE GUARDIAN PIN
+---------------------------------------
+There is no Supabase Auth session in use. No sign-in, no JWT, no auth.users row.
+The app is a single-household installation guarded by a numeric PIN.
+
+  Onboarding (first run)
+    /parent/onboarding -> OnboardingWizard (client)
+      -> completeOnboardingAction (server action)
+         1. zod-validate FormData
+         2. INSERT households (guardian_pin_hash = scrypt:<salt>:<hash>)
+         3. INSERT profiles  x2  (parent_educator, student)
+         4. INSERT academic_terms x3
+         5. INSERT learner_term_enrollments per subject/term
+         6. cookies().set("openigcse_parent", "1", httpOnly, sameSite lax, 8h)
+         7. redirect("/parent")
+
+  Guardians gate (every visit after that)
+    (parent)/parent/(gated)/layout.tsx
+      cookie openigcse_parent == "1" ?
+        yes -> render children
+        no  -> <ParentGate/> -> unlockParent(pin)
+                 pinMatches(pin)  -> read households.guardian_pin_hash, scrypt import
+                 on success       -> set the same cookie, redirect /parent
+    Bypass: when ONBOARDING_BYPASS=true AND no household exists, the gate is skipped
+    so the demo can be browsed. That combination is deliberate.
+
+  Weak points, stated plainly
+    - The cookie value is the literal string "1". It is httpOnly and set only by
+      the server, but it is not signed and not tied to a session table. Anyone
+      who can write cookies on the device can bypass the gate.
+    - PIN comparison uses timingSafeEqual on scrypt output (good), but there is
+      no attempt counter, no lockout, and no audit of failed unlocks.
+    - setGuardianPin() targets the earliest household row by created_at.
+    - The service-role key sits in .env.local on the server only. No client
+      bundle contains it, but a single Next.js process holds full database
+      authority for every request.
+
+2.4 THE DATA SEAM (src/lib/data/)
+---------------------------------
+  data/session.ts     REAL. Reads profiles+households through the admin client.
+                      Used by the student layout, the parent gate and onboarding.
+  data/workspace.ts   DEMO. Returns Workspace with source:"demo". Every export of
+                      this file is built from literal arrays plus a hash() of the
+                      objective code to fake mastery.
+  data/trivia.ts      DEMO. Three literal modules.
+
+  How the seam "decides": it does not. getWorkspace() never queries Supabase and
+  has no fallback branch - it is the fallback. Only getSetupState() touches the
+  database, and pages do not combine the two. A configured household changes the
+  redirect behaviour and the learner name in the sidebar; it does not change any
+  page content.
+
+  Every place demo or hardcoded state still exists:
+    1. data/workspace.ts  - learner, term (always "Term 2" spanning today +/-),
+                            assessments x3, mistakes x4, checkpoints x3,
+                            resources x3, events x4, mastery hash, hasLesson flag.
+    2. data/trivia.ts     - three modules and their checkpoints.
+    3. TermPlanner        - localStorage "openigcse.term-plan".
+    4. MarkingDesk        - localStorage marks/tags/logged; checkpoints come from
+                            data/workspace.ts.
+    5. FocusControls      - localStorage "openigcse.focus".
+    6. StudyBlock         - reorder state in React state only; "done" list in state.
+    7. progress pages     - mastery percentages derived from the synthetic signals.
+    8. parent overview    - "3 open", "No open help requests", package counts.
+    9. config/site.ts     - region/zone/stage lists (appropriate to keep static).
+
+2.5 CURRICULUM PIPELINE LIFECYCLE
+---------------------------------
+  raw-syllabuses/0580-mathematics-2028-2030.pdf
+        |
+        |  scripts/fetch-syllabuses.ts   (scrapes the CAIE subject page, downloads PDF)
+        v
+  scripts/ingest-syllabus.ts --subject=0580
+        |
+        |  pdfjs-dist extracts positioned text items { text, x, y, width, height, page }
+        v
+  scripts/lib/syllabusParser.ts
+        |  parseSubjectContent(items)
+        |    - locate the "Subject content" heading
+        |    - split Core / Supplement columns by x position
+        |    - walk 1, 1.1 headings and bulleted objectives
+        |    - stamp tier from the column
+        |  commandWordOf(text) -> first bold/leading verb
+        v
+  curriculum-packages/0580-mathematics-2028-2030/
+        manifest.json, topics.json, objectives.json, routes.json,
+        resources.json, assessment_objectives.json
+        |
+        |  scripts/validate-packages.ts  (zod contracts in lib/curriculum/schemas.ts)
+        v
+  scripts/import-package.ts --subject=0580   (or POST /api/curriculum/import)
+        |
+        |  lib/curriculum/packageImporter.ts
+        |    readPackage -> schema parse -> ensureAwardingBody -> qualification -> subject
+        |    -> syllabus_version (looked up by subject_code + version_label) -> components
+        |    -> entry_routes -> entry_route_components -> assessment_objectives
+        |    -> topics -> learning_objectives -> resources -> activities
+        v
+  Postgres curriculum tables
+        |
+        X  <-- the app never reads these back. UI reads the bundled JSON instead.
+
+  Measured against the ten real PDFs downloaded today (dry runs, no writes):
+
+    0580  FAIL  no "Subject content" heading found (document splits into
+                "Core subject content" / "Extended subject content", codes C1.2/E1.2)
+    0478  FAIL  same heading miss
+    0610  PARTIAL  65 topics, 0 objectives
+    0620  PARTIAL  52 topics, 1 objective
+    0625  PARTIAL  41 topics, 19 objectives
+    0500  FAIL  heading miss
+    0460  FAIL  heading miss
+    0470  FAIL  heading miss
+    0455  FAIL  no topics found
+    0530  FAIL  heading miss
+
+  Conclusion: the parser matches a simplified layout, not the real CAIE documents.
+  It is why the five shipped packages are still hand-written drafts, and why no
+  package was regenerated in this pass. Writing those extractions would have
+  replaced readable drafts with near-empty packages.
+
+
+===============================================================================
+3. DELIVERABLE 3 - FEATURE-BY-FEATURE INTERACTION MAP
+===============================================================================
+
+3.1 PARENT GATE AND ONBOARDING
+------------------------------
+  UI        /parent/onboarding  -> OnboardingWizard (client, 4 fieldsets always mounted)
+  State     React state for country, timezone, selected subjects, elective, study days, PIN
+  Action    completeOnboardingAction  (src/app/(parent)/parent/actions.ts)
+  DB        households (1) -> profiles (2) -> academic_terms (3) -> learner_term_enrollments (N)
+  Side      httpOnly cookie openigcse_parent=1, redirect to /parent
+  Verified  Real run produced: 1 household (zone 3, scrypt hash), 2 profiles,
+            3 terms, 6 enrolments. Re-submitting would create a SECOND household;
+            the page now warns about that.
+  Hardcoded? Country list, stages, exam months/years come from config/site.ts (fine).
+            The zone -> paper variant mapping is stored but not used to pick papers.
+
+3.2 TERM PLANNER
+----------------
+  UI        /parent/term-planner -> TermPlanner (client)
+  State     useLocalDraft("openigcse.term-plan")
+  Action    none
+  DB        none at runtime. academic_terms is written only once, by onboarding.
+  Side      "Saved at HH:MM" from localStorage. Nothing else.
+  Gap       Editing terms after onboarding does not touch the database. The student
+            /plan page reads the demo term, not academic_terms.
+
+3.3 NEXT BEST ACTIVITY ENGINE AND /today
+----------------------------------------
+  Inputs    ActivitySignal[] built in data/workspace.ts from bundled objectives:
+            mastery (hash), openMistakes (from demo notebook), lastStudiedDaysAgo,
+            daysUntilAssessment, hasLesson.
+  Rank      planning/nextBestActivity.ts scoreOf():
+              gap*55 + min(openMistakes,3)*12 + (10 + proximity*30 if <=14 days)
+              + staleness bonus + 10 if never studied; *0.35 if mastery >= 0.9;
+              -15 when no lesson exists
+            sort desc, keep 3. reasonsFor() writes the human sentence.
+  Reorder   StudyBlock holds `order` in React state; arrows move a task. Nothing is
+            persisted, so the choice lasts until the page is left.
+  Gap       No enrolment table, no learning_events aggregate, no mistake count from
+            Postgres. The engine is correct in shape but fed fabricated numbers.
+
+3.4 STUDY BLOCK, SANDBOXED PLAYER, TIMER, "I AM STUCK"
+-----------------------------------------------------
+  Video     SandboxedVideoPlayer renders a poster button; clicking mounts
+            youtube-nocookie.com/embed with modestbranding=1, rel=0,
+            iv_load_policy=3, playsinline=1, start/end. That removes related videos
+            and branding but does not stop the learner opening YouTube in another
+            tab; there is no overlay, no blur-out, no window watcher.
+  Timer     StudyTimer counts seconds client-side; Finish POSTs
+            /api/learning-events {objectiveCode, kind:"lesson", minutes}.
+            Route looks up the single student profile, resolves learning_objectives
+            by objective_code, inserts learning_events (Exposure_Lesson).
+            Response {persisted:true|false}; the caption says which.
+  Stuck     StuckButton POSTs {kind:"stuck"} -> learning_events (Application_Question,
+            flagged_stuck=true) AND kiosk_sessions(student_stuck_alert=true).
+            The student sees a status line; no coach/parent notification is sent,
+            and the streak is not touched either way.
+  MCQ       Checkpoint answer is component state. Correct/incorrect is not written
+            anywhere, so it cannot feed mastery or the notebook.
+
+3.5 MARKING DESK AND MISTAKE NOTEBOOK
+-------------------------------------
+  UI        /parent/marking-desk -> MarkingDesk
+  Authoring Selecting an assessment shows demo checkpoints with 0/1 buttons.
+            There is no form to create a weekly quiz, mid-term, final or past paper.
+  Marking   Clicking 0 opens an error tag chooser (ConceptGap, CommandWordMisread,
+            CalculationSlip, IncompleteExplanation, TimePressure).
+  Persist   useLocalDraft: { assessmentId, marks: {objectiveCode: 0|1}, tags, logged }.
+            "In the notebook" is a label, not a write. mistake_notebook is NEVER
+            inserted by any code path.
+  Student   /review renders the four demo mistakes. Resolve PATCHes
+            /api/mistakes -> mistake_notebook.update(resolved) WHERE id = <uuid>.
+            Demo ids are not UUIDs, so that call fails validation (400) and the row
+            stays resolved only on screen.
+  Gap       The marking desk is the single largest hole: no question bank editor,
+            no assessment creation, no marking write, no notebook insert.
+
+3.6 SPACED REPETITION AND PROGRESS
+----------------------------------
+  FSRS      fsrs_retention_items exists with stability/difficulty/retrievability/
+            reps/lapses/due_at. src/lib/retention was deleted earlier in the build.
+            No code computes or updates these columns.
+  Progress  /progress averages synthetic mastery per subject, sums demo event
+            minutes, counts demo mistakes. /parent/progress is a static panel.
+  Coverage  Computed from the bundled packages (topics/objectives counts), which is
+            the only genuinely real number on these screens.
+
+3.7 FOCUS CONTROL AND KIOSK
+---------------------------
+  UI        /parent/focus -> FocusControls (window, lock toggle)
+  State     useLocalDraft("openigcse.focus"). Nothing is enforced anywhere.
+  Kiosk     The app writes kiosk_sessions rows on "stuck" only. No tab/visibility
+            watcher, no fullscreen lock, no OS-level hook.
+  Tauri     src-tauri contains four empty files. To reach a real lock you need:
+            Cargo.toml with tauri 2 deps, tauri.conf.json with the main window and
+            bundle config, main.rs building the app, kiosk.rs exposing commands
+            (set_kiosk(enabled), is_kiosk()), plus a macOS/Windows specific
+            always-on-top + fullscreen + input-block path, and a frontend bridge
+            that calls them from FocusControls.
+
+3.8 REMAINING SCAFFOLDED SURFACES
+---------------------------------
+  /subjects              Bundled packages, real counts, draft badges. Working.
+  /subjects/[slug]       Real topics/objectives from JSON. Working.
+  /trivia                Demo modules, sandboxed player, checkpoint radios. Working
+                         as a prototype, no database read or write.
+  /parent/progress       Static.
+  Sound                  cuelume bound once in SoundProvider; works, mute persists.
+  Theme                  Light default, dark opt-in, persists.
+  Loading / 404          Skeletons on both route groups, custom not-found.
+
+
+===============================================================================
+4. DELIVERABLE 4 - PRODUCTION READINESS GAP ANALYSIS
+===============================================================================
+
+4.1 BUTTONS AND FORMS THAT DO NOT PERSIST
+-----------------------------------------
+  1.  Term planner: every field (dates, exam weeks, study days, elective) -> localStorage only.
+  2.  Marking desk: 0/1 marks, error tags, "In the notebook" -> localStorage only.
+  3.  Focus controls: window, lock toggle -> localStorage only.
+  4.  Study block: reorder arrows and "done" ticks -> React state only.
+  5.  Checkpoint answer on /today -> React state only; never a learning_event.
+  6.  TriviaPlayer answers -> React state only.
+  7.  /review Resolve -> calls the API but with demo (non-UUID) ids, so it cannot succeed.
+  8.  No UI anywhere creates assessments, question templates, trivia modules or past-paper scores.
+  9.  No UI edits the learner profile or rotates the PIN (setGuardianPin exists, unused).
+  10. Live study timer writes learning_events, but the row is never read back by any page.
+
+4.2 TABLES NOT READ OR WRITTEN BY THE APP
+-----------------------------------------
+  Never touched at all:
+    qualifications*, awarding_bodies*, syllabus_versions*, components*,
+    entry_route_components*, assessment_objectives*, topics*,
+    question_templates, term_assessments, assessment_items, assessment_item_marks,
+    fsrs_retention_items, evidence_portfolio, trivia_modules, trivia_questions,
+    resources, activities, learner_term_enrollments (read never), academic_terms (read never),
+    mistake_notebook (read never), kiosk_sessions (read never).
+    (* = written by the importer only. The app reads the JSON files instead.)
+
+  Written but never read back: learning_events, mistake_notebook, kiosk_sessions.
+
+  Fully live round trip: households, profiles (via onboarding + session read).
+
+4.3 DRAFT PACKAGES AWAITING REAL EXTRACTION
+-------------------------------------------
+  Shipped as hand-written drafts (provenance.verified = false):
+    0580 Mathematics 2028-2030      15 objectives, 0 routes
+    0478 Computer Science 2026-2028 15 objectives, 0 routes
+    0610 Biology 2026-2028          15 objectives, 3 routes
+    0625 Physics 2026-2028          15 objectives, 3 routes
+    0500 English 2027-2029          15 objectives, 0 routes
+  No package at all:
+    0620 Chemistry, 0460 Geography, 0470 History, 0455 Economics, 0530 Spanish
+  PDFs are on disk for all ten. The parser is the blocker, not the source material.
+
+4.4 EXACT SEQUENCE TO MAKE PERSISTENCE OPERATIONAL
+--------------------------------------------------
+  Phase 1 - make the seam real (highest leverage, nothing else works without it)
+    1. Add repository functions in src/lib/data/ for one entity at a time, starting
+       with the learner's term: readTerm(householdId), termEnrollments(studentId).
+    2. Change getSetupState to also return learnerId + activeTermId, and pass them to
+       getWorkspace(). Delete the demo branches page by page, not all at once.
+    3. Replace getWorkspace() with an async getLearnerWorkspace() that reads
+       academic_terms, learner_term_enrollments, learning_events, mistake_notebook,
+       term_assessments. Keep the demo version behind
+       `if (process.env.DEMO_MODE === "true")` for screenshots only.
+    4. Switch curriculum reads from bundled JSON to topics/learning_objectives once
+       extraction works (they already hold identical shapes).
+
+  Phase 2 - make the parent side write
+    5. Term planner server action: upsert academic_terms by (household_id, name) and
+       learner_term_enrollments by (student_id, academic_term_id, entry_route_id).
+    6. Question bank editor: create/update question_templates against a
+       learning_objective_id.
+    7. Assessment builder: term_assessments + assessment_items, then a marking screen
+       that writes assessment_item_marks and, on any deducted mark, inserts
+       mistake_notebook with the chosen error_category. Return real UUIDs so
+       /review Resolve works.
+    8. Focus settings: replace localStorage with a focus_sessions table or columns on
+       kiosk_sessions, and have /today read the active window.
+
+  Phase 3 - make the student side round-trip
+    9. Write checkpoint outcomes as learning_events (Formal_Assessment) with score_ratio,
+       and update fsrs_retention_items (stability/difficulty/due_at) from them.
+   10. Feed the NBA engine from real rows: open mistakes per objective, days since last
+       learning_event, and days to the next term_assessment.
+   11. Persist study-block ordering per day (a small day_plan table or a jsonb column).
+
+  Phase 4 - make extraction honest
+   12. Rewrite parseSubjectContent for the real layouts: heading variants
+       ("Subject content", "Core subject content", "Extended subject content"),
+       C/E-prefixed codes, "Notes and examples" blocks, numbered outcome lists.
+       Add one fixture PDF per subject and assert objective counts in the test suite.
+   13. Only then regenerate packages and import them, with --allow-draft removed.
+
+4.5 BEFORE STAGING AS A WEB APP
+-------------------------------
+  1.  Replace the unsigned cookie with something you can trust: either Supabase Auth
+      magic-link for the guardian, or an HMAC-signed cookie tied to a sessions table.
+  2.  Stop using the service-role key for reads that a scoped role could do; write
+      policies against household_id so RLS means something.
+  3.  Decide the deployment shape. Supabase is remote and already migrated, so a
+      single Vercel/Node host works. The service-role key must live in host env vars,
+      never in .env.local on a laptop only.
+  4.  Add rate limiting on unlockParent (no attempt counter today).
+  5.  Set ONBOARDING_BYPASS=false and DEMO_* empty in production; the demo learner
+      must not be reachable there.
+  6.  Remove the dev PIN hint in ParentGate (already gated on NODE_ENV, verify it).
+  7.  Replace the demo-facing copy: every DemoNote and "on this device" caption must
+      disappear or become true.
+  8.  Add error states: today a failed write returns {persisted:false} and the UI
+      quietly says "saved on this device". In production that must be a visible retry.
+  9.  Confirm the licence and attribution for embedded video, and keep the
+      youtube-nocookie embed.
+  10. Move to the Tauri shell only after the web app persists correctly; the kiosk
+      lock cannot fix a data layer that does not save.
+
+4.6 CORRECTIONS MADE IN THIS TURN
+---------------------------------
+  - registry.ts: 0470 History version_label 2027-2029 -> 2027-2028 and pdf_hint to
+    match the document CAIE actually publishes. Reason: CAIE splits History into
+    2027-2028 and 2029-2030, so the old label would have attached 2027-2028 content
+    to a window it does not cover.
+  - scripts/fetch-syllabuses.ts added so the PDF step is repeatable.
+  - No application source file was modified.
+===============================================================================

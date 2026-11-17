@@ -1,0 +1,44 @@
+{
+  "schema_version": "2.0.0",
+  "package_id": "0625-physics-2026-2028",
+  "subject": {
+    "code": "0625",
+    "slug": "physics",
+    "name": "Physics",
+    "qualification": "Cambridge IGCSE",
+    "awarding_body": "Cambridge Assessment International Education",
+    "version_label": "2026-2028",
+    "exam_series": [
+      "June",
+      "November"
+    ],
+    "tiers": [
+      "Core",
+      "Extended"
+    ],
+    "grade_scale": "A*-G",
+    "mastery_mode": "objective-mastery",
+    "is_elective": false
+  },
+  "provenance": {
+    "method": "manual-draft",
+    "source_file": "raw-syllabuses/0625-physics-2026-2028.pdf",
+    "extracted_at": "2026-10-19",
+    "verified": false,
+    "notes": "Draft content written before the extraction pipeline existed. Replaced by `pnpm ingest --subject=<code>` once the official PDF is in raw-syllabuses/."
+  },
+  "files": {
+    "topics": "topics.json",
+    "objectives": "objectives.json",
+    "routes": "routes.json",
+    "assessment_objectives": "assessment_objectives.json"
+  },
+  "counts": {
+    "topics": 6,
+    "subtopics": 27,
+    "objectives": 15,
+    "components": 3,
+    "assessment_objectives": 0
+  },
+  "generated_at": "2026-10-19T17:43:13.846Z"
+}

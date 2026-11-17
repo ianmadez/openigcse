@@ -1,0 +1,43 @@
+{
+ "schema_version": "2.0.0",
+ "package_id": "0500-english-first-language-2027-2029",
+ "subject": {
+ "code": "0500",
+ "slug": "english-first-language",
+ "name": "English - First Language",
+ "qualification": "Cambridge IGCSE",
+ "awarding_body": "Cambridge Assessment International Education",
+ "version_label": "2027-2029",
+ "exam_series": [
+ "June",
+ "November"
+ ],
+ "tiers": [
+ "Untiered"
+ ],
+ "grade_scale": "A*-G",
+ "mastery_mode": "skill-rubric",
+ "is_elective": false
+ },
+ "provenance": {
+ "method": "manual-draft",
+ "source_file": "raw-syllabuses/0500-english-first-language-2027-2029.pdf",
+ "extracted_at": "2026-10-19",
+ "verified": false,
+ "notes": "Draft content written before the extraction pipeline existed. Replaced by `pnpm ingest --subject=<code>` once the official PDF is in raw-syllabuses/."
+ },
+ "files": {
+ "topics": "topics.json",
+ "objectives": "objectives.json",
+ "routes": "routes.json",
+ "assessment_objectives": "assessment_objectives.json"
+ },
+ "counts": {
+ "topics": 5,
+ "subtopics": 19,
+ "objectives": 15,
+ "components": 0,
+ "assessment_objectives": 0
+ },
+ "generated_at": "2026-10-19T17:43:13.823Z"
+}

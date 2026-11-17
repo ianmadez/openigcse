@@ -1,0 +1,122 @@
+[
+  {
+    "objective_code": "BI-0610-1.1.1",
+    "topic_code": "1.1",
+    "objective_text": "State the characteristics shared by all living organisms and explain each one using a named example.",
+    "command_word": "State",
+    "tier": "Both",
+    "sequence": 1
+  },
+  {
+    "objective_code": "BI-0610-1.2.1",
+    "topic_code": "1.2",
+    "objective_text": "Explain why the binomial system is used and describe the hierarchical classification of organisms.",
+    "command_word": "Explain",
+    "tier": "Both",
+    "sequence": 2
+  },
+  {
+    "objective_code": "BI-0610-1.3.1",
+    "topic_code": "1.3",
+    "objective_text": "Describe the main features of the five kingdoms and give an example organism from each.",
+    "command_word": "Describe",
+    "tier": "Both",
+    "sequence": 3
+  },
+  {
+    "objective_code": "BI-0610-1.4.1",
+    "topic_code": "1.4",
+    "objective_text": "Describe the features used to classify vertebrates into their five groups and invertebrates into their major groups.",
+    "command_word": "Describe",
+    "tier": "Both",
+    "sequence": 4
+  },
+  {
+    "objective_code": "BI-0610-1.5.1",
+    "topic_code": "1.5",
+    "objective_text": "Construct and use a dichotomous key to identify an unknown organism.",
+    "command_word": "Use",
+    "tier": "Both",
+    "sequence": 5
+  },
+  {
+    "objective_code": "BI-0610-2.1.1",
+    "topic_code": "2.1",
+    "objective_text": "Identify the structures of animal and plant cells and state the function of each structure.",
+    "command_word": "Identify",
+    "tier": "Both",
+    "sequence": 6
+  },
+  {
+    "objective_code": "BI-0610-2.2.1",
+    "topic_code": "2.2",
+    "objective_text": "Explain how the shape of a specialised cell is adapted to carry out its function.",
+    "command_word": "Explain",
+    "tier": "Both",
+    "sequence": 7
+  },
+  {
+    "objective_code": "BI-0610-2.3.1",
+    "topic_code": "2.3",
+    "objective_text": "Describe the levels of organisation from cell to organ system and give an example of each level.",
+    "command_word": "Describe",
+    "tier": "Both",
+    "sequence": 8
+  },
+  {
+    "objective_code": "BI-0610-2.4.1",
+    "topic_code": "2.4",
+    "objective_text": "Calculate the magnification of a drawing and the actual size of a specimen using the magnification equation.",
+    "command_word": "Calculate",
+    "tier": "Both",
+    "sequence": 9
+  },
+  {
+    "objective_code": "BI-0610-2.5.1",
+    "topic_code": "2.5",
+    "objective_text": "Describe how organ systems work together in a mammal, using the digestive and transport systems as examples.",
+    "command_word": "Describe",
+    "tier": "Both",
+    "sequence": 10
+  },
+  {
+    "objective_code": "BI-0610-3.1.1",
+    "topic_code": "3.1",
+    "objective_text": "Define diffusion and describe the factors that affect the rate of diffusion across a membrane.",
+    "command_word": "Define",
+    "tier": "Both",
+    "sequence": 11
+  },
+  {
+    "objective_code": "BI-0610-3.2.1",
+    "topic_code": "3.2",
+    "objective_text": "Define osmosis and predict the effect of solutions of different concentrations on plant and animal cells.",
+    "command_word": "Predict",
+    "tier": "Both",
+    "sequence": 12
+  },
+  {
+    "objective_code": "BI-0610-3.3.1",
+    "topic_code": "3.3",
+    "objective_text": "Describe active transport and explain why it is needed in root hair cells and in the gut.",
+    "command_word": "Explain",
+    "tier": "Both",
+    "sequence": 13
+  },
+  {
+    "objective_code": "BI-0610-3.4.1",
+    "topic_code": "3.4",
+    "objective_text": "Explain the importance of surface area to volume ratio for the exchange of substances in organisms.",
+    "command_word": "Explain",
+    "tier": "Both",
+    "sequence": 14
+  },
+  {
+    "objective_code": "BI-0610-3.5.1",
+    "topic_code": "3.5",
+    "objective_text": "Describe experiments that investigate diffusion and osmosis and interpret the results.",
+    "command_word": "Interpret",
+    "tier": "Both",
+    "sequence": 15
+  }
+]

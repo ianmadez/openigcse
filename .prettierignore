@@ -1,0 +1,5 @@
+node_modules
+.next
+curriculum-packages
+raw-syllabuses
+pnpm-lock.yaml

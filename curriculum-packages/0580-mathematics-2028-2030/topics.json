@@ -1,0 +1,99 @@
+[
+  {
+    "topic_code": "1",
+    "name": "Number",
+    "sequence": 1,
+    "subtopics": [
+      { "topic_code": "1.1", "name": "Types of Number and Number Operations", "sequence": 1 },
+      { "topic_code": "1.2", "name": "Fractions, Decimals and Percentages", "sequence": 2 },
+      { "topic_code": "1.3", "name": "Ratio, Proportion and Rates", "sequence": 3 },
+      { "topic_code": "1.4", "name": "Indices and Standard Form", "sequence": 4 },
+      { "topic_code": "1.5", "name": "Estimation, Rounding and Limits of Accuracy", "sequence": 5 }
+    ]
+  },
+  {
+    "topic_code": "2",
+    "name": "Algebra and Graphs",
+    "sequence": 2,
+    "subtopics": [
+      { "topic_code": "2.1", "name": "Algebraic Manipulation", "sequence": 1 },
+      { "topic_code": "2.2", "name": "Linear Equations and Inequalities", "sequence": 2 },
+      { "topic_code": "2.3", "name": "Simultaneous Equations", "sequence": 3 },
+      { "topic_code": "2.4", "name": "Quadratic Equations and Factorising", "sequence": 4 },
+      { "topic_code": "2.5", "name": "Sequences and Functions", "sequence": 5 }
+    ]
+  },
+  {
+    "topic_code": "3",
+    "name": "Coordinate Geometry",
+    "sequence": 3,
+    "subtopics": [
+      { "topic_code": "3.1", "name": "Coordinates and Straight-Line Graphs", "sequence": 1 },
+      { "topic_code": "3.2", "name": "Gradient and Intercepts", "sequence": 2 },
+      { "topic_code": "3.3", "name": "Midpoint and Length of a Line Segment", "sequence": 3 },
+      { "topic_code": "3.4", "name": "Graphs of Quadratic and Other Functions", "sequence": 4 },
+      { "topic_code": "3.5", "name": "Parallel and Perpendicular Lines", "sequence": 5 }
+    ]
+  },
+  {
+    "topic_code": "4",
+    "name": "Geometry",
+    "sequence": 4,
+    "subtopics": [
+      { "topic_code": "4.1", "name": "Angle Properties of Lines and Polygons", "sequence": 1 },
+      { "topic_code": "4.2", "name": "Circles and Circle Theorems", "sequence": 2 },
+      { "topic_code": "4.3", "name": "Similarity and Congruence", "sequence": 3 },
+      { "topic_code": "4.4", "name": "Transformations", "sequence": 4 },
+      { "topic_code": "4.5", "name": "Constructions and Loci", "sequence": 5 }
+    ]
+  },
+  {
+    "topic_code": "5",
+    "name": "Mensuration",
+    "sequence": 5,
+    "subtopics": [
+      { "topic_code": "5.1", "name": "Perimeter and Area", "sequence": 1 },
+      { "topic_code": "5.2", "name": "Surface Area and Volume", "sequence": 2 },
+      { "topic_code": "5.3", "name": "Arc Length and Sector Area", "sequence": 3 }
+    ]
+  },
+  {
+    "topic_code": "6",
+    "name": "Trigonometry",
+    "sequence": 6,
+    "subtopics": [
+      { "topic_code": "6.1", "name": "Pythagoras' Theorem", "sequence": 1 },
+      { "topic_code": "6.2", "name": "Right-Angled Trigonometry", "sequence": 2 },
+      { "topic_code": "6.3", "name": "Sine and Cosine Rules", "sequence": 3 },
+      { "topic_code": "6.4", "name": "Bearings and Three-Dimensional Problems", "sequence": 4 }
+    ]
+  },
+  {
+    "topic_code": "7",
+    "name": "Vectors and Transformations",
+    "sequence": 7,
+    "subtopics": [
+      { "topic_code": "7.1", "name": "Vector Notation and Arithmetic", "sequence": 1 },
+      { "topic_code": "7.2", "name": "Magnitude and Direction of Vectors", "sequence": 2 }
+    ]
+  },
+  {
+    "topic_code": "8",
+    "name": "Probability",
+    "sequence": 8,
+    "subtopics": [
+      { "topic_code": "8.1", "name": "Probability Scale and Events", "sequence": 1 },
+      { "topic_code": "8.2", "name": "Tree Diagrams and Combined Events", "sequence": 2 }
+    ]
+  },
+  {
+    "topic_code": "9",
+    "name": "Statistics",
+    "sequence": 9,
+    "subtopics": [
+      { "topic_code": "9.1", "name": "Data Collection and Display", "sequence": 1 },
+      { "topic_code": "9.2", "name": "Averages and Spread", "sequence": 2 },
+      { "topic_code": "9.3", "name": "Cumulative Frequency and Box Plots", "sequence": 3 }
+    ]
+  }
+]

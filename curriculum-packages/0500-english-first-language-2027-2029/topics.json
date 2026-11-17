@@ -1,0 +1,56 @@
+[
+  {
+    "topic_code": "1",
+    "name": "Reading",
+    "sequence": 1,
+    "subtopics": [
+      { "topic_code": "1.1", "name": "Explicit Meaning and Retrieval", "sequence": 1 },
+      { "topic_code": "1.2", "name": "Implicit Meaning and Inference", "sequence": 2 },
+      { "topic_code": "1.3", "name": "Analysis of Language and Writer's Effects", "sequence": 3 },
+      { "topic_code": "1.4", "name": "Comparison of Texts", "sequence": 4 },
+      { "topic_code": "1.5", "name": "Summary Writing", "sequence": 5 }
+    ]
+  },
+  {
+    "topic_code": "2",
+    "name": "Directed Writing",
+    "sequence": 2,
+    "subtopics": [
+      { "topic_code": "2.1", "name": "Audience, Purpose and Form", "sequence": 1 },
+      { "topic_code": "2.2", "name": "Text Types and Conventions", "sequence": 2 },
+      { "topic_code": "2.3", "name": "Selecting and Evaluating Material", "sequence": 3 },
+      { "topic_code": "2.4", "name": "Register, Tone and Structure", "sequence": 4 },
+      { "topic_code": "2.5", "name": "Accuracy and Sentence Control", "sequence": 5 }
+    ]
+  },
+  {
+    "topic_code": "3",
+    "name": "Composition",
+    "sequence": 3,
+    "subtopics": [
+      { "topic_code": "3.1", "name": "Narrative Structure and Plot", "sequence": 1 },
+      { "topic_code": "3.2", "name": "Descriptive Techniques and Setting", "sequence": 2 },
+      { "topic_code": "3.3", "name": "Planning, Cohesion and Paragraphing", "sequence": 3 },
+      { "topic_code": "3.4", "name": "Vocabulary and Figurative Language", "sequence": 4 },
+      { "topic_code": "3.5", "name": "Sentence Variety and Technical Accuracy", "sequence": 5 }
+    ]
+  },
+  {
+    "topic_code": "4",
+    "name": "Speaking and Listening",
+    "sequence": 4,
+    "subtopics": [
+      { "topic_code": "4.1", "name": "Individual Talk", "sequence": 1 },
+      { "topic_code": "4.2", "name": "Discussion and Responding", "sequence": 2 }
+    ]
+  },
+  {
+    "topic_code": "5",
+    "name": "Examination Technique",
+    "sequence": 5,
+    "subtopics": [
+      { "topic_code": "5.1", "name": "Timed Planning and Response", "sequence": 1 },
+      { "topic_code": "5.2", "name": "Using Mark Schemes to Improve", "sequence": 2 }
+    ]
+  }
+]
