@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { NeedsSignIn } from "@/components/auth/NeedsSignIn";
 import { EmptyState, PageHeading, Status } from "@/components/ui/primitives";
-import { DIFFICULTIES, DIFFICULTY_LABEL, KIND_LABEL, QUESTION_KINDS, TIERS } from "@/lib/assessment/question";
+import { DIFFICULTIES, DIFFICULTY_LABEL, KIND_LABEL, plainPreview, QUESTION_KINDS, TIERS } from "@/lib/assessment/question";
 import { listQuestions, type QuestionFilters } from "@/lib/data/question-bank";
 import { getSetupState } from "@/lib/data/session";
 
@@ -13,12 +13,6 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Question bank" };
 
 type Search = Record<keyof QuestionFilters, string | undefined>;
-
-/** Markdown and maths flattened for a one-line preview. */
-function preview(prompt: string) {
-  const flat = prompt.replace(/\$\$?([^$]+)\$\$?/g, "$1").replace(/[#*_`>]/g, "").replace(/\s+/g, " ").trim();
-  return flat.length > 140 ? `${flat.slice(0, 137)}...` : flat;
-}
 
 export default async function QuestionBankPage({ searchParams }: { searchParams: Promise<Partial<Search>> }) {
   const state = await getSetupState();
@@ -162,7 +156,7 @@ export default async function QuestionBankPage({ searchParams }: { searchParams:
                 className="flex flex-wrap items-start justify-between gap-2 p-4 hover:bg-sunken focus-visible:bg-sunken"
               >
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[0.875rem] text-primary">{preview(question.prompt)}</span>
+                  <span className="block text-[0.875rem] text-primary">{plainPreview(question.prompt)}</span>
                   <span className="mt-1 block text-caption text-muted">
                     {question.objective
                       ? `${question.objective.subjectCode} ${question.objective.code} - ${question.objective.topicName}`

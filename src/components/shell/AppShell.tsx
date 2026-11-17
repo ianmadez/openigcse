@@ -18,6 +18,7 @@ import {
   Target,
   X,
   FileQuestion,
+  ClipboardList,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,6 +54,7 @@ const parentNav: NavItem[] = [
   { label: "Timetable", href: "/parent/timetable", icon: CalendarRange },
   { label: "Term planner", href: "/parent/term-planner", icon: MapPin },
   { label: "Questions", href: "/parent/questions", icon: FileQuestion },
+  { label: "Assessments", href: "/parent/assessments", icon: ClipboardList },
   { label: "Marking desk", href: "/parent/marking-desk", icon: ClipboardCheck },
   { label: "Focus", href: "/parent/focus", icon: ShieldCheck },
   { label: "Progress", href: "/parent/progress", icon: Gauge },

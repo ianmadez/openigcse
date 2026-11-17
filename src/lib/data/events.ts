@@ -90,3 +90,32 @@ export function minutesSince(events: LearningEvent[], sinceIso: string) {
     .filter((event) => event.at >= sinceIso)
     .reduce((sum, event) => sum + event.minutes, 0);
 }
+
+/**
+ * Mean score ratio per objective from every scored event (recall, application,
+ * formal assessment, error correction). Lesson exposure carries no score and is
+ * left out. Objectives with no scored event are absent, which pickWeakest
+ * treats as weakest.
+ */
+export async function getObjectiveRatios(learnerId: string): Promise<Map<string, number>> {
+  const ratios = new Map<string, number>();
+  if (!learnerId) return ratios;
+
+  const supabase = await createServerClientInstance();
+  const { data } = await supabase
+    .from("learning_events")
+    .select("objective_id, score_ratio")
+    .eq("student_id", learnerId)
+    .neq("event_type", "Exposure_Lesson");
+
+  const totals = new Map<string, { sum: number; count: number }>();
+  for (const row of data ?? []) {
+    if (!row.objective_id) continue;
+    const total = totals.get(row.objective_id) ?? { sum: 0, count: 0 };
+    total.sum += Number(row.score_ratio);
+    total.count += 1;
+    totals.set(row.objective_id, total);
+  }
+  for (const [objectiveId, total] of totals) ratios.set(objectiveId, total.sum / total.count);
+  return ratios;
+}

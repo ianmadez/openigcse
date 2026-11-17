@@ -145,3 +145,13 @@ export function toQuestionRow(input: QuestionInput, householdId: string): Result
     },
   };
 }
+
+/** Markdown and maths flattened to one line for lists. */
+export function plainPreview(prompt: string, max = 140) {
+  const flat = prompt
+    .replace(/\$\$?([^$]+)\$\$?/g, "$1")
+    .replace(/[#*_`>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return flat.length > max ? `${flat.slice(0, max - 3)}...` : flat;
+}
