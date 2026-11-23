@@ -6,8 +6,14 @@ focus behind a PIN gate at `/parent/*`. Next.js 15 App Router + React 19, Supaba
 Tailwind. Every screen reads the signed-in household's own rows through the session client, and an empty database shows
 honest empty states rather than sample content.
 
-Read [README.md](README.md) for the product tour, [docs/progress.md](docs/progress.md) for what exists today, and
-[docs/working-practices.md](docs/working-practices.md) for the fetching and verification rules.
+Read on demand, not all up front:
+
+- [docs/source-of-truth/](docs/source-of-truth/README.md): [architecture](docs/source-of-truth/architecture.md),
+  [data model](docs/source-of-truth/data-model.md), [phase workflow](docs/source-of-truth/workflow.md),
+  [hard-coded examples register](docs/source-of-truth/unhardcoding.md).
+- [docs/done-work.md](docs/done-work.md): roadmap step checklist. [docs/phases/](docs/phases/): one summary per merged phase.
+- [docs/progress.md](docs/progress.md): honest gaps. [docs/working-practices.md](docs/working-practices.md): fetching rules.
+- [README.md](README.md): product tour.
 
 ## Commands
 
