@@ -72,7 +72,7 @@ export default async function TermPlannerPage({ searchParams }: { searchParams: 
         }))}
         seriesOptions={SERIES}
         defaultSeries={state.examSeries}
-        today={todayIso()}
+        today={todayIso(new Date(), state.timezone)}
       />
     </>
   );

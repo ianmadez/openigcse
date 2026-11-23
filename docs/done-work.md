@@ -56,7 +56,7 @@ Summary: [phases/phase-3.md](phases/phase-3.md).
 | Step | What                                   | State       |
 | ---- | -------------------------------------- | ----------- |
 | pre  | RLS tightening (answer keys, learner-writable events/mistakes) | Done (verify:phase4 28/28) |
-| 4.1  | `/today` from the timetable            | Partial     |
+| 4.1  | `/today` from the timetable            | Done        |
 | 4.2  | Checkpoints and practice write events  | Not started |
 | 4.3  | Spaced review (FSRS)                   | Not started |
 | 4.4  | Mastery and progress from events       | Not started |

@@ -1,7 +1,8 @@
 import { CalendarClock, ShieldCheck } from "lucide-react";
 
 import { NeedsSignIn } from "@/components/auth/NeedsSignIn";
-import { DayStrip, PeriodList } from "@/components/student/DayStrip";
+import { DayStrip } from "@/components/student/DayStrip";
+import { TodayPeriods } from "@/components/student/TodayPeriods";
 import { StudyBlock } from "@/components/student/StudyBlock";
 import { Callout, DemoNote, EmptyState, PageHeading, Panel, Status } from "@/components/ui/primitives";
 import { todayIso } from "@/lib/data/dates";
@@ -33,7 +34,7 @@ export default async function TodayPage() {
     );
   }
 
-  const today = todayIso();
+  const today = todayIso(new Date(), state.status === "configured" ? state.timezone : null);
   let periods: Awaited<ReturnType<typeof getDayPlanItems>> = [];
   let generated = 0;
 
@@ -96,10 +97,10 @@ export default async function TodayPage() {
       {planPeriods.length > 0 ? (
         <Panel
           title="Period by period"
-          description="Each period carries the task the ranking engine picked for that subject."
+          description="Start a task, finish it to log the time, or skip it with a reason."
           className="mb-5"
         >
-          <PeriodList items={planPeriods} />
+          <TodayPeriods items={planPeriods} resources={workspace.resources} />
         </Panel>
       ) : (
         <div className="mb-5">

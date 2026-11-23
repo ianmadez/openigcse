@@ -25,7 +25,7 @@ Migrations in `supabase/migrations/` are the authority; this is the map. Helper 
 | `learner_term_enrollments` | Entry routes per learner per term               | Staff        |
 | `timetable_slots`          | Weekly pattern                                  | Staff        |
 | `timetable_overrides`      | One-date replacements                           | Staff        |
-| `day_plan_items`           | Generated daily tasks, unique `(student_id, plan_date, slot_id)` | Staff + learner status |
+| `day_plan_items`           | Generated daily tasks, unique `(student_id, plan_date, slot_id)`; `skip_reason` | Staff; learner only status/timing/order/carry-over (trigger), Done only via `finish_plan_item` |
 
 ## Authoring, assessment and marking (Phase 3)
 
@@ -64,4 +64,5 @@ Storage: private bucket `household-files`, paths `{household}/{kind}/{profile}/{
 | `evidence_portfolio_guard`   | Trigger: learners cannot set status or feedback          |
 | `device_session_state`       | Revoked-device check for middleware                       |
 | `answer_checkpoint(q, option, kind)` | Server-side MCQ check; writes the scored Active_Recall / Application_Question event |
+| `finish_plan_item(id, minutes)` | Done + one Exposure_Lesson, idempotent (Step 4.1) |
 | `resolve_mistake(id, option?, correction?)` | Correct retry → resolved + Error_Correction; else correction waits for a parent |

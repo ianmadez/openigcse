@@ -18,6 +18,8 @@ export type SetupState =
       userId: string;
       householdId: string;
       householdName: string;
+      /** IANA zone the household lives in; decides what "today" means. */
+      timezone: string | null;
       learnerId: string;
       learnerName: string;
       learnerStage: string | null;
@@ -69,7 +71,7 @@ export const getSetupState = cache(async (): Promise<SetupState> => {
     const [{ data: household }, { data: learner }] = await Promise.all([
       supabase
         .from("households")
-        .select("id, name, onboarding_completed")
+        .select("id, name, onboarding_completed, timezone")
         .eq("id", profile.household_id)
         .maybeSingle<{ id: string; name: string; onboarding_completed: boolean }>(),
       supabase
@@ -103,6 +105,7 @@ export const getSetupState = cache(async (): Promise<SetupState> => {
       userId: user.id,
       householdId: household.id,
       householdName: household.name,
+      timezone: (household as { timezone?: string | null }).timezone ?? null,
       learnerId: learner.id,
       learnerName: learner.display_name,
       learnerStage: learner.year_group,

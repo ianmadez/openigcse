@@ -11,6 +11,17 @@ export function isoDate(offsetDays: number, now: Date = new Date()) {
   return new Date(now.getTime() + offsetDays * DAY).toISOString().slice(0, 10);
 }
 
-export function todayIso(now: Date = new Date()) {
+/**
+ * Today's date as YYYY-MM-DD in the household's timezone. Without a usable timezone it falls
+ * back to UTC, which is wrong for part of every day east or west of Greenwich.
+ */
+export function todayIso(now: Date = new Date(), timeZone?: string | null) {
+  if (timeZone) {
+    try {
+      return new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
+    } catch {
+      // Unknown zone: fall through to UTC.
+    }
+  }
   return now.toISOString().slice(0, 10);
 }

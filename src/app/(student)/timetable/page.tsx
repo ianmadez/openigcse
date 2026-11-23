@@ -29,10 +29,10 @@ export default async function StudentTimetablePage() {
 
   const [slots, overrides] = await Promise.all([
     getTimetableSlots(state.activeTermId),
-    getOverrides(state.householdId, todayIso()),
+    getOverrides(state.householdId, todayIso(new Date(), state.timezone)),
   ]);
 
-  const today = todayIso();
+  const today = todayIso(new Date(), state.timezone);
 
   return (
     <>

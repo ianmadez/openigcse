@@ -192,6 +192,44 @@ async function run() {
   const { data: approved } = await a.guardian.client.from("mistake_notebook").update({ resolved: true, resolved_at: new Date().toISOString() }).eq("id", mistake("short")).select("resolved");
   check("guardian approves the correction", approved?.[0]?.resolved === true);
 
+  // ---- Step 4.1: the learner runs their day
+  const { data: items, error: itemsError } = await admin
+    .from("day_plan_items")
+    .insert([
+      { household_id: a.id, student_id: a.learner.profileId, plan_date: "2026-11-24", sequence: 1, item_type: "lesson", learning_objective_id: objective, title: "Probe lesson one", planned_minutes: 20 },
+      { household_id: a.id, student_id: a.learner.profileId, plan_date: "2026-11-24", sequence: 2, item_type: "lesson", learning_objective_id: objective, title: "Probe lesson two", planned_minutes: 20 },
+    ])
+    .select("id, title");
+  check("plan items seeded", !itemsError && items?.length === 2, itemsError?.message);
+  const item = (title: string) => items?.find((row) => row.title === title)?.id as string;
+
+  const { error: replan } = await learner.from("day_plan_items").update({ planned_minutes: 5 }).eq("id", item("Probe lesson one"));
+  check("learner cannot change what is planned", Boolean(replan));
+  const { error: fakeDone } = await learner.from("day_plan_items").update({ status: "done" }).eq("id", item("Probe lesson one"));
+  check("learner cannot mark done without Finish", Boolean(fakeDone));
+  const { error: bareSkip } = await learner.from("day_plan_items").update({ status: "skipped" }).eq("id", item("Probe lesson two"));
+  check("skip needs a reason", Boolean(bareSkip));
+  const { error: skipError } = await learner.from("day_plan_items").update({ status: "skipped", skip_reason: "too-hard" }).eq("id", item("Probe lesson two"));
+  check("learner skips with a reason", !skipError, skipError?.message);
+  const { error: reorderError } = await learner.from("day_plan_items").update({ sequence: 5, student_reordered: true }).eq("id", item("Probe lesson one"));
+  check("learner reorders", !reorderError, reorderError?.message);
+
+  const bFinish = await b.learner.client.rpc("finish_plan_item", { p_item_id: item("Probe lesson one"), p_minutes: 10 });
+  check("other learner cannot finish it", Boolean(bFinish.error));
+  const finish = await learner.rpc("finish_plan_item", { p_item_id: item("Probe lesson one"), p_minutes: 18 });
+  const again = await learner.rpc("finish_plan_item", { p_item_id: item("Probe lesson one"), p_minutes: 18 });
+  check("finish succeeds once, then is a no-op", finish.data === true && again.data === false, finish.error?.message ?? again.error?.message);
+  const { data: lessonEvents } = await admin
+    .from("learning_events")
+    .select("actual_minutes_spent")
+    .eq("student_id", a.learner.profileId)
+    .eq("event_type", "Exposure_Lesson")
+    .eq("actual_minutes_spent", 18);
+  const { data: finished } = await admin.from("day_plan_items").select("status, actual_minutes").eq("id", item("Probe lesson one")).single();
+  check("finish writes one Exposure_Lesson and sets Done", lessonEvents?.length === 1 && finished?.status === "done" && finished.actual_minutes === 18, JSON.stringify({ lessonEvents, finished }));
+  const { error: undo } = await learner.from("day_plan_items").update({ status: "planned" }).eq("id", item("Probe lesson one"));
+  check("a finished item stays finished", Boolean(undo));
+
   const { data: bEvents } = await b.guardian.client.from("learning_events").select("id").eq("student_id", a.learner.profileId);
   const { data: bNotebook } = await b.guardian.client.from("mistake_notebook").select("id").eq("student_id", a.learner.profileId);
   check("other household sees no events or mistakes", (bEvents ?? []).length === 0 && (bNotebook ?? []).length === 0);
