@@ -45,7 +45,7 @@ export async function signInWithPasswordAction(_previous: AuthState, formData: F
     };
   }
 
-  redirect("/parent");
+  redirect("/");
 }
 
 /** Email magic link. The link lands on /auth/callback, which sets the session. */
