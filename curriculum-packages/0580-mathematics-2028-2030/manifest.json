@@ -1,0 +1,44 @@
+{
+  "schema_version": "2.0.0",
+  "package_id": "0580-mathematics-2028-2030",
+  "subject": {
+    "code": "0580",
+    "slug": "mathematics",
+    "name": "Mathematics",
+    "qualification": "Cambridge IGCSE",
+    "awarding_body": "Cambridge Assessment International Education",
+    "version_label": "2028-2030",
+    "exam_series": [
+      "June",
+      "November"
+    ],
+    "tiers": [
+      "Core",
+      "Extended"
+    ],
+    "grade_scale": "A*-G",
+    "mastery_mode": "objective-mastery",
+    "is_elective": false
+  },
+  "provenance": {
+    "method": "manual-draft",
+    "source_file": "raw-syllabuses/0580-mathematics-2028-2030.pdf",
+    "extracted_at": "2026-10-19",
+    "verified": false,
+    "notes": "Draft content written before the extraction pipeline existed. Replaced by `pnpm ingest --subject=<code>` once the official PDF is in raw-syllabuses/."
+  },
+  "files": {
+    "topics": "topics.json",
+    "objectives": "objectives.json",
+    "routes": "routes.json",
+    "assessment_objectives": "assessment_objectives.json"
+  },
+  "counts": {
+    "topics": 9,
+    "subtopics": 34,
+    "objectives": 15,
+    "components": 0,
+    "assessment_objectives": 0
+  },
+  "generated_at": "2026-10-19T17:43:13.829Z"
+}

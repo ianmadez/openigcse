@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+.env.local
+.env*.local
+*.tsbuildinfo
+supabase/.temp/
+
+# Cambridge syllabus PDFs are copyright; they stay local.
+raw-syllabuses/*.pdf
+# Plan execution scratch
+.superpowers/

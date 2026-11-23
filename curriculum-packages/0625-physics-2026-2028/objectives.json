@@ -1,0 +1,122 @@
+[
+ {
+ "objective_code": "PH-0625-1.1.1",
+ "topic_code": "1.1",
+ "objective_text": "Use and convert SI units and select suitable measuring instruments for length, volume and time.",
+ "command_word": "Use",
+ "tier": "Both",
+ "sequence": 1
+ },
+ {
+ "objective_code": "PH-0625-1.2.1",
+ "topic_code": "1.2",
+ "objective_text": "Calculate speed, velocity and acceleration and interpret distance-time and velocity-time graphs.",
+ "command_word": "Calculate",
+ "tier": "Both",
+ "sequence": 2
+ },
+ {
+ "objective_code": "PH-0625-1.3.1",
+ "topic_code": "1.3",
+ "objective_text": "Distinguish between mass and weight, calculate weight using W = mg, and calculate density using = m / V.",
+ "command_word": "Calculate",
+ "tier": "Both",
+ "sequence": 3
+ },
+ {
+ "objective_code": "PH-0625-1.4.1",
+ "topic_code": "1.4",
+ "objective_text": "Describe the effects of forces and apply Newton's laws to calculate resultant force, mass and acceleration.",
+ "command_word": "Apply",
+ "tier": "Both",
+ "sequence": 4
+ },
+ {
+ "objective_code": "PH-0625-1.5.1",
+ "topic_code": "1.5",
+ "objective_text": "Describe energy stores and transfers and calculate work done, power and efficiency.",
+ "command_word": "Calculate",
+ "tier": "Both",
+ "sequence": 5
+ },
+ {
+ "objective_code": "PH-0625-2.1.1",
+ "topic_code": "2.1",
+ "objective_text": "Use the kinetic particle model to explain the states of matter and changes of state.",
+ "command_word": "Explain",
+ "tier": "Both",
+ "sequence": 6
+ },
+ {
+ "objective_code": "PH-0625-2.2.1",
+ "topic_code": "2.2",
+ "objective_text": "Explain thermal expansion and describe how temperature is measured using thermometers.",
+ "command_word": "Explain",
+ "tier": "Both",
+ "sequence": 7
+ },
+ {
+ "objective_code": "PH-0625-2.3.1",
+ "topic_code": "2.3",
+ "objective_text": "Describe conduction, convection and radiation and explain how each transfer is reduced in everyday situations.",
+ "command_word": "Describe",
+ "tier": "Both",
+ "sequence": 8
+ },
+ {
+ "objective_code": "PH-0625-2.4.1",
+ "topic_code": "2.4",
+ "objective_text": "Calculate the energy required to change the temperature of a substance using E = mcT.",
+ "command_word": "Calculate",
+ "tier": "Both",
+ "sequence": 9
+ },
+ {
+ "objective_code": "PH-0625-2.5.1",
+ "topic_code": "2.5",
+ "objective_text": "Explain latent heat and calculate the energy required for a change of state using E = mL.",
+ "command_word": "Calculate",
+ "tier": "Both",
+ "sequence": 10
+ },
+ {
+ "objective_code": "PH-0625-3.1.1",
+ "topic_code": "3.1",
+ "objective_text": "Describe the properties of transverse and longitudinal waves and use the wave equation v = f.",
+ "command_word": "Use",
+ "tier": "Both",
+ "sequence": 11
+ },
+ {
+ "objective_code": "PH-0625-3.2.1",
+ "topic_code": "3.2",
+ "objective_text": "Describe reflection and refraction of light and draw accurate ray diagrams.",
+ "command_word": "Describe",
+ "tier": "Both",
+ "sequence": 12
+ },
+ {
+ "objective_code": "PH-0625-3.3.1",
+ "topic_code": "3.3",
+ "objective_text": "Describe the electromagnetic spectrum, including the uses and dangers of each region.",
+ "command_word": "Describe",
+ "tier": "Both",
+ "sequence": 13
+ },
+ {
+ "objective_code": "PH-0625-3.4.1",
+ "topic_code": "3.4",
+ "objective_text": "Describe how sound waves are produced and detected, and explain how pitch and loudness relate to frequency and amplitude.",
+ "command_word": "Explain",
+ "tier": "Both",
+ "sequence": 14
+ },
+ {
+ "objective_code": "PH-0625-3.5.1",
+ "topic_code": "3.5",
+ "objective_text": "Explain total internal reflection and describe its use in optical fibres and prisms.",
+ "command_word": "Explain",
+ "tier": "Extended",
+ "sequence": 15
+ }
+]

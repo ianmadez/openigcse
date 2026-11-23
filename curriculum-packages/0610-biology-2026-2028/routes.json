@@ -1,0 +1,32 @@
+[
+  {
+    "component_code": "2",
+    "name": "Paper 2 Multiple Choice (Extended)",
+    "duration_minutes": 45,
+    "weighting_percent": 30,
+    "tier": "Extended",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": ""
+  },
+  {
+    "component_code": "4",
+    "name": "Paper 4 Theory (Extended)",
+    "duration_minutes": 75,
+    "weighting_percent": 50,
+    "tier": "Extended",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": ""
+  },
+  {
+    "component_code": "6",
+    "name": "Paper 6 Alternative to Practical",
+    "duration_minutes": 60,
+    "weighting_percent": 20,
+    "tier": "Extended",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": "Replaces the practical examination for private candidates."
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "topic_code": "1",
+    "name": "Data Representation",
+    "sequence": 1,
+    "subtopics": [
+      { "topic_code": "1.1", "name": "Number Systems", "sequence": 1 },
+      { "topic_code": "1.2", "name": "Text, Sound and Images", "sequence": 2 },
+      { "topic_code": "1.3", "name": "Data Storage and Compression", "sequence": 3 }
+    ]
+  },
+  {
+    "topic_code": "2",
+    "name": "Data Transmission",
+    "sequence": 2,
+    "subtopics": [
+      { "topic_code": "2.1", "name": "Types and Methods of Data Transmission", "sequence": 1 },
+      { "topic_code": "2.2", "name": "Methods and Devices for Data Transmission", "sequence": 2 },
+      { "topic_code": "2.3", "name": "Error Detection", "sequence": 3 }
+    ]
+  },
+  {
+    "topic_code": "3",
+    "name": "Hardware",
+    "sequence": 3,
+    "subtopics": [
+      { "topic_code": "3.1", "name": "Computer Architecture", "sequence": 1 },
+      { "topic_code": "3.2", "name": "Input and Output Devices", "sequence": 2 },
+      { "topic_code": "3.3", "name": "Data Storage", "sequence": 3 },
+      { "topic_code": "3.4", "name": "Network Hardware", "sequence": 4 }
+    ]
+  },
+  {
+    "topic_code": "4",
+    "name": "Software",
+    "sequence": 4,
+    "subtopics": [
+      { "topic_code": "4.1", "name": "Types of Software and Interrupts", "sequence": 1 },
+      { "topic_code": "4.2", "name": "Types of Programming Language, Translators and IDEs", "sequence": 2 }
+    ]
+  },
+  {
+    "topic_code": "5",
+    "name": "The Internet and its Uses",
+    "sequence": 5,
+    "subtopics": [
+      { "topic_code": "5.1", "name": "The Internet and the World Wide Web", "sequence": 1 },
+      { "topic_code": "5.2", "name": "Digital Currency", "sequence": 2 },
+      { "topic_code": "5.3", "name": "Cyber Security", "sequence": 3 }
+    ]
+  },
+  {
+    "topic_code": "6",
+    "name": "Automated and Emerging Technologies",
+    "sequence": 6,
+    "subtopics": [
+      { "topic_code": "6.1", "name": "Automated Systems", "sequence": 1 },
+      { "topic_code": "6.2", "name": "Robotics", "sequence": 2 },
+      { "topic_code": "6.3", "name": "Artificial Intelligence", "sequence": 3 }
+    ]
+  },
+  {
+    "topic_code": "7",
+    "name": "Algorithm Design and Problem Solving",
+    "sequence": 7,
+    "subtopics": [
+      { "topic_code": "7.1", "name": "Program Development Life Cycle", "sequence": 1 },
+      { "topic_code": "7.2", "name": "Program Design", "sequence": 2 },
+      { "topic_code": "7.3", "name": "Algorithm Design and Problem Solving", "sequence": 3 }
+    ]
+  },
+  {
+    "topic_code": "8",
+    "name": "Programming",
+    "sequence": 8,
+    "subtopics": [
+      { "topic_code": "8.1", "name": "Programming Concepts", "sequence": 1 },
+      { "topic_code": "8.2", "name": "Arrays", "sequence": 2 },
+      { "topic_code": "8.3", "name": "File Handling", "sequence": 3 }
+    ]
+  },
+  {
+    "topic_code": "9",
+    "name": "Databases",
+    "sequence": 9,
+    "subtopics": [
+      { "topic_code": "9.1", "name": "Database Structure and Use", "sequence": 1 }
+    ]
+  },
+  {
+    "topic_code": "10",
+    "name": "Boolean Logic",
+    "sequence": 10,
+    "subtopics": [
+      { "topic_code": "10.1", "name": "Logic Gates and Truth Tables", "sequence": 1 }
+    ]
+  }
+]

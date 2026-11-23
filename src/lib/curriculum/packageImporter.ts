@@ -1,0 +1,448 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+import { curriculumPackageSchema, validatePackageIntegrity, type CurriculumPackage } from "./schemas";
+
+export type ImportAction = "inserted" | "updated" | "skipped";
+
+export type ImportStep = {
+  step: string;
+  table: string;
+  action: ImportAction;
+  detail: string;
+};
+
+export type ImportResult = {
+  packageId: string;
+  subjectCode: string;
+  versionLabel: string;
+  verified: boolean;
+  steps: ImportStep[];
+  warnings: string[];
+};
+
+export class PackageImportError extends Error {
+  constructor(
+    message: string,
+    readonly problems: string[] = [],
+  ) {
+    super(message);
+    this.name = "PackageImportError";
+  }
+}
+
+const PACKAGE_ROOT = path.resolve(process.cwd(), "curriculum-packages");
+
+/** Subject category drives how the planner groups subjects. */
+export const SUBJECT_CATEGORY: Record<string, "STEM" | "Languages" | "Humanities" | "Creative_Elective"> = {
+  "0580": "STEM",
+  "0478": "STEM",
+  "0610": "STEM",
+  "0620": "STEM",
+  "0625": "STEM",
+  "0500": "Humanities",
+  "0460": "Humanities",
+  "0470": "Humanities",
+  "0455": "Humanities",
+  "0530": "Languages",
+  "0520": "Languages",
+};
+
+/** Cambridge component styles, mapped onto the schema's allowed values. */
+function assessmentTypeFor(componentCode: string): string {
+  if (componentCode === "6") return "AlternativeToPractical";
+  if (componentCode === "4") return "AlternativeToCoursework";
+  if (componentCode === "3") return "Speaking";
+  return "Written";
+}
+
+/** Package resource kinds, mapped onto the schema's allowed values. */
+function resourceTypeFor(kind: string): string {
+  if (kind === "YouTubeVideo") return "YouTubeVideo";
+  if (kind === "PhETSim") return "PhETSim";
+  if (kind === "PastPaperReference" || kind === "TriviaDoc") return kind;
+  return "OER_Reading";
+}
+
+function activityTypeFor(kind: string): string {
+  if (kind === "YouTubeVideo") return "Video";
+  if (kind === "PhETSim") return "PracticalSim";
+  if (kind === "PastPaperReference") return "SpacedReview";
+  return "Reading";
+}
+
+function yearsFromLabel(versionLabel: string): { start: number; end: number } | null {
+  const match = versionLabel.match(/(\d{4})\D+(\d{4})/);
+  if (!match) return null;
+  return { start: Number(match[1]), end: Number(match[2]) };
+}
+
+export function resolvePackageDir(packageId: string) {
+  if (!/^[a-z0-9-]+$/.test(packageId)) {
+    throw new PackageImportError(`Invalid package id: ${packageId}`);
+  }
+  return path.join(PACKAGE_ROOT, packageId);
+}
+
+async function readJson(dir: string, file: string) {
+  const raw = await readFile(path.join(dir, file), "utf8");
+  try {
+    return JSON.parse(raw) as unknown;
+  } catch (error) {
+    throw new PackageImportError(`${file} is not valid JSON`, [(error as Error).message]);
+  }
+}
+
+/** Reads and validates one package folder. Throws with every problem found. */
+export async function readPackage(dir: string): Promise<CurriculumPackage> {
+  const [manifest, routes, assessmentObjectives, topics, objectives, resources] = await Promise.all([
+    readJson(dir, "manifest.json"),
+    readJson(dir, "routes.json"),
+    readJson(dir, "assessment_objectives.json"),
+    readJson(dir, "topics.json"),
+    readJson(dir, "objectives.json"),
+    readJson(dir, "resources.json").catch(() => []),
+  ]);
+
+  const parsed = curriculumPackageSchema.safeParse({
+    manifest,
+    routes,
+    assessmentObjectives,
+    topics,
+    objectives,
+    resources,
+  });
+
+  if (!parsed.success) {
+    const problems = parsed.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
+    throw new PackageImportError("Package failed schema validation", problems);
+  }
+
+  const problems = validatePackageIntegrity(parsed.data);
+  if (problems.length > 0) {
+    throw new PackageImportError("Package failed integrity checks", problems);
+  }
+
+  return parsed.data;
+}
+
+type IdRow = { id: string };
+
+/** Upserts a row on its natural key and returns the id. */
+async function upsertId(
+  client: SupabaseClient,
+  table: string,
+  row: Record<string, unknown>,
+  onConflict: string,
+): Promise<string> {
+  const { data, error } = await client.from(table).upsert(row, { onConflict }).select("id").single<IdRow>();
+
+  if (error) throw new PackageImportError(`${table}: ${error.message}`);
+  return data.id;
+}
+
+/** Inserts only when the natural key is missing, so reruns stay quiet. */
+async function ensureRow(
+  client: SupabaseClient,
+  table: string,
+  match: Record<string, unknown>,
+  row: Record<string, unknown>,
+): Promise<string> {
+  let query = client.from(table).select("id").limit(1);
+  for (const [column, value] of Object.entries(match)) query = query.eq(column, value);
+
+  const { data: existing, error: readError } = await query.maybeSingle<IdRow>();
+  if (readError) throw new PackageImportError(`${table}: ${readError.message}`);
+  if (existing) return existing.id;
+
+  const { data, error } = await client.from(table).insert(row).select("id").single<IdRow>();
+  if (error) throw new PackageImportError(`${table}: ${error.message}`);
+  return data.id;
+}
+
+/**
+ * Writes one package into the curriculum hierarchy. Every write is an upsert on
+ * a natural key, so running the same package twice leaves the same rows.
+ */
+export async function importPackage(
+  client: SupabaseClient,
+  pkg: CurriculumPackage,
+  options: { allowDraft?: boolean; dryRun?: boolean } = {},
+): Promise<ImportResult> {
+  const { manifest } = pkg;
+  const warnings: string[] = [];
+
+  if (!manifest.provenance.verified && !options.allowDraft) {
+    throw new PackageImportError(
+      `${manifest.package_id} is a draft (${manifest.provenance.method}). ` +
+        "Run the PDF extraction pipeline, or pass allowDraft to import it knowingly.",
+    );
+  }
+  if (!manifest.provenance.verified) {
+    warnings.push(
+      `Draft package: objectives came from ${manifest.provenance.source_file} and are not extraction-verified.`,
+    );
+  }
+
+  const years = yearsFromLabel(manifest.subject.version_label);
+  if (!years) warnings.push(`Version label "${manifest.subject.version_label}" does not contain a year range.`);
+
+  const steps: ImportStep[] = [];
+  const note = (step: string, table: string, action: ImportAction, detail: string) =>
+    steps.push({ step, table, action, detail });
+
+  if (options.dryRun) {
+    note("validate", "-", "skipped", "dry run: schema and integrity checks passed");
+    return {
+      packageId: manifest.package_id,
+      subjectCode: manifest.subject.code,
+      versionLabel: manifest.subject.version_label,
+      verified: manifest.provenance.verified,
+      steps,
+      warnings,
+    };
+  }
+
+  const awardingBodyId = await upsertId(
+    client,
+    "awarding_bodies",
+    { code: "CAIE", name: manifest.subject.awarding_body, website: "https://www.cambridgeinternational.org" },
+    "code",
+  );
+  note("awarding body", "awarding_bodies", "inserted", manifest.subject.awarding_body);
+
+  const qualificationId = await upsertId(
+    client,
+    "qualifications",
+    { awarding_body_id: awardingBodyId, code: "CAIE-IGCSE", name: manifest.subject.qualification },
+    "code",
+  );
+  note("qualification", "qualifications", "inserted", manifest.subject.qualification);
+
+  const category = SUBJECT_CATEGORY[manifest.subject.code] ?? "STEM";
+  const subjectId = await ensureRow(
+    client,
+    "subjects",
+    { qualification_id: qualificationId, subject_code: manifest.subject.code },
+    {
+      qualification_id: qualificationId,
+      subject_code: manifest.subject.code,
+      subject_name: manifest.subject.name,
+      slug: manifest.subject.slug,
+      category,
+      mastery_mode: manifest.subject.mastery_mode === "skill-rubric" ? "skill_rubric" : "topic_objective",
+      is_core: !manifest.subject.is_elective,
+    },
+  );
+
+  // The slug and display name can legitimately change; keep them current.
+  const { error: subjectUpdateError } = await client
+    .from("subjects")
+    .update({ subject_name: manifest.subject.name, slug: manifest.subject.slug, category })
+    .eq("id", subjectId);
+  if (subjectUpdateError) throw new PackageImportError(`subjects: ${subjectUpdateError.message}`);
+  note("subject", "subjects", "inserted", `${manifest.subject.code} ${manifest.subject.name}`);
+
+  const syllabusVersionId = await upsertId(
+    client,
+    "syllabus_versions",
+    {
+      subject_id: subjectId,
+      version_label: manifest.subject.version_label,
+      exam_year_start: years?.start ?? new Date().getFullYear(),
+      exam_year_end: years?.end ?? new Date().getFullYear() + 2,
+      available_tiers: manifest.subject.tiers,
+      exam_series: manifest.subject.exam_series,
+      status: manifest.provenance.verified ? "active" : "draft",
+      source_pdf_hash: null,
+    },
+    "subject_id,version_label",
+  );
+  note("syllabus version", "syllabus_versions", "inserted", manifest.subject.version_label);
+
+  const componentIds = new Map<string, string>();
+  for (const route of pkg.routes) {
+    const componentId = await upsertId(
+      client,
+      "components",
+      {
+        syllabus_version_id: syllabusVersionId,
+        component_code: route.component_code,
+        name: route.name,
+        assessment_type: assessmentTypeFor(route.component_code),
+        duration_minutes: route.duration_minutes ?? 0,
+        max_marks: null,
+        private_candidate_eligible: route.private_candidate_eligible,
+        notes: route.note || null,
+      },
+      "syllabus_version_id,component_code",
+    );
+    componentIds.set(route.component_code, componentId);
+  }
+  note("components", "components", "inserted", `${pkg.routes.length} paper(s)`);
+
+  const privateRoute = pkg.routes.filter((route) => route.private_candidate_eligible);
+  if (privateRoute.length > 0) {
+    const routeId = await upsertId(
+      client,
+      "entry_routes",
+      {
+        syllabus_version_id: syllabusVersionId,
+        route_code: "PRIVATE",
+        name: "Private candidate route",
+        tier: pkg.manifest.subject.tiers.length === 1 ? pkg.manifest.subject.tiers[0] : "Extended",
+        private_candidate_eligible: true,
+        notes: "Excludes any component that needs school-authenticated coursework.",
+      },
+      "syllabus_version_id,route_code",
+    );
+
+    for (const route of privateRoute) {
+      const componentId = componentIds.get(route.component_code);
+      if (!componentId) continue;
+
+      const { error } = await client.from("entry_route_components").upsert(
+        {
+          entry_route_id: routeId,
+          component_id: componentId,
+          weighting_percent: route.weighting_percent,
+        },
+        { onConflict: "entry_route_id,component_id" },
+      );
+      if (error) throw new PackageImportError(`entry_route_components: ${error.message}`);
+    }
+    note("entry route", "entry_routes", "inserted", `${privateRoute.length} private candidate paper(s)`);
+  } else {
+    warnings.push("No private candidate route declared for this package.");
+  }
+
+  for (const objective of pkg.assessmentObjectives) {
+    const { error } = await client.from("assessment_objectives").upsert(
+      {
+        syllabus_version_id: syllabusVersionId,
+        code: objective.code,
+        name: objective.name,
+        description: objective.description,
+        weighting_percent: objective.weighting_percent,
+        rubric: objective.rubric,
+      },
+      { onConflict: "syllabus_version_id,code" },
+    );
+    if (error) throw new PackageImportError(`assessment_objectives: ${error.message}`);
+  }
+  note("assessment objectives", "assessment_objectives", "inserted", `${pkg.assessmentObjectives.length} AO(s)`);
+
+  const topicIds = new Map<string, string>();
+  for (const topic of pkg.topics) {
+    const topicId = await upsertId(
+      client,
+      "topics",
+      {
+        syllabus_version_id: syllabusVersionId,
+        parent_topic_id: null,
+        topic_code: topic.topic_code,
+        name: topic.name,
+        sequence: topic.sequence,
+      },
+      "syllabus_version_id,topic_code",
+    );
+    topicIds.set(topic.topic_code, topicId);
+
+    for (const subtopic of topic.subtopics) {
+      const subId = await upsertId(
+        client,
+        "topics",
+        {
+          syllabus_version_id: syllabusVersionId,
+          parent_topic_id: topicId,
+          topic_code: subtopic.topic_code,
+          name: subtopic.name,
+          sequence: subtopic.sequence,
+        },
+        "syllabus_version_id,topic_code",
+      );
+      topicIds.set(subtopic.topic_code, subId);
+    }
+  }
+  note("topics", "topics", "inserted", `${topicIds.size} topic row(s)`);
+
+  const objectiveIds = new Map<string, string>();
+  for (const objective of pkg.objectives) {
+    const topicId = topicIds.get(objective.topic_code);
+    if (!topicId) throw new PackageImportError(`Missing topic for ${objective.objective_code}`);
+
+    const objectiveId = await upsertId(
+      client,
+      "learning_objectives",
+      {
+        topic_id: topicId,
+        objective_code: objective.objective_code,
+        summary_title: objective.objective_text.slice(0, 120),
+        official_description: objective.objective_text,
+        supplement_text: objective.supplement_text,
+        command_words: objective.command_word ? [objective.command_word] : [],
+        tier: objective.tier,
+        sequence: objective.sequence,
+      },
+      "topic_id,objective_code",
+    );
+    objectiveIds.set(objective.objective_code, objectiveId);
+  }
+  note("objectives", "learning_objectives", "inserted", `${pkg.objectives.length} objective(s)`);
+
+  let resourceCount = 0;
+  for (const resource of pkg.resources) {
+    const objectiveId = objectiveIds.get(resource.objective_code);
+    if (!objectiveId) {
+      warnings.push(`Resource "${resource.title}" points at an unknown objective and was skipped.`);
+      continue;
+    }
+
+    const resourceId = await upsertId(
+      client,
+      "resources",
+      {
+        learning_objective_id: objectiveId,
+        title: resource.title,
+        resource_type: resourceTypeFor(resource.resource_type),
+        external_url: resource.external_url,
+        youtube_video_id: resource.youtube_video_id,
+        start_timestamp_seconds: resource.start_timestamp_seconds ?? 0,
+        end_timestamp_seconds: resource.end_timestamp_seconds,
+        is_sandboxed: resource.is_sandboxed,
+        provider: resource.provider,
+        citation: resource.citation_reference,
+      },
+      "learning_objective_id,external_url",
+    );
+
+    await upsertId(
+      client,
+      "activities",
+      {
+        objective_id: objectiveId,
+        resource_id: resourceId,
+        activity_type: activityTypeFor(resource.resource_type),
+        title: resource.title,
+        instructions: null,
+        estimated_minutes: resource.resource_type === "YouTubeVideo" ? 15 : 20,
+        difficulty: "Standard",
+        sequence: resourceCount,
+      },
+      "objective_id,title",
+    );
+
+    resourceCount += 1;
+  }
+  note("resources", "resources", "inserted", `${resourceCount} resource(s)`);
+
+  return {
+    packageId: manifest.package_id,
+    subjectCode: manifest.subject.code,
+    versionLabel: manifest.subject.version_label,
+    verified: manifest.provenance.verified,
+    steps,
+    warnings,
+  };
+}
