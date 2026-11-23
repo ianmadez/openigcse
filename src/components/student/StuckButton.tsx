@@ -3,20 +3,24 @@
 import { LifeBuoy } from "lucide-react";
 import { useState } from "react";
 
+import { flagStuckAction } from "@/app/(student)/learning-actions";
+
 /** Raises a flag for the parent without touching the streak. */
 export function StuckButton({ objectiveCode }: { objectiveCode: string }) {
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
+  const [error, setError] = useState<string | null>(null);
 
   const ask = async () => {
     setState("sending");
-    try {
-      await fetch("/api/learning-events", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ objectiveCode, kind: "stuck", minutes: 0 }),
-      });
-    } finally {
-      setState("sent");
+    setError(null);
+    const result = await flagStuckAction({ objectiveCode }).catch(() => ({
+      ok: false as const,
+      error: "The server could not be reached.",
+    }));
+    if (result.ok) setState("sent");
+    else {
+      setError(`Not sent: ${result.error}`);
+      setState("idle");
     }
   };
 
@@ -32,9 +36,16 @@ export function StuckButton({ objectiveCode }: { objectiveCode: string }) {
   }
 
   return (
+    <>
     <button type="button" onClick={ask} disabled={state === "sending"} className="btn-secondary pressable">
       <LifeBuoy aria-hidden="true" className="size-4" strokeWidth={2} />
       {state === "sending" ? "Sending" : "I am stuck"}
     </button>
+    {error && (
+      <p role="alert" className="text-caption text-danger-text">
+        {error}
+      </p>
+    )}
+    </>
   );
 }

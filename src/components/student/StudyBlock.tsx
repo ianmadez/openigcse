@@ -7,7 +7,9 @@ import { SandboxedVideoPlayer } from "@/components/player/SandboxedVideoPlayer";
 import { StuckButton } from "@/components/student/StuckButton";
 import { StudyTimer } from "@/components/student/StudyTimer";
 import { EmptyState } from "@/components/ui/primitives";
+import { answerCheckpointAction } from "@/app/(student)/learning-actions";
 import type { Checkpoint, LessonResource } from "@/lib/data/workspace";
+import { checkpointMessage } from "@/lib/learning/resolve";
 import type { PlannedTask } from "@/lib/planning/nextBestActivity";
 import { cn } from "@/lib/utils/cn";
 
@@ -28,7 +30,21 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
   const [activeCode, setActiveCode] = useState(tasks[0]?.objectiveCode ?? null);
   const [done, setDone] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
-  const [answer, setAnswer] = useState<string | null>(null);
+  const [result, setResult] = useState<
+    { ok: true; correct: boolean; correctOption: string | null; explanation: string } | { ok: false; error: string } | null
+  >(null);
+  const [checking, setChecking] = useState(false);
+
+  const check = async (questionId: string) => {
+    if (!selected) return;
+    setChecking(true);
+    const outcome = await answerCheckpointAction({ questionId, option: selected }).catch(() => ({
+      ok: false as const,
+      error: "The server could not be reached.",
+    }));
+    setResult(outcome);
+    setChecking(false);
+  };
 
   const active = order.find((task) => task.objectiveCode === activeCode) ?? null;
   const checkpoint = active ? checkpoints.find((item) => item.objectiveCode === active.objectiveCode) : null;
@@ -47,7 +63,7 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
   const choose = (code: string) => {
     setActiveCode(code);
     setSelected(null);
-    setAnswer(null);
+    setResult(null);
   };
 
   if (order.length === 0) {
@@ -216,7 +232,7 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
                       aria-checked={chosen}
                       onClick={() => {
                         setSelected(option.letter);
-                        setAnswer(null);
+                        setResult(null);
                       }}
                       className={cn(
                         "flex w-full items-start gap-2.5 rounded-lg border px-3 py-2 text-left text-[0.8125rem] leading-snug",
@@ -234,29 +250,34 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
                 })}
               </div>
 
-              {answer === null ? (
-                <button
-                  type="button"
-                  onClick={() => setAnswer(checkpoint.modelAnswer)}
-                  disabled={!selected}
-                  className="btn-primary pressable mt-2.5 w-full disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  Check answer
-                </button>
+              {result === null || !result.ok ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => check(checkpoint.id)}
+                    disabled={!selected || checking}
+                    className="btn-primary pressable mt-2.5 w-full disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {checking ? "Checking" : "Check answer"}
+                  </button>
+                  {result && !result.ok && (
+                    <p role="alert" className="mt-2 text-caption text-danger-text">
+                      Not checked: {result.error}
+                    </p>
+                  )}
+                </>
               ) : (
                 <div
                   role="status"
                   className={cn(
                     "mt-2.5 rounded-panel border px-3 py-2 text-caption",
-                    answer === selected
+                    result.correct
                       ? "border-success/40 bg-success-soft text-success-text"
                       : "border-warning/40 bg-warning-soft text-warning-text",
                   )}
                 >
-                  <p className="font-semibold">
-                    {answer === selected ? "Correct." : `Not quite. The answer is ${checkpoint.modelAnswer}.`}
-                  </p>
-                  <p className="mt-0.5">{checkpoint.markingGuide}</p>
+                  <p className="font-semibold">{checkpointMessage(result)}</p>
+                  {result.explanation && <p className="mt-0.5">{result.explanation}</p>}
                 </div>
               )}
             </div>

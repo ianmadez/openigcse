@@ -31,7 +31,7 @@ Migrations in `supabase/migrations/` are the authority; this is the map. Helper 
 
 | Table                   | Purpose                                                     | Write access |
 | ----------------------- | ----------------------------------------------------------- | ------------ |
-| `question_templates`    | Question bank, including the answer key (`correct_answer`, `model_answer`, `mark_scheme`) | Staff. **Learners can currently read the key columns: Phase 4 fixes this.** |
+| `question_templates`    | Question bank, including the answer key (`correct_answer`, `model_answer`, `mark_scheme`) | Staff only. Learners read `learner_questions` (keys stripped; paper questions hidden until started) |
 | `term_assessments`      | Papers: kind, schedule, duration, thresholds               | Staff        |
 | `assessment_items`      | Ordered questions on a paper                                | Staff        |
 | `assessment_sittings`   | One sitting per learner per paper; server-owned clock      | Learner starts and hands in; trigger guards |
@@ -45,8 +45,8 @@ Storage: private bucket `household-files`, paths `{household}/{kind}/{profile}/{
 
 | Table                  | Purpose                                         | Write access today → target |
 | ---------------------- | ----------------------------------------------- | --------------------------- |
-| `learning_events`      | Every study action, typed, with `score_ratio`   | Learner (any row) → learner inserts only own, checked types; staff all |
-| `mistake_notebook`     | Mistakes from marking or the learner            | Learner (any column) → learner inserts own + resolves; staff recategorise |
+| `learning_events`      | Every study action, typed, with `score_ratio`   | Learner inserts only unscored own rows (lesson time, stuck); scored rows via `answer_checkpoint` / `resolve_mistake`; staff all in household |
+| `mistake_notebook`     | Mistakes from marking or the learner            | Learner inserts own `source=student`; resolves only via `resolve_mistake`; staff all in household |
 | `fsrs_retention_items` | FSRS card state per objective                   | Nothing writes it yet → server on each recall/assessment event |
 | `trivia_modules`, `trivia_questions` | Documentary checkpoints           | Staff authoring form in 4.2 |
 
@@ -63,3 +63,5 @@ Storage: private bucket `household-files`, paths `{household}/{kind}/{profile}/{
 | `assessment_sittings_guard`  | Trigger: the server owns `started_at`, `deadline_at` and `submitted_at` |
 | `evidence_portfolio_guard`   | Trigger: learners cannot set status or feedback          |
 | `device_session_state`       | Revoked-device check for middleware                       |
+| `answer_checkpoint(q, option, kind)` | Server-side MCQ check; writes the scored Active_Recall / Application_Question event |
+| `resolve_mistake(id, option?, correction?)` | Correct retry → resolved + Error_Correction; else correction waits for a parent |

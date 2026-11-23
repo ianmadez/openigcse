@@ -3,6 +3,7 @@
 import { Pause, Play, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { logLessonTimeAction } from "@/app/(student)/learning-actions";
 import { cn } from "@/lib/utils/cn";
 
 type StudyTimerProps = {
@@ -20,8 +21,7 @@ function format(totalSeconds: number) {
 }
 
 /**
- * Counts real study time and posts it to /api/learning-events, which recalibrates
- * topic pacing. Pausing does not reset the elapsed count.
+ * Counts real study time and records it as an Exposure_Lesson event on the learner's session. Pausing does not reset the elapsed count.
  */
 export function StudyTimer({ objectiveCode, plannedMinutes, onRecorded }: StudyTimerProps) {
   const [running, setRunning] = useState(false);
@@ -46,25 +46,18 @@ export function StudyTimer({ objectiveCode, plannedMinutes, onRecorded }: StudyT
     setRunning(false);
     const minutes = Math.max(1, Math.round(seconds / 60));
 
-    try {
-      const response = await fetch("/api/learning-events", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          objectiveCode,
-          kind: "lesson",
-          startedAt: (startedAt.current ?? new Date()).toISOString(),
-          minutes,
-        }),
-      });
-      const body = (await response.json()) as { persisted?: boolean; reason?: string };
-      setMessage(
-        body.persisted ? "Saved to your learning record." : "Saved on this device. Connect the database to sync it.",
-      );
-    } catch {
-      setMessage("Saved on this device. The server could not be reached.");
+    // A refused save keeps the time on the clock so the learner can try again; nothing is
+    // claimed as saved unless Postgres accepted it.
+    const result = await logLessonTimeAction({ objectiveCode, minutes }).catch(() => ({
+      ok: false as const,
+      error: "The server could not be reached.",
+    }));
+    if (!result.ok) {
+      setMessage(`Not saved: ${result.error} Press Finish again to retry.`);
+      return;
     }
 
+    setMessage("Saved to your learning record.");
     setSaved(minutes);
     setSeconds(0);
     startedAt.current = null;

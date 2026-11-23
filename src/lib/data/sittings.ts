@@ -79,7 +79,7 @@ export async function getSittingView(assessmentId: string, learnerId: string, no
 
   const [{ data: rows }, { data: responses }, { data: marks }] = await Promise.all([
     ids.length
-      ? supabase.from("question_templates").select("id, question_type, prompt_template, options_schema, parts, image_paths").in("id", ids)
+      ? supabase.from("learner_questions").select("id, question_type, prompt_template, options_schema, parts, image_paths").in("id", ids)
       : Promise.resolve({ data: [] }),
     supabase
       .from("assessment_responses")

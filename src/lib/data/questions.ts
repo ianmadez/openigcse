@@ -5,9 +5,8 @@ export type Checkpoint = {
   id: string;
   objectiveCode: string;
   prompt: string;
-  options: Array<{ letter: string; text: string; correct: boolean }>;
-  modelAnswer: string;
-  markingGuide: string;
+  /** Key-free: whether an option is right is decided by answer_checkpoint() on the server. */
+  options: Array<{ letter: string; text: string }>;
 };
 
 type TemplateRow = {
@@ -16,7 +15,6 @@ type TemplateRow = {
   question_type: string;
   prompt_template: string;
   options_schema: unknown;
-  mark_scheme_rubric: string;
 };
 
 const LETTERS = ["A", "B", "C", "D"] as const;
@@ -26,12 +24,12 @@ function optionsFrom(value: unknown): Checkpoint["options"] {
 
   return value.slice(0, 4).map((option, index) => {
     const letter = LETTERS[index] ?? "A";
-    if (typeof option === "string") return { letter, text: option, correct: false };
+    if (typeof option === "string") return { letter, text: option };
     if (option && typeof option === "object") {
-      const record = option as { letter?: string; text?: string; correct?: boolean };
-      return { letter: record.letter ?? letter, text: record.text ?? "", correct: Boolean(record.correct) };
+      const record = option as { letter?: string; text?: string };
+      return { letter: record.letter ?? letter, text: record.text ?? "" };
     }
-    return { letter, text: "", correct: false };
+    return { letter, text: "" };
   });
 }
 
@@ -45,8 +43,8 @@ export async function getCheckpoints(objectiveIds: string[], objectiveCodeById: 
   const supabase = await createServerClientInstance();
   const rows = await collect<TemplateRow>(objectiveIds, async (batch) => {
     const { data } = await supabase
-      .from("question_templates")
-      .select("id, objective_id, question_type, prompt_template, options_schema, mark_scheme_rubric")
+      .from("learner_questions")
+      .select("id, objective_id, question_type, prompt_template, options_schema")
       .in("objective_id", batch)
       .eq("question_type", "MCQ");
     return (data ?? []) as TemplateRow[];
@@ -54,17 +52,10 @@ export async function getCheckpoints(objectiveIds: string[], objectiveCodeById: 
 
   return rows
     .filter((row) => row.objective_id && objectiveCodeById.has(row.objective_id))
-    .map<Checkpoint>((row) => {
-      const options = optionsFrom(row.options_schema);
-      const correct = options.find((option) => option.correct)?.letter ?? "A";
-
-      return {
-        id: row.id,
-        objectiveCode: objectiveCodeById.get(row.objective_id!) ?? "",
-        prompt: row.prompt_template,
-        options,
-        modelAnswer: correct,
-        markingGuide: row.mark_scheme_rubric,
-      };
-    });
+    .map<Checkpoint>((row) => ({
+      id: row.id,
+      objectiveCode: objectiveCodeById.get(row.objective_id!) ?? "",
+      prompt: row.prompt_template,
+      options: optionsFrom(row.options_schema),
+    }));
 }

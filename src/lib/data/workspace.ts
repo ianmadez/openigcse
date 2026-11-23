@@ -348,6 +348,10 @@ function demoWorkspace(now: Date): Workspace {
         note: "Named five characteristics and stopped; the mark scheme wanted seven.",
         status: "open",
         createdAt: isoDate(-3, now),
+        question: null,
+        correctionSubmitted: false,
+        correction: null,
+        questionSnapshot: "Describe the characteristics of living organisms.",
       },
     ],
     checkpoints: [
@@ -356,13 +360,11 @@ function demoWorkspace(now: Date): Workspace {
         objectiveCode: "BI-0610-1.1.1",
         prompt: "Which of these is not a characteristic shared by all living organisms?",
         options: [
-          { letter: "A", text: "Excretion", correct: true },
-          { letter: "B", text: "Photosynthesis", correct: false },
-          { letter: "C", text: "Respiration", correct: false },
-          { letter: "D", text: "Growth", correct: false },
+          { letter: "A", text: "Excretion" },
+          { letter: "B", text: "Photosynthesis" },
+          { letter: "C", text: "Respiration" },
+          { letter: "D", text: "Growth" },
         ],
-        modelAnswer: "B",
-        markingGuide: "Only plants photosynthesise; the other four apply to all living organisms.",
       },
     ],
     resources: [

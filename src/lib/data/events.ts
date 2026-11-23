@@ -119,3 +119,57 @@ export async function getObjectiveRatios(learnerId: string): Promise<Map<string,
   for (const [objectiveId, total] of totals) ratios.set(objectiveId, total.sum / total.count);
   return ratios;
 }
+
+/* ---------------------------------------------------------------- learner writes (Phase 4) */
+
+async function objectiveIdFor(supabase: Awaited<ReturnType<typeof createServerClientInstance>>, objectiveCode: string) {
+  const { data } = await supabase.from("learning_objectives").select("id").eq("objective_code", objectiveCode).limit(1).maybeSingle();
+  return (data?.id as string | undefined) ?? null;
+}
+
+/** Lesson time. RLS allows the learner only unscored Exposure_Lesson rows for themselves. */
+export async function logLessonTime(learnerId: string, objectiveCode: string, minutes: number) {
+  const supabase = await createServerClientInstance();
+  const { error } = await supabase.from("learning_events").insert({
+    student_id: learnerId,
+    objective_id: await objectiveIdFor(supabase, objectiveCode),
+    event_type: "Exposure_Lesson",
+    score_ratio: 0,
+    actual_minutes_spent: minutes,
+    flagged_stuck: false,
+  });
+  return error ? { ok: false as const, error: error.message } : { ok: true as const };
+}
+
+/** "I am stuck": an unscored flagged event plus the alert the parent sees. */
+export async function flagStuck(learnerId: string, objectiveCode: string) {
+  const supabase = await createServerClientInstance();
+  const { error } = await supabase.from("learning_events").insert({
+    student_id: learnerId,
+    objective_id: await objectiveIdFor(supabase, objectiveCode),
+    event_type: "Application_Question",
+    score_ratio: 0,
+    actual_minutes_spent: 0,
+    flagged_stuck: true,
+  });
+  if (error) return { ok: false as const, error: error.message };
+
+  const { error: alertError } = await supabase
+    .from("kiosk_sessions")
+    .insert({ student_id: learnerId, student_stuck_alert: true, session_start: new Date().toISOString() });
+  return alertError ? { ok: false as const, error: alertError.message } : { ok: true as const };
+}
+
+/** Checks a checkpoint answer in Postgres, which also writes the scored event. */
+export async function answerCheckpoint(questionId: string, option: string, kind: "recall" | "practice" = "recall") {
+  const supabase = await createServerClientInstance();
+  const { data, error } = await supabase.rpc("answer_checkpoint", { p_question_id: questionId, p_option: option, p_kind: kind });
+  if (error) return { ok: false as const, error: error.message };
+  const row = (data as Array<{ correct: boolean; correct_option: string | null; explanation: string | null }>)?.[0];
+  return {
+    ok: true as const,
+    correct: Boolean(row?.correct),
+    correctOption: row?.correct_option ?? null,
+    explanation: row?.explanation ?? "",
+  };
+}

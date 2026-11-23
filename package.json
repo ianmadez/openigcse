@@ -19,7 +19,7 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "import": "tsx scripts/import-package.ts",
     "verify:phase3": "tsx scripts/verify-phase3.ts",
-    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/assessment/question.test.ts src/lib/assessment/builder.test.ts src/lib/assessment/sitting.test.ts src/lib/assessment/marking.test.ts src/lib/assessment/evidence.test.ts src/lib/planning/series.test.ts src/lib/storage/rules.test.ts",
+    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/assessment/question.test.ts src/lib/assessment/builder.test.ts src/lib/assessment/sitting.test.ts src/lib/assessment/marking.test.ts src/lib/assessment/evidence.test.ts src/lib/planning/series.test.ts src/lib/storage/rules.test.ts src/lib/learning/resolve.test.ts",
     "dev:household": "tsx scripts/dev-household.ts",
     "verify:phase4": "tsx scripts/verify-phase4.ts"
   },
