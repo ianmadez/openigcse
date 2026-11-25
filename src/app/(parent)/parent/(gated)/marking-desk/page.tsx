@@ -3,12 +3,14 @@ import { Clapperboard } from "lucide-react";
 
 import { NeedsSignIn } from "@/components/auth/NeedsSignIn";
 import { MarkingDesk } from "@/components/parent/MarkingDesk";
+import { NotebookCategories } from "@/components/parent/NotebookCategories";
 import { EmptyState, PageHeading, Panel, Status } from "@/components/ui/primitives";
 import { KIND_NAME } from "@/lib/assessment/builder";
 import { getMarkingQueue, getMarkingSheet } from "@/lib/data/marking";
+import { getMistakes } from "@/lib/data/mistakes";
 import { getSetupState } from "@/lib/data/session";
 import { getTerms } from "@/lib/data/terms";
-import { getTriviaModules } from "@/lib/data/trivia";
+import { getTriviaEditorModules } from "@/lib/data/trivia";
 import { cn } from "@/lib/utils/cn";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +35,12 @@ export default async function MarkingDeskPage({ searchParams }: { searchParams: 
   }
 
   const terms = await getTerms(state.householdId);
-  const [queue, trivia] = await Promise.all([getMarkingQueue(terms.map((term) => term.id)), getTriviaModules()]);
+  const [queue, trivia, mistakes] = await Promise.all([
+    getMarkingQueue(terms.map((term) => term.id)),
+    getTriviaEditorModules(),
+    getMistakes(state.learnerId),
+  ]);
+  const openMistakes = mistakes.filter((mistake) => mistake.status === "open");
 
   const { assessment: requested } = await searchParams;
   const selectedId =
@@ -109,20 +116,32 @@ export default async function MarkingDeskPage({ searchParams }: { searchParams: 
         </section>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 grid items-start gap-4 lg:grid-cols-2">
+        <Panel
+          title="Notebook reasons"
+          description="The learner chooses a reason when they add a checkpoint; change it here if it is not the real one."
+          action={
+            <Status tone={openMistakes.length > 0 ? "warning" : "success"}>
+              {openMistakes.length === 0 ? "None open" : `${openMistakes.length} open`}
+            </Status>
+          }
+        >
+          <NotebookCategories items={openMistakes} />
+        </Panel>
+
         <Panel
           title="Trivia modules"
           description="Documentaries with timestamped checkpoints, published to the learner's Trivia page."
           action={
-            <Status tone={trivia.length > 0 ? "success" : "neutral"}>
-              {trivia.length === 0 ? "None published" : `${trivia.length} published`}
-            </Status>
+            <Link href="/parent/trivia" className="btn-secondary pressable">
+              <Clapperboard aria-hidden="true" className="size-3.5" strokeWidth={2} />
+              Author modules
+            </Link>
           }
         >
           {trivia.length === 0 ? (
             <p className="text-caption text-secondary">
-              No modules in the trivia tables yet. The authoring form for trivia_modules and trivia_questions arrives with
-              Phase 4 (Step 4.2).
+              No modules in the trivia tables yet. Add one with a YouTube id and at least one checkpoint.
             </p>
           ) : (
             <ul className="divide-y divide-subtle">
@@ -131,13 +150,18 @@ export default async function MarkingDeskPage({ searchParams }: { searchParams: 
                   <span className="min-w-0">
                     <span className="block text-[0.875rem] text-primary">{module.title}</span>
                     <span className="block text-caption text-muted">
-                      {module.topicArea} - {module.provider} - {module.questions.length} checkpoints
+                      {module.topicArea} - {module.provider || "no provider"} - {module.questions.length} {module.questions.length === 1 ? "checkpoint" : "checkpoints"}
                     </span>
                   </span>
-                  <Link href={`/trivia/${module.id}`} className="btn-secondary pressable">
-                    <Clapperboard aria-hidden="true" className="size-3.5" strokeWidth={2} />
-                    Preview
-                  </Link>
+                  <span className="flex items-center gap-1.5">
+                    <Status tone={module.isPublished ? "success" : "neutral"}>
+                      {module.isPublished ? "Published" : "Draft"}
+                    </Status>
+                    <Link href={`/trivia/${module.id}`} className="btn-secondary pressable">
+                      <Clapperboard aria-hidden="true" className="size-3.5" strokeWidth={2} />
+                      Preview
+                    </Link>
+                  </span>
                 </li>
               ))}
             </ul>

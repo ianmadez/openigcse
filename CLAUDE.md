@@ -43,6 +43,7 @@ src/components/           shell, student, parent, ui, sound
 src/lib/data/             one repository per entity, all on the session client
 src/lib/curriculum/       registry, zod schemas, package importer
 src/lib/planning/         next-best-activity ranking
+src/lib/retention/        FSRS scheduling with ts-fsrs
 supabase/migrations/      schema and RLS, applied with `supabase db push`
 scripts/                  ingestion, validation, contrast, parser tests, RLS checks
 raw-syllabuses/           local Cambridge PDFs (gitignored, copyright)

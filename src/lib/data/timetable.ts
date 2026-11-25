@@ -56,6 +56,8 @@ type PlanRow = {
   sequence: number;
   reasons: unknown;
   student_reordered: boolean;
+  skip_reason: string | null;
+  started_at: string | null;
 };
 
 function toSlot(row: SlotRow, subject?: { subject_code: string; subject_name: string }): TimetableSlot {
@@ -137,7 +139,7 @@ export async function getDayPlanItems(learnerId: string, date: string): Promise<
   const { data, error } = await supabase
     .from("day_plan_items")
     .select(
-      "id, slot_id, title, item_type, subject_id, learning_objective_id, planned_minutes, actual_minutes, status, sequence, reasons, student_reordered",
+      "id, slot_id, title, item_type, subject_id, learning_objective_id, planned_minutes, actual_minutes, status, sequence, reasons, student_reordered, skip_reason, started_at",
     )
     .eq("student_id", learnerId)
     .eq("plan_date", date)
@@ -155,6 +157,12 @@ export async function getDayPlanItems(learnerId: string, date: string): Promise<
     : { data: [] as { id: string; start_time: string; end_time: string }[] };
 
   const slotById = new Map((slotRows ?? []).map((slot) => [slot.id, slot]));
+
+  const objectiveIds = unique(rows.map((row) => row.learning_objective_id).filter((id): id is string => Boolean(id)));
+  const { data: objectiveRows } = objectiveIds.length
+    ? await supabase.from("learning_objectives").select("id, objective_code").in("id", objectiveIds)
+    : { data: [] as { id: string; objective_code: string }[] };
+  const codeById = new Map((objectiveRows ?? []).map((objective) => [objective.id, objective.objective_code as string]));
 
   return rows.map((row) => {
     const slot = row.slot_id ? slotById.get(row.slot_id) : undefined;
@@ -175,12 +183,35 @@ export async function getDayPlanItems(learnerId: string, date: string): Promise<
       sequence: row.sequence,
       reasons: Array.isArray(row.reasons) ? (row.reasons as string[]) : [],
       studentReordered: row.student_reordered,
+      skipReason: row.skip_reason,
+      startedAt: row.started_at,
+      objectiveCode: row.learning_objective_id ? (codeById.get(row.learning_objective_id) ?? null) : null,
       startMinutes: slot ? toMinutes(slot.start_time) : null,
       endMinutes: slot ? toMinutes(slot.end_time) : null,
       startTime: slot ? toTimeString(toMinutes(slot.start_time)) : null,
       endTime: slot ? toTimeString(toMinutes(slot.end_time)) : null,
     };
   });
+}
+
+/**
+ * Minutes the day plans expected over a date range, breaks excluded. The student progress screen
+ * reads actual time from learning events, so the comparison is planned against logged.
+ */
+export async function getPlannedMinutes(learnerId: string, fromDate: string, toDate: string): Promise<number> {
+  if (!learnerId) return 0;
+
+  const supabase = await createServerClientInstance();
+  const { data } = await supabase
+    .from("day_plan_items")
+    .select("planned_minutes, item_type")
+    .eq("student_id", learnerId)
+    .gte("plan_date", fromDate)
+    .lte("plan_date", toDate);
+
+  return (data ?? [])
+    .filter((row) => row.item_type !== "break")
+    .reduce((sum, row) => sum + (row.planned_minutes ?? 0), 0);
 }
 
 export type SlotInput = {
@@ -282,3 +313,60 @@ export async function reorderPlanItem(id: string, sequence: number) {
 }
 
 export { dayOfWeekFor as dayOfWeekForDate };
+
+/* ---------------------------------------------------------------- learner day (Step 4.1) */
+
+/** Done + Exposure_Lesson in one transaction; false when it was already finished. */
+export async function finishPlanItem(id: string, minutes: number) {
+  const supabase = await createServerClientInstance();
+  const { data, error } = await supabase.rpc("finish_plan_item", { p_item_id: id, p_minutes: minutes });
+  return error ? { ok: false as const, error: error.message } : { ok: true as const, finished: data === true };
+}
+
+export async function skipPlanItem(id: string, reason: string) {
+  const supabase = await createServerClientInstance();
+  const { data, error } = await supabase
+    .from("day_plan_items")
+    .update({ status: "skipped", skip_reason: reason })
+    .eq("id", id)
+    .select("id");
+  if (error) return { ok: false as const, error: error.message };
+  return data?.length ? { ok: true as const } : { ok: false as const, error: "That item is not on your plan." };
+}
+
+export async function startPlanItem(id: string) {
+  const supabase = await createServerClientInstance();
+  const { data, error } = await supabase
+    .from("day_plan_items")
+    .update({ status: "in_progress", started_at: new Date().toISOString() })
+    .eq("id", id)
+    .in("status", ["planned", "deferred"])
+    .select("started_at");
+  if (error) return { ok: false as const, error: error.message };
+  return data?.length
+    ? { ok: true as const, startedAt: data[0]!.started_at as string }
+    : { ok: false as const, error: "That item has already started or finished." };
+}
+
+/** Saves a new order inside one period; every row must belong to that learner, date and slot. */
+export async function reorderPeriod(learnerId: string, moves: Array<{ id: string; sequence: number }>) {
+  const supabase = await createServerClientInstance();
+  const { data: rows } = await supabase
+    .from("day_plan_items")
+    .select("id, slot_id, plan_date")
+    .eq("student_id", learnerId)
+    .in("id", moves.map((move) => move.id));
+  const periods = new Set((rows ?? []).map((row) => `${row.plan_date}|${row.slot_id}`));
+  if ((rows ?? []).length !== moves.length || periods.size !== 1) {
+    return { ok: false as const, error: "Items can only be reordered inside one period." };
+  }
+
+  for (const move of moves) {
+    const { error } = await supabase
+      .from("day_plan_items")
+      .update({ sequence: move.sequence, student_reordered: true })
+      .eq("id", move.id);
+    if (error) return { ok: false as const, error: error.message };
+  }
+  return { ok: true as const };
+}

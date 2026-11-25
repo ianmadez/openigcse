@@ -29,7 +29,7 @@ browser ─► src/middleware.ts (refresh Supabase cookie, sign out revoked devi
 
 - `(student)`: `/today`, `/timetable`, `/subjects`, `/review`, `/plan`, `/progress`, `/trivia`, `/assessments`, `/evidence`.
 - `(sitting)`: the distraction-free `/assessments/[id]`.
-- `(parent)/parent/(gated)`: everything behind the PIN. This covers `term-planner`, `questions`, `assessments`, `marking-desk`, `timetable`, `focus`, `progress` and `settings`.
+- `(parent)/parent/(gated)`: everything behind the PIN. This covers `term-planner`, `questions`, `assessments`, `marking-desk`, `trivia`, `timetable`, `focus`, `progress` and `settings`.
 - `/login`, `/pair`, `/auth/callback`, `/parent/onboarding`: identity.
 
 ## Cross-cutting decisions

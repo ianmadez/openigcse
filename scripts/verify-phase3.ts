@@ -372,12 +372,19 @@ async function run() {
   const { data: notebook } = await learner.from("mistake_notebook").select("id, resolved").eq("student_id", a.learner.profileId);
   check("mistake appears in the learner's notebook", notebook?.length === 1 && notebook[0]?.resolved === false);
 
-  const { data: resolved } = await learner
+  // Phase 4: a structured-question mistake resolves by a written correction the guardian approves.
+  const mistakeId = notebook?.[0]?.id ?? randomUUID();
+  const correction = await learner.rpc("resolve_mistake", { p_mistake_id: mistakeId, p_correction: "Probe correction" });
+  const { data: resolved } = await a.guardian.client
     .from("mistake_notebook")
-    .update({ resolved: true })
-    .eq("id", notebook?.[0]?.id ?? randomUUID())
+    .update({ resolved: true, resolved_at: new Date().toISOString() })
+    .eq("id", mistakeId)
     .select("resolved");
-  check("learner resolves it", resolved?.[0]?.resolved === true);
+  check(
+    "learner submits a correction and the guardian resolves it",
+    correction.data?.[0]?.awaiting_parent === true && resolved?.[0]?.resolved === true,
+    correction.error?.message,
+  );
 
   const { data: bNotebook } = await b.guardian.client.from("mistake_notebook").select("id").eq("student_id", a.learner.profileId);
   check("other household cannot see the notebook", (bNotebook ?? []).length === 0);

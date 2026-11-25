@@ -75,7 +75,7 @@ export default async function AssessmentPage({ params }: { params: Promise<{ id:
         bank={context.bank}
         tree={context.tree}
         zone={context.zone}
-        today={todayIso()}
+        today={todayIso(new Date(), state.timezone)}
       />
     </>
   );

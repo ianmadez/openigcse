@@ -50,7 +50,7 @@ export default async function ParentTimetablePage() {
   const [subjects, slots, overrides, hours] = await Promise.all([
     getEnrolledCurriculum(state.learnerId, state.activeTermId),
     getTimetableSlots(state.activeTermId),
-    getOverrides(state.householdId, todayIso()),
+    getOverrides(state.householdId, todayIso(new Date(), state.timezone)),
     schoolHours(state.householdId, state.activeTermId),
   ]);
 
@@ -62,7 +62,7 @@ export default async function ParentTimetablePage() {
     colour: COLOUR[subject.subjectCode] ?? "stem",
   }));
 
-  const today = todayIso();
+  const today = todayIso(new Date(), state.timezone);
 
   return (
     <>

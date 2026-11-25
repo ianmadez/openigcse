@@ -18,7 +18,7 @@ export default async function LoginPage({
   const context = await getAuthContext();
 
   if (context && (context.role === "parent_educator" || context.role === "developer_admin")) {
-    redirect("/parent");
+    redirect("/");
   }
 
   return (

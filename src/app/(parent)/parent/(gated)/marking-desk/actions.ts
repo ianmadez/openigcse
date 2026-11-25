@@ -4,8 +4,11 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { validateMarks } from "@/lib/assessment/scoring";
+import { ERROR_TAG_VALUES } from "@/lib/assessment/marking";
 import { requireGuardianSession } from "@/lib/auth/guardian-session";
 import { getMarkingSheet, saveMarks } from "@/lib/data/marking";
+import { recategoriseMistake } from "@/lib/data/mistakes";
+import { recordPendingReviews } from "@/lib/data/retention";
 
 const TAGS = ["ConceptGap", "CommandWordMisread", "CalculationSlip", "IncompleteExplanation", "TimePressure"] as const;
 
@@ -64,6 +67,14 @@ export async function saveMarksAction(input: unknown): Promise<SaveMarksResult> 
   });
   if (!saved.ok) return { ok: false, error: `Not saved: ${saved.error}` };
 
+  // save_assessment_marks writes the Formal_Assessment events; folding them here keeps the review
+  // schedule current without waiting for the learner to open /review.
+  const retention = await recordPendingReviews(sheet.studentId, 50).catch(() => ({
+    ok: false as const,
+    error: "The review schedule could not be read.",
+    recorded: 0,
+  }));
+
   for (const path of ["/parent/marking-desk", "/parent/assessments", "/review", "/assessments", "/progress", "/parent/progress", "/today"]) {
     revalidatePath(path);
   }
@@ -73,6 +84,26 @@ export async function saveMarksAction(input: unknown): Promise<SaveMarksResult> 
     ok: true,
     message: `Marked: ${saved.awarded} of ${saved.available}. ${
       saved.mistakes === 0 ? "No mistakes to log." : `${saved.mistakes} ${saved.mistakes === 1 ? "mistake" : "mistakes"} in the learner's notebook.`
-    }`,
+    }${retention.ok ? "" : ` Review schedule not updated: ${retention.error}.`}`,
   };
+}
+
+/** Changes the reason on a notebook entry, including one the learner added themselves. */
+export async function recategoriseMistakeAction(input: {
+  id: string;
+  category: string;
+}): Promise<{ ok: true; message: string } | { ok: false; error: string }> {
+  const guard = await requireGuardianSession();
+  if (!guard.ok) return guard;
+
+  const parsed = z.object({ id: z.string().uuid(), category: z.enum(ERROR_TAG_VALUES) }).safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Pick a reason and a mistake." };
+
+  const saved = await recategoriseMistake(parsed.data.id, parsed.data.category);
+  if (!saved.ok) return saved;
+
+  for (const path of ["/parent/marking-desk", "/parent", "/review", "/progress", "/parent/progress"]) {
+    revalidatePath(path);
+  }
+  return { ok: true, message: "Reason changed." };
 }

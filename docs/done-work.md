@@ -55,13 +55,13 @@ Summary: [phases/phase-3.md](phases/phase-3.md).
 
 | Step | What                                   | State       |
 | ---- | -------------------------------------- | ----------- |
-| pre  | RLS tightening (answer keys, learner-writable events/mistakes) | In progress |
-| 4.1  | `/today` from the timetable            | Partial     |
-| 4.2  | Checkpoints and practice write events  | Not started |
-| 4.3  | Spaced review (FSRS)                   | Not started |
-| 4.4  | Mastery and progress from events       | Not started |
-| 4.5  | NBA on real inputs                     | Not started |
-| Gate | Lesson + wrong checkpoint → mastery drops, review scheduled, in tomorrow's plan | Not observed |
+| pre  | RLS tightening (answer keys, learner-writable events/mistakes) | Done (RLS probes in `verify:phase4`) |
+| 4.1  | `/today` from the timetable            | Done        |
+| 4.2  | Checkpoints and practice write events  | Done        | `answer_checkpoint` + `answer_trivia_checkpoint` score in Postgres; wrong answers offer "Add to my notebook"; `/parent/trivia` authors modules |
+| 4.3  | Spaced review (FSRS)                   | Done        | `ts-fsrs` scheduler in `src/lib/retention`; `record_review` claims each event once; `/review` has Due and Notebook tabs |
+| 4.4  | Mastery and progress from events       | Done        | `objective_mastery()` + TS twin; student syllabus map, parent coverage/readiness/compliance |
+| 4.5  | NBA on real inputs                     | Done        | Planner reads `objective_mastery()` and FSRS due dates; due review +50; scoring tests |
+| Gate | Lesson + wrong checkpoint → mastery drops, review scheduled, in tomorrow's plan | Observed 2026-11-25 in `verify:phase4` |
 
 ## Phases 5-9
 

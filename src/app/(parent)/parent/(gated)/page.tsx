@@ -3,6 +3,7 @@ import { ArrowRight, ClipboardCheck, LifeBuoy, ShieldCheck, TriangleAlert } from
 
 import { NeedsSignIn } from "@/components/auth/NeedsSignIn";
 import { EvidenceQueue } from "@/components/parent/EvidenceQueue";
+import { CorrectionQueue } from "@/components/parent/CorrectionQueue";
 import { EmptyState, PageHeading, Panel, Status } from "@/components/ui/primitives";
 import { getTermAssessments } from "@/lib/data/assessments";
 import { getAvailableSubjects, getEnrolledCurriculum } from "@/lib/data/curriculum";
@@ -45,6 +46,7 @@ export default async function ParentOverviewPage() {
   ]);
 
   const openMistakes = countOpen(mistakes);
+  const corrections = mistakes.filter((mistake) => mistake.status === "open" && mistake.correctionSubmitted);
   const pending = requests.filter((request) => request.status === "pending").length;
   const nextAssessment = assessments.find((assessment) => assessment.scheduledFor) ?? null;
   const unpaired = available.filter((subject) => !subject.hasPrivateRoute);
@@ -62,6 +64,16 @@ export default async function ParentOverviewPage() {
           action={<Status tone={evidence.length > 0 ? "warning" : "success"}>{evidence.length} waiting</Status>}
         >
           <EvidenceQueue items={evidence} />
+        </Panel>
+      </div>
+
+      <div className="mb-4">
+        <Panel
+          title="Corrections to accept"
+          description="Mistakes with no question to retry close when you accept the learner's written correction."
+          action={<Status tone={corrections.length > 0 ? "warning" : "success"}>{corrections.length} waiting</Status>}
+        >
+          <CorrectionQueue items={corrections} />
         </Panel>
       </div>
 
@@ -122,7 +134,7 @@ export default async function ParentOverviewPage() {
             <div>
               <p className="text-heading font-semibold text-primary">{nextAssessment.title}</p>
               <p className="mt-1 text-caption text-muted">
-                {dateFormat.format(new Date(nextAssessment.scheduledFor))} - {nextAssessment.daysUntil} days away
+                {dateFormat.format(new Date(nextAssessment.scheduledFor))} - {nextAssessment.daysUntil === 0 ? "today" : nextAssessment.daysUntil === 1 ? "tomorrow" : `${nextAssessment.daysUntil} days away`}
                 {nextAssessment.durationMinutes ? ` - ${nextAssessment.durationMinutes} min` : ""}
               </p>
               <Link href="/parent/term-planner" className="btn-secondary pressable mt-3">

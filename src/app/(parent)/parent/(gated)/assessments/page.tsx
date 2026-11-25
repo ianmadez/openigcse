@@ -58,7 +58,7 @@ export default async function AssessmentsPage() {
               Enrol the learner in a subject for the running term first, in the term planner.
             </p>
           ) : (
-            <AssessmentBuilder existing={null} subjects={context.subjects} bank={[]} tree={[]} zone={context.zone} today={todayIso()} />
+            <AssessmentBuilder existing={null} subjects={context.subjects} bank={[]} tree={[]} zone={context.zone} today={todayIso(new Date(), state.timezone)} />
           )}
         </Panel>
 

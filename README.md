@@ -40,6 +40,7 @@ than sample content. `DEMO_MODE=true` swaps in a fixed demo queue on `/today` fo
 | `pnpm test:parser`           | Unit tests for the syllabus parser                          |
 | `pnpm test:unit`             | Unit tests for marking, questions, sittings and uploads     |
 | `pnpm verify:phase3`         | Phase 3 exit gate with real JWTs on throwaway households    |
+| `pnpm verify:phase4`         | Phase 4 policy and event probes on throwaway households     |
 | `pnpm dev:household create`  | Throwaway household for browser checks (`delete` removes)   |
 | `pnpm test:rls`              | Proves the tenant policies hold against the linked project  |
 | `pnpm check:contrast`        | Measures every declared colour pair in both appearances     |
@@ -51,7 +52,8 @@ than sample content. `DEMO_MODE=true` swaps in a fixed demo queue on `/today` fo
 `/trivia`. A paper opens at `/assessments/[id]`, outside the shell.
 
 **Parent** - `/parent`, `/parent/timetable`, `/parent/term-planner`, `/parent/questions`, `/parent/assessments`,
-`/parent/marking-desk`, `/parent/focus`, `/parent/progress`, `/parent/onboarding`, `/parent/settings`.
+`/parent/marking-desk`, `/parent/trivia`, `/parent/focus`, `/parent/progress`, `/parent/onboarding`,
+`/parent/settings`.
 
 ## Assessments and marking
 
@@ -128,6 +130,34 @@ avoiding an objective already used that day. Unfinished items from earlier days 
 subject. It is idempotent: the loop skips slots that already have an item, and a unique index on
 `(student_id, plan_date, slot_id)` backstops a race between two renders. Because a half-finished day should not be
 silently rewritten, the term's daily cap is advisory (a warning in the editor) while a per-date override cap is enforced.
+
+## The learning loop
+
+`/today` renders `day_plan_items` period by period. Start puts an item in progress, Finish writes one
+`Exposure_Lesson` with the minutes between the two presses and marks the item Done through `finish_plan_item()`, Skip
+requires one of three reasons, and the arrows persist the order inside the period. A refused write stays on screen with
+the server's own message.
+
+Under "Study next" the learner works one objective with its video, a timer and a checkpoint. Answering posts to
+`answer_checkpoint()`, which compares the key inside Postgres and writes `Active_Recall` for a lesson or
+`Application_Question` for a practice task; the page never receives the key. A wrong answer offers "Add to my notebook":
+the learner picks a reason and a parent can change it on the marking desk. A checkpoint mistake keeps its question, so
+`/review` clears it with a correct retry rather than a written correction.
+
+`/trivia` plays the household's documentaries. A module is a YouTube id plus checkpoints at timestamps, authored at
+`/parent/trivia`. Learners read a key-free view and `answer_trivia_checkpoint()` scores the answer and writes the
+`Active_Recall` event; because trivia is not syllabus content, its events carry no objective.
+
+Retention runs on FSRS through `ts-fsrs` in `src/lib/retention/fsrs.ts`. Every recall, application and assessment event
+is folded into one card per objective by `record_review()`, which claims the event in `fsrs_review_log` so the same
+checkpoint answered twice on two devices moves the card once. `/review` has two tabs: **Due for review** lists the
+objectives whose card is due, with their checkpoint inline, and **Mistake notebook** keeps the marking-desk list.
+
+Mastery is computed on read, never stored: `objective_mastery()` weights each scored event (Formal 1.0, Application
+0.8, Recall 0.6), halves its weight every 30 days, and blends the weighted mean 70/30 with FSRS retrievability. The
+student `/progress` shows the syllabus coloured by mastery, minutes against the plan and the next exam; the parent
+`/progress` adds coverage, the marked-paper average, review compliance and a readiness index that is labelled as not an
+official prediction.
 
 ## Curriculum pipeline
 

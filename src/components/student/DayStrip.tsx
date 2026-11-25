@@ -1,11 +1,8 @@
 "use client";
 
-import { Bell, ChevronRight } from "lucide-react";
+import { Bell } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { updatePlanItemAction } from "@/app/(parent)/parent/(gated)/timetable/actions";
-import { ActionButton } from "@/components/ui/Button";
-import { Status } from "@/components/ui/primitives";
 import type { DayPlanItem } from "@/lib/data/timetable-shared";
 import { cn } from "@/lib/utils/cn";
 
@@ -147,87 +144,5 @@ export function DayStrip({ items }: { items: DayPlanItem[] }) {
         )}
       </div>
     </section>
-  );
-}
-
-const STATUS_LABEL: Record<DayPlanItem["status"], string> = {
-  planned: "Planned",
-  in_progress: "In progress",
-  done: "Done",
-  deferred: "Carried over",
-  skipped: "Skipped",
-};
-
-/** The period list with start/done controls, writing through the plan action. */
-export function PeriodList({ items }: { items: DayPlanItem[] }) {
-  const [pendingId, setPendingId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const update = (item: DayPlanItem, status: DayPlanItem["status"]) => {
-    setPendingId(item.id);
-    setError(null);
-
-    void updatePlanItemAction({ id: item.id, status })
-      .then((result) => {
-        if (!result.ok) setError(result.error ?? "That could not be saved.");
-      })
-      .finally(() => setPendingId(null));
-  };
-
-  return (
-    <>
-      <ol className="space-y-2">
-        {items.map((item, index) => (
-          <li key={item.id} className="surface flex flex-wrap items-center gap-3 p-3">
-            <span className="w-16 shrink-0 text-caption text-muted tabular">
-              {item.startTime ?? `#${index + 1}`}
-            </span>
-
-            <span className="min-w-0 flex-1">
-              <span className="block text-[0.875rem] font-medium text-primary">
-                {item.subjectCode ? `${item.subjectCode} ` : ""}
-                {item.title}
-              </span>
-              <span className="block text-caption text-muted">
-                {item.itemType.replace("_", " ")} - {item.plannedMinutes} min
-                {item.reasons[0] ? ` - ${item.reasons[0]}` : ""}
-                {item.studentReordered ? " - reordered by the learner" : ""}
-              </span>
-            </span>
-
-            <div className="flex items-center gap-2">
-              <Status
-                tone={item.status === "done" ? "success" : item.status === "in_progress" ? "accent" : "neutral"}
-              >
-                {STATUS_LABEL[item.status]}
-              </Status>
-
-              {item.status !== "done" && (
-                <ActionButton
-                  type="button"
-                  pending={pendingId === item.id}
-                  pendingLabel="Saving"
-                  variant="secondary"
-                  onClick={() => update(item, item.status === "in_progress" ? "done" : "in_progress")}
-                  icon={
-                    item.status === "in_progress" ? undefined : (
-                      <ChevronRight aria-hidden="true" className="size-3.5" strokeWidth={2.4} />
-                    )
-                  }
-                >
-                  {item.status === "in_progress" ? "Finish" : "Start"}
-                </ActionButton>
-              )}
-            </div>
-          </li>
-        ))}
-      </ol>
-
-      {error && (
-        <p role="alert" className="mt-2 text-caption text-danger-text">
-          {error}
-        </p>
-      )}
-    </>
   );
 }

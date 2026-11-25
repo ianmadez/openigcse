@@ -57,6 +57,10 @@ export type DayPlanItem = {
   sequence: number;
   reasons: string[];
   studentReordered: boolean;
+  skipReason: string | null;
+  startedAt: string | null;
+  /** Syllabus code of the objective, to match lesson resources. */
+  objectiveCode: string | null;
   startMinutes: number | null;
   endMinutes: number | null;
   startTime: string | null;

@@ -14,6 +14,8 @@ export type Assessment = {
   daysUntil: number;
   durationMinutes: number | null;
   totalMarks: number | null;
+  /** Percentage the parent recorded at the marking desk; null until the paper is marked. */
+  score: number | null;
   status: "draft" | "scheduled" | "submitted" | "marked";
 };
 
@@ -40,7 +42,7 @@ export async function getTermAssessments(termId: string, now: Date = new Date())
   const { data: rows } = await supabase
     .from("term_assessments")
     .select(
-      "id, entry_route_id, component_id, assessment_category, title, duration_minutes, total_marks, scheduled_date, status",
+      "id, entry_route_id, component_id, assessment_category, title, duration_minutes, total_marks, student_score, scheduled_date, status",
     )
     .eq("academic_term_id", termId)
     .order("scheduled_date", { ascending: true, nullsFirst: false });
@@ -88,6 +90,7 @@ export async function getTermAssessments(termId: string, now: Date = new Date())
       daysUntil: row.scheduled_date ? daysUntil(row.scheduled_date, now) : 0,
       durationMinutes: row.duration_minutes ?? null,
       totalMarks: row.total_marks ?? null,
+      score: row.student_score === null || row.student_score === undefined ? null : Number(row.student_score),
       status: STATUS[row.status ?? "Scheduled"] ?? "scheduled",
     };
   });

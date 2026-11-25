@@ -59,6 +59,7 @@ const parentNav: NavItem[] = [
   { label: "Questions", href: "/parent/questions", icon: FileQuestion },
   { label: "Assessments", href: "/parent/assessments", icon: ClipboardList },
   { label: "Marking desk", href: "/parent/marking-desk", icon: ClipboardCheck },
+  { label: "Trivia", href: "/parent/trivia", icon: Clapperboard },
   { label: "Focus", href: "/parent/focus", icon: ShieldCheck },
   { label: "Progress", href: "/parent/progress", icon: Gauge },
   { label: "Household", href: "/parent/onboarding", icon: Sparkles },
