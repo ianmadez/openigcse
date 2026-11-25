@@ -10,7 +10,10 @@ import {
 } from "@/components/parent/SettingsForms";
 import { Callout, EmptyState, PageHeading, Panel, Status } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/Button";
+import { QuietHoursForm } from "@/components/parent/QuietHoursForm";
 import { getHouseholdSettings } from "@/lib/data/household";
+import { getQuietHours } from "@/lib/data/notifications";
+import { getSetupState } from "@/lib/data/session";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +22,8 @@ export const metadata = { title: "Settings" };
 const dateFormat = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 export default async function ParentSettingsPage() {
-  const settings = await getHouseholdSettings();
+  const [settings, state] = await Promise.all([getHouseholdSettings(), getSetupState()]);
+  const quiet = state.status === "configured" ? await getQuietHours(state.householdId) : { start: null, end: null };
 
   return (
     <>
@@ -136,6 +140,13 @@ export default async function ParentSettingsPage() {
                 </ul>
               )}
             </div>
+          </Panel>
+
+          <Panel
+            title="Quiet hours"
+            description="Push notifications wait outside this window, in the household's time zone. The bell in the top bar still lists everything."
+          >
+            <QuietHoursForm start={quiet.start} end={quiet.end} />
           </Panel>
         </div>
       )}

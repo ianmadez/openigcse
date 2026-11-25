@@ -10,6 +10,7 @@ import {
   submitSittingAction,
   uploadWorkingAction,
 } from "@/app/(sitting)/assessments/[id]/actions";
+import { MoreTimeButton } from "@/components/live/MoreTimeButton";
 import { ActionButton } from "@/components/ui/Button";
 import { MathMarkdown } from "@/components/ui/MathMarkdown";
 import { Callout, Status } from "@/components/ui/primitives";
@@ -42,7 +43,7 @@ function blankFor(view: SittingView): Record<string, SittingResponse> {
   );
 }
 
-export function SittingRunner({ view, serverNow }: { view: SittingView; serverNow: string }) {
+export function SittingRunner({ view, serverNow, learnerId }: { view: SittingView; serverNow: string; learnerId?: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [answers, setAnswers] = useState<Record<string, SittingResponse>>(() => blankFor(view));
@@ -384,6 +385,7 @@ export function SittingRunner({ view, serverNow }: { view: SittingView; serverNo
               </span>
             )}
           </span>
+          {learnerId && <MoreTimeButton learnerId={learnerId} assessmentId={view.assessmentId} extraMinutes={view.extraMinutes} />}
           <ActionButton
             type="button"
             pending={pending}

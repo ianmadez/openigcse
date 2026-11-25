@@ -4,19 +4,23 @@ import { LifeBuoy } from "lucide-react";
 import { useState } from "react";
 
 import { flagStuckAction } from "@/app/(student)/learning-actions";
+import { raiseRequestAction } from "@/app/(student)/request-actions";
 
 /** Raises a flag for the parent without touching the streak. */
-export function StuckButton({ objectiveCode }: { objectiveCode: string }) {
+export function StuckButton({ objectiveCode, objectiveText, itemId }: { objectiveCode: string; objectiveText?: string; itemId?: string | null }) {
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
 
   const ask = async () => {
     setState("sending");
     setError(null);
-    const result = await flagStuckAction({ objectiveCode }).catch(() => ({
-      ok: false as const,
-      error: "The server could not be reached.",
-    }));
+    // The flagged event keeps the learning record; the request asks a parent for a one-tap answer.
+    const offline = { ok: false as const, error: "The server could not be reached." };
+    const [flag, request] = await Promise.all([
+      flagStuckAction({ objectiveCode }).catch(() => offline),
+      raiseRequestAction({ type: "stuck", note: objectiveText ? `Stuck on ${objectiveText}`.slice(0, 300) : undefined, dayPlanItemId: itemId ?? null }).catch(() => offline),
+    ]);
+    const result = !request.ok ? request : flag;
     if (result.ok) setState("sent");
     else {
       setError(`Not sent: ${result.error}`);
@@ -30,7 +34,7 @@ export function StuckButton({ objectiveCode }: { objectiveCode: string }) {
         className="rounded-panel border border-info/40 bg-info-soft px-3 py-2 text-caption text-info-text"
         role="status"
       >
-        Asked. Your parent will see this before the next block. Your streak is untouched.
+        Asked. Your parent&apos;s answer appears on this screen. Your streak is untouched.
       </p>
     );
   }

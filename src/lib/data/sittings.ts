@@ -17,6 +17,8 @@ export type SittingView = {
   status: string;
   state: SittingState;
   durationMinutes: number;
+  /** Minutes added by approved "more time" requests, already included in durationMinutes. */
+  extraMinutes: number;
   totalMarks: number;
   paperUrl: string | null;
   sitting: { id: string; startedAt: string; submittedAt: string | null } | null;
@@ -47,12 +49,14 @@ export async function getSittingView(assessmentId: string, learnerId: string, no
 
   const { data: sittingRow } = await supabase
     .from("assessment_sittings")
-    .select("id, started_at, submitted_at")
+    .select("id, started_at, submitted_at, extra_minutes")
     .eq("assessment_id", assessmentId)
     .eq("student_id", learnerId)
     .maybeSingle();
   const sitting = sittingRow ? { id: sittingRow.id, startedAt: sittingRow.started_at, submittedAt: sittingRow.submitted_at } : null;
-  const state = sittingState({ status: assessment.status ?? "Scheduled", durationMinutes: assessment.duration_minutes, sitting }, now);
+  // Approved "more time" requests (Step 5.1) lengthen this sitting only.
+  const durationMinutes = assessment.duration_minutes + Number(sittingRow?.extra_minutes ?? 0);
+  const state = sittingState({ status: assessment.status ?? "Scheduled", durationMinutes, sitting }, now);
 
   const base = {
     assessmentId: assessment.id,
@@ -60,7 +64,8 @@ export async function getSittingView(assessmentId: string, learnerId: string, no
     category: assessment.assessment_category,
     status: assessment.status ?? "Scheduled",
     state,
-    durationMinutes: assessment.duration_minutes,
+    durationMinutes,
+    extraMinutes: Number(sittingRow?.extra_minutes ?? 0),
     totalMarks: assessment.total_marks,
     paperUrl: assessment.paper_url,
     sitting,

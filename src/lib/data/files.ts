@@ -22,7 +22,7 @@ export async function uploadHouseholdFile(
   const supabase = await createServerClientInstance();
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(path, Buffer.from(await file.arrayBuffer()), { contentType: file.type, upsert: false });
+    .upload(path, Buffer.from(await file.arrayBuffer()), { contentType: file.type.split(";")[0]!.trim(), upsert: false });
 
   if (error) return { ok: false, error: `Upload refused: ${error.message}` };
   return { ok: true, path, mimeType: file.type, size: file.size };

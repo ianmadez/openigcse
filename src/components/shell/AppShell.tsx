@@ -20,6 +20,8 @@ import {
   FileQuestion,
   ClipboardList,
   Paperclip,
+  MessageCircle,
+  Radio,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -50,10 +52,13 @@ const studentNav: NavItem[] = [
   { label: "Evidence", href: "/evidence", icon: Paperclip },
   { label: "Plan", href: "/plan", icon: MapPin },
   { label: "Progress", href: "/progress", icon: Gauge },
+  { label: "Messages", href: "/messages", icon: MessageCircle },
 ];
 
 const parentNav: NavItem[] = [
   { label: "Overview", href: "/parent", icon: Home },
+  { label: "Live", href: "/parent/live", icon: Radio },
+  { label: "Messages", href: "/parent/messages", icon: MessageCircle },
   { label: "Timetable", href: "/parent/timetable", icon: CalendarRange },
   { label: "Term planner", href: "/parent/term-planner", icon: MapPin },
   { label: "Questions", href: "/parent/questions", icon: FileQuestion },
@@ -72,10 +77,12 @@ type AppShellProps = {
   learnerName: string;
   streakDays?: number;
   subjects?: NavSubject[];
+  /** Live controls in the top bar (Phase 5): the dock, notifications, messages. */
+  headerSlot?: ReactNode;
   children: ReactNode;
 };
 
-export function AppShell({ variant, description, learnerName, streakDays, subjects = [], children }: AppShellProps) {
+export function AppShell({ variant, description, learnerName, streakDays, subjects = [], headerSlot, children }: AppShellProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [subjectsOpen, setSubjectsOpen] = useState(false);
@@ -296,6 +303,7 @@ export function AppShell({ variant, description, learnerName, streakDays, subjec
                 <p className="truncate text-[0.8125rem] font-medium text-muted">{current?.label ?? "OpenIGCSE"}</p>
               </div>
 
+              {headerSlot}
               <SoundToggle />
               <ThemeToggle />
             </div>

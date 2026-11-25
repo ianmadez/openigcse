@@ -11,6 +11,7 @@ import { getDevices, onlineCount } from "@/lib/data/devices";
 import { listEvidenceQueue } from "@/lib/data/evidence";
 import { getFocusPolicy } from "@/lib/data/focus";
 import { countOpen, getMistakes } from "@/lib/data/mistakes";
+import { RequestQueue } from "@/components/live/RequestQueue";
 import { getRequests } from "@/lib/data/requests";
 import { getSetupState } from "@/lib/data/session";
 
@@ -39,7 +40,7 @@ export default async function ParentOverviewPage() {
     getMistakes(state.learnerId),
     state.activeTermId ? getTermAssessments(state.activeTermId) : Promise.resolve([]),
     getDevices(state.householdId),
-    getRequests(state.householdId, 5),
+    getRequests(state.householdId, 10),
     getFocusPolicy(state.householdId),
     getAvailableSubjects(),
     listEvidenceQueue(state.householdId),
@@ -56,6 +57,15 @@ export default async function ParentOverviewPage() {
       <PageHeading eyebrow={`${state.householdName} - ${state.term?.name ?? "no active term"}`} title="Parent overview">
         Everything here is a live read. An empty panel means nothing has happened yet, not that the data is missing.
       </PageHeading>
+
+      <div className="mb-4">
+        <Panel
+          title="Requests"
+          description="Asks from the learner. One tap answers, and the answer reaches the study screen within seconds."
+        >
+          <RequestQueue householdId={state.householdId} requests={requests} />
+        </Panel>
+      </div>
 
       <div className="mb-4">
         <Panel
@@ -90,7 +100,7 @@ export default async function ParentOverviewPage() {
                   {pending === 0 ? "No open requests" : `${pending} request${pending === 1 ? "" : "s"} from the learner`}
                 </p>
                 <p className="text-caption text-muted">
-                  Stuck flags and break asks land here once the learner device can raise them.
+                  {pending === 0 ? "Answered asks are listed under Requests above." : "Answer them in Requests above or on the Live screen."}
                 </p>
               </div>
             </li>

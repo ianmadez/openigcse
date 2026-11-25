@@ -308,7 +308,7 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
               <Play aria-hidden="true" className="size-3.5" strokeWidth={2.4} />
               Mark done
             </button>
-            <StuckButton objectiveCode={active.objectiveCode} />
+            <StuckButton objectiveCode={active.objectiveCode} objectiveText={active.objectiveText} />
           </div>
         </section>
       )}

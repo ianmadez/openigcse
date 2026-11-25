@@ -19,9 +19,11 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "import": "tsx scripts/import-package.ts",
     "verify:phase3": "tsx scripts/verify-phase3.ts",
-    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/assessment/question.test.ts src/lib/assessment/builder.test.ts src/lib/assessment/sitting.test.ts src/lib/assessment/marking.test.ts src/lib/assessment/evidence.test.ts src/lib/planning/series.test.ts src/lib/storage/rules.test.ts src/lib/learning/resolve.test.ts src/lib/planning/today.test.ts src/lib/data/dates.test.ts src/lib/trivia/module.test.ts src/lib/retention/fsrs.test.ts src/lib/retention/mastery.test.ts src/lib/planning/nextBestActivity.test.ts",
+    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/assessment/question.test.ts src/lib/assessment/builder.test.ts src/lib/assessment/sitting.test.ts src/lib/assessment/marking.test.ts src/lib/assessment/evidence.test.ts src/lib/planning/series.test.ts src/lib/storage/rules.test.ts src/lib/learning/resolve.test.ts src/lib/planning/today.test.ts src/lib/data/dates.test.ts src/lib/trivia/module.test.ts src/lib/retention/fsrs.test.ts src/lib/retention/mastery.test.ts src/lib/planning/nextBestActivity.test.ts src/lib/requests/catalog.test.ts src/lib/push/quiet.test.ts src/lib/live/presence.test.ts",
     "dev:household": "tsx scripts/dev-household.ts",
-    "verify:phase4": "tsx scripts/verify-phase4.ts"
+    "verify:phase4": "tsx scripts/verify-phase4.ts",
+    "verify:phase5": "tsx scripts/verify-phase5.ts",
+    "verify:push": "tsx --conditions=react-server scripts/verify-push.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
@@ -37,8 +39,10 @@
     "react-markdown": "10.1.0",
     "rehype-katex": "7.0.1",
     "remark-math": "6.0.0",
+    "server-only": "0.0.1",
     "tailwind-merge": "^2.6.0",
     "ts-fsrs": "^6.0.1",
+    "web-push": "3.6.7",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -46,6 +50,7 @@
     "@types/node": "^22.20.5",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
+    "@types/web-push": "3.6.4",
     "autoprefixer": "^10.4.20",
     "pdfjs-dist": "^6.4.299",
     "playwright": "1.60.0",

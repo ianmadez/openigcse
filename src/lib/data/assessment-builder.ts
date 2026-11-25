@@ -41,7 +41,7 @@ export type AssessmentSummary = {
   totalMarks: number;
   studentScore: number | null;
   studentId: string | null;
-  sitting: { id: string; startedAt: string; submittedAt: string | null } | null;
+  sitting: { id: string; startedAt: string; submittedAt: string | null; extraMinutes?: number } | null;
 };
 
 export type AssessmentItem = {
@@ -100,10 +100,10 @@ async function sittingsFor(assessmentIds: string[]) {
   if (assessmentIds.length === 0) return new Map<string, AssessmentSummary["sitting"]>();
   const { data } = await supabase
     .from("assessment_sittings")
-    .select("id, assessment_id, started_at, submitted_at")
+    .select("id, assessment_id, started_at, submitted_at, extra_minutes")
     .in("assessment_id", assessmentIds);
   return new Map(
-    (data ?? []).map((row) => [row.assessment_id as string, { id: row.id, startedAt: row.started_at, submittedAt: row.submitted_at }]),
+    (data ?? []).map((row) => [row.assessment_id as string, { id: row.id, startedAt: row.started_at, submittedAt: row.submitted_at, extraMinutes: Number(row.extra_minutes ?? 0) }]),
   );
 }
 
@@ -119,7 +119,7 @@ function summarise(
     title: row.title,
     category: row.assessment_category,
     status,
-    state: sittingState({ status, durationMinutes: row.duration_minutes, sitting }, now),
+    state: sittingState({ status, durationMinutes: row.duration_minutes + (sitting?.extraMinutes ?? 0), sitting }, now),
     subjectCode: subject?.subjectCode ?? null,
     subjectName: subject?.subjectName ?? null,
     scheduledDate: row.scheduled_date,
