@@ -26,5 +26,5 @@ export default async function SittingPage({ params }: { params: Promise<{ id: st
   const view = await getSittingView(id, learner.learnerId);
   if (!view) notFound();
 
-  return <SittingRunner key={`${view.state}-${view.sitting?.id ?? "new"}`} view={view} serverNow={new Date().toISOString()} />;
+  return <SittingRunner key={`${view.state}-${view.sitting?.id ?? "new"}`} view={view} serverNow={new Date().toISOString()} learnerId={learner.learnerId} />;
 }

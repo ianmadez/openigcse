@@ -51,7 +51,7 @@ Last updated: 2026-11-24.
 
 Summary: [phases/phase-3.md](phases/phase-3.md).
 
-## Phase 4 - The student learning loop (In progress)
+## Phase 4 - The student learning loop (Done, gate observed 2026-11-25)
 
 | Step | What                                   | State       |
 | ---- | -------------------------------------- | ----------- |
@@ -63,11 +63,20 @@ Summary: [phases/phase-3.md](phases/phase-3.md).
 | 4.5  | NBA on real inputs                     | Done        | Planner reads `objective_mastery()` and FSRS due dates; due review +50; scoring tests |
 | Gate | Lesson + wrong checkpoint → mastery drops, review scheduled, in tomorrow's plan | Observed 2026-11-25 in `verify:phase4` |
 
-## Phases 5-9
+## Phase 5 - Messaging, requests and remote monitoring (Done, gate observed 2026-11-25)
+
+| Step | What                         | State | Notes |
+| ---- | ---------------------------- | ----- | ----- |
+| 5.1  | Structured requests          | Done  | Seven typed asks; `decide_request()` applies each effect; learner can only insert pending; 4-hour expiry |
+| 5.2  | Messages                     | Done  | One household thread; text, photo, voice note; read receipts; typing over broadcast |
+| 5.3  | Notifications                | Done  | Trigger-written notification rows, Web Push via `src/lib/push/notify.ts`, quiet hours, in-app centre |
+| 5.4  | Live monitor (`/parent/live`)| Done  | 30 s heartbeat, idle alert, remote actions, end-of-day digest |
+| Gate | Break asked, approved on the parent's screen, countdown on the device within 3 s | Observed: 1.4-1.9 s over four runs (production build). Push delivery checked with `verify:push`; a real phone not yet |
+
+## Phases 6-9
 
 | Phase | Goal                                    | State            |
 | ----- | --------------------------------------- | ---------------- |
-| 5     | Messaging, requests, remote monitoring  | Scaffolding only |
 | 6     | Curriculum extraction, ten packages     | Partial          |
 | 7     | Mobile pass and installable app         | Not started      |
 | 8     | Hardening and staging                   | Not started      |

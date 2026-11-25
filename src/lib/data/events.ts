@@ -152,12 +152,9 @@ export async function flagStuck(learnerId: string, objectiveCode: string) {
     actual_minutes_spent: 0,
     flagged_stuck: true,
   });
-  if (error) return { ok: false as const, error: error.message };
-
-  const { error: alertError } = await supabase
-    .from("kiosk_sessions")
-    .insert({ student_id: learnerId, student_stuck_alert: true, session_start: new Date().toISOString() });
-  return alertError ? { ok: false as const, error: alertError.message } : { ok: true as const };
+  // The parent hears about it through the typed "stuck" request (Step 5.1), which replaced the
+  // old kiosk_sessions alert row; learners can no longer write kiosk rows directly.
+  return error ? { ok: false as const, error: error.message } : { ok: true as const };
 }
 
 /** Checks a checkpoint answer in Postgres, which also writes the scored event. */

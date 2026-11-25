@@ -3,6 +3,7 @@
 import { ArrowDown, ArrowUp, Check, Play, PlayCircle, SkipForward } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 
+import { reportStudyState } from "@/lib/live/studyState";
 import {
   finishPlanItemAction,
   reorderPeriodAction,
@@ -33,6 +34,13 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
   const [pending, startTransition] = useTransition();
 
   useEffect(() => setPlan(items), [items]);
+
+  // The heartbeat reports the period in progress (Step 5.4).
+  useEffect(() => {
+    const active = plan.find((entry) => entry.status === "in_progress");
+    reportStudyState("periods", { timerRunning: Boolean(active), itemId: active?.id ?? null });
+    return () => reportStudyState("periods", null);
+  }, [plan]);
 
   const patch = (id: string, change: Partial<DayPlanItem>) =>
     setPlan((current) => current.map((entry) => (entry.id === id ? { ...entry, ...change } : entry)));

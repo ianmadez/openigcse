@@ -4,6 +4,7 @@ import { Pause, Play, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { logLessonTimeAction } from "@/app/(student)/learning-actions";
+import { reportStudyState } from "@/lib/live/studyState";
 import { cn } from "@/lib/utils/cn";
 
 type StudyTimerProps = {
@@ -29,6 +30,11 @@ export function StudyTimer({ objectiveCode, plannedMinutes, onRecorded }: StudyT
   const [saved, setSaved] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const startedAt = useRef<Date | null>(null);
+
+  useEffect(() => {
+    reportStudyState(`timer:${objectiveCode}`, { timerRunning: running, itemId: null });
+    return () => reportStudyState(`timer:${objectiveCode}`, null);
+  }, [running, objectiveCode]);
 
   useEffect(() => {
     if (!running) return;

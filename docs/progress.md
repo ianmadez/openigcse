@@ -7,7 +7,7 @@ A phase is **Done** only when its roadmap exit gate has actually been observed. 
 reads or writes Postgres, but the two-device exit gate has not been re-run for this document. **Partial** means only
 part of the steps in that phase exist.
 
-Last checked: 2026-11-25.
+Last checked: 2026-11-25 (Phase 5).
 
 | Phase | Roadmap goal                               | State                                                |
 | ----- | ------------------------------------------ | ---------------------------------------------------- |
@@ -16,7 +16,7 @@ Last checked: 2026-11-25.
 | 2     | Parent timetable, student follows it       | Built; exit gate needs a phone and a student device  |
 | 3     | Parent authoring and the marking desk      | Done (exit gate observed 2026-11-17)                 |
 | 4     | The student learning loop                  | Done (exit gate observed 2026-11-25)                 |
-| 5     | Messaging, requests and remote monitoring  | Scaffolding only                                     |
+| 5     | Messaging, requests and remote monitoring  | Done (exit gate observed 2026-11-25)                 |
 | 6     | Curriculum extraction for ten packages     | Partial: five drafts, three have no route            |
 | 7     | Mobile pass and installable app            | Not started                                          |
 | 8     | Hardening and staging                      | Not started                                          |
@@ -74,6 +74,18 @@ boundaries and the period allowance (`allowanceFor`) are pinned in `nextBestActi
 `verify:phase4`: lesson, then a wrong checkpoint, mastery drops, a review is due by tomorrow, and tomorrow's ranking
 picks that objective. All migrations are applied.
 
+**Phase 5 - messaging, requests and remote monitoring (done).** Step 5.1 makes a request a typed ask with a decision:
+stuck, break, more time, swap, unlock, check my work and day off. The learner can only insert a pending ask for itself
+(no update policy, one open ask per type); a guardian answers through `decide_request()`, which applies the effect in
+the same transaction (defer the item, start the break clock, extend the sitting, swap two periods, open the focus lock,
+mark a sick day). Asks expire after four hours. Step 5.2 adds the household thread with photos and voice notes in the
+private bucket, read receipts through `mark_messages_read()` and a typing indicator over a broadcast channel. Step 5.3
+writes notification rows from triggers (new request, answer, message, test handed in, idle, digest) and pushes them
+from `src/lib/push/notify.ts`, the one app module that uses the service role (Ian's ruling, 2026-11-25), honouring
+per-household quiet hours. Step 5.4 adds the 30-second heartbeat (`record_heartbeat()`), `/parent/live` and the
+parent's remote actions (`parent_live_action()`): end break, message to the screen, unlock for N minutes, lock now,
+end the school day; the digest goes once per day.
+
 ## What still looks finished but is not
 
 - **Forms that lose input on error (Phase 0-2).** Onboarding, pairing, settings, PIN gate and overrides use
@@ -81,9 +93,6 @@ picks that objective. All migrations are applied.
 - **Real household terms 2 and 3** carry Term 1's mid-term and final weeks (old onboarding bug, now fixed); the term
   planner flags them and refuses to save until a parent corrects them.
 - **AO tagging** waits for assessment objectives to be imported (none are yet).
-- **Trivia carries no objective (Phase 4.2).** A documentary checkpoint writes `Active_Recall` with `objective_id`
-  null, so it counts towards time and streak but not mastery. Only syllabus checkpoints move mastery.
-- **Requests (Phase 5.1).** `getRequests()` reads the table and the parent overview counts them, but no learner flow
   creates a typed request with a decision, and there are no messages, realtime subscription, push or `/parent/live`.
 - **Curriculum (Phase 6).** The parser, ingest, validate and import pipeline work, and all ten PDFs are in
   `raw-syllabuses/`. But the five packages in `curriculum-packages/` are still `manual-draft`, `verified: false`, carry
@@ -107,10 +116,12 @@ Every command below passed on 2026-11-25 at the current tree:
 pnpm typecheck      # clean
 pnpm test:parser    # 7 passed
 pnpm validate       # 5 packages structurally valid
-pnpm test:unit      # 118 passed
+pnpm test:unit      # 151 passed
 pnpm test:rls       # 22/22
 pnpm verify:phase3  # 34/34, 0 leftovers
 pnpm verify:phase4  # 74/74, 0 leftovers (includes the Phase 4 exit gate)
+pnpm verify:phase5  # 48/48, 0 leftovers
+pnpm verify:push    # Web Push encrypted, delivered once, held by quiet hours
 pnpm check:contrast # 56/56 pairs
 pnpm build          # clean
 ```
@@ -129,8 +140,15 @@ whole-branch Phase 3 review's deferred minors and rulings remain in
 `pnpm check:contrast` and `pnpm test:rls` need a built tree and a linked Supabase project respectively; run them before
 claiming a UI or policy change is done. `pnpm build` is the last check, not the first.
 
+Phase 5's exit gate was run in two browsers on a production build: the learner taps Ask, Break; the parent's
+`/parent/live` shows it; the parent taps 10 min; the study device shows the countdown 1.4-1.9 s later (four runs).
+Messages, read receipts, the typing indicator, screen messages and End break were walked in the same run. Web Push was
+verified against a local HTTPS endpoint (`pnpm verify:push`); delivery to a real Android phone and iPhone is still to do
+and belongs with Phase 7's installable app (iOS only delivers push to a home-screen app).
+
 ## Next, in order
 
-Phase 5 (messaging, requests and remote monitoring).
+Phase 6 (curriculum extraction), then Phase 7 (mobile pass and installable app, which also carries the real-phone push
+check).
 Phase 6 runs alongside all of them, starting with the heading and Core/Supplement parser variants that leave 0455 with no
 topics and 0460, 0470, 0530 without packages.

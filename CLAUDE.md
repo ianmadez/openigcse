@@ -26,6 +26,8 @@ pnpm validate                      # zod + integrity check on every curriculum p
 pnpm check:contrast                # every declared colour pair, both appearances
 pnpm build                         # production build (last, not first)
 pnpm test:rls                      # policy probes against the linked Supabase project
+pnpm verify:phase5                 # Phase 5 DB probes (requests, messages, push, live)
+pnpm verify:push                   # Web Push end to end against a local HTTPS endpoint
 pnpm import --subject=0610         # upsert one package into Supabase
 pnpm ingest --subject=0580         # PDF extraction for one syllabus
 ```
@@ -55,7 +57,8 @@ raw-syllabuses/           local Cambridge PDFs (gitignored, copyright)
    in this repo is expressed as a roadmap phase and step (for example "Step 3.5"). Work one step at a time, and update
    [docs/progress.md](docs/progress.md) when a step lands or its state changes.
 2. **Data goes through `src/lib/data/`.** Use the session-bound client so RLS decides what is visible. The service-role
-   client belongs to the importer and admin scripts, not to app reads or writes.
+   client belongs to the importer and admin scripts, not to app reads or writes. One ruled exception:
+   `src/lib/push/notify.ts` reads push subscriptions to deliver Web Push (Phase 5).
 3. **Schema changes are migrations.** Any new household-scoped table gets `household_id` and its RLS policy in the same
    migration, plus the matching repository module.
 4. **No invented syllabus content.** Objectives, components, weightings and durations come from the official PDFs via

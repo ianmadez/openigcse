@@ -54,9 +54,20 @@ Storage: private bucket `household-files`, paths `{household}/{kind}/{profile}/{
 Mastery is never stored: `objective_mastery()` computes it on every read from `learning_events` and the FSRS card, and
 coverage is any objective with an event. Review compliance comes from `fsrs_review_log.previous_due_at / on_time`.
 
-## Messaging (Phase 5 scaffolding)
+## Messaging and live monitoring (Phase 5)
 
-`requests`, `messages`, `notifications`, `push_subscriptions`: tables exist; no flows yet.
+- `requests`: typed asks (`stuck`, `break`, `more_time`, `swap`, `unlock`, `check_work`, `day_off`), status
+  `pending/approved/declined/expired`, `decision`, `effect_until`. Learners insert pending rows only; one open ask per
+  type (partial unique index). `decide_request()` answers and applies the effect; `expire_stale_requests()` after 4 h.
+- `messages`: one thread per household; `attachment_path/kind` (`image`, `voice`) under
+  `{household}/messages/{sender}/` in `household-files`. No update policy; `mark_messages_read()` sets receipts.
+- `notifications`: written only by triggers (request, request_decided, message, test_submitted, idle, digest); each
+  recipient reads its own; `pushed_at` marks Web Push delivery.
+- `push_subscriptions`: one row per device endpoint, readable and writable only by its own profile.
+- `households.quiet_hours_start/end`: pushes are held inside this local window.
+- `kiosk_sessions`: one row per learner per local day, written by `record_heartbeat()`; carries route, item, focus,
+  timer, idle spell, screen message, day end and digest stamps. `parent_live_action()` drives remote actions.
+- `assessment_sittings.extra_minutes`: approved "more time"; `sitting_is_open()` and `save_assessment_marks()` add it.
 
 ## Functions
 
