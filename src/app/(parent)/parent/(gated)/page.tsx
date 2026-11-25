@@ -134,7 +134,7 @@ export default async function ParentOverviewPage() {
             <div>
               <p className="text-heading font-semibold text-primary">{nextAssessment.title}</p>
               <p className="mt-1 text-caption text-muted">
-                {dateFormat.format(new Date(nextAssessment.scheduledFor))} - {nextAssessment.daysUntil} days away
+                {dateFormat.format(new Date(nextAssessment.scheduledFor))} - {nextAssessment.daysUntil === 0 ? "today" : nextAssessment.daysUntil === 1 ? "tomorrow" : `${nextAssessment.daysUntil} days away`}
                 {nextAssessment.durationMinutes ? ` - ${nextAssessment.durationMinutes} min` : ""}
               </p>
               <Link href="/parent/term-planner" className="btn-secondary pressable mt-3">

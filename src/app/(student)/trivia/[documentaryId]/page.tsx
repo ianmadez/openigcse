@@ -44,8 +44,8 @@ export default async function TriviaModulePage({ params }: { params: Promise<{ d
 
       <div className="mt-5">
         <Callout tone="neutral" title="Where these come from">
-          Modules live in the trivia tables and are edited from the parent marking desk, so a family can add their own
-          without touching code.
+          Modules live in the trivia tables and are written on the parent&apos;s Trivia modules page, so a family can add
+          their own without touching code.
         </Callout>
       </div>
     </>

@@ -25,3 +25,11 @@ export function todayIso(now: Date = new Date(), timeZone?: string | null) {
   }
   return now.toISOString().slice(0, 10);
 }
+
+/** "today", "tomorrow", "in 3 days", or "2 days ago" for a whole-day difference. */
+export function relativeDays(days: number) {
+  if (days === 0) return "today";
+  if (days === 1) return "tomorrow";
+  if (days === -1) return "yesterday";
+  return days > 0 ? `in ${days} days` : `${-days} days ago`;
+}

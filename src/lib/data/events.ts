@@ -173,3 +173,17 @@ export async function answerCheckpoint(questionId: string, option: string, kind:
     explanation: row?.explanation ?? "",
   };
 }
+
+/** A documentary checkpoint. Its score is computed in Postgres; the key never reaches the page. */
+export async function answerTriviaCheckpoint(questionId: string, option: string) {
+  const supabase = await createServerClientInstance();
+  const { data, error } = await supabase.rpc("answer_trivia_checkpoint", { p_question_id: questionId, p_option: option });
+  if (error) return { ok: false as const, error: error.message };
+  const row = (data as Array<{ correct: boolean; correct_option: string | null; explanation: string | null }>)?.[0];
+  return {
+    ok: true as const,
+    correct: Boolean(row?.correct),
+    correctOption: row?.correct_option ?? null,
+    explanation: row?.explanation ?? "",
+  };
+}

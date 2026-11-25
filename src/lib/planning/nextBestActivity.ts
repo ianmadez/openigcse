@@ -21,6 +21,8 @@ export type ActivitySignal = {
   daysUntilAssessment: number | null;
   assessmentTitle: string | null;
   hasLesson: boolean;
+  /** Whole days the FSRS card is past due (0 = due today); null when no card is due. */
+  reviewOverdueDays: number | null;
 };
 
 export type PlannedTask = ActivitySignal & {
@@ -37,7 +39,19 @@ function reasonsFor(signal: ActivitySignal): string[] {
   if (signal.daysUntilAssessment !== null && signal.daysUntilAssessment <= 14) {
     const label = signal.assessmentTitle ?? "Assessment";
     reasons.push(
-      signal.daysUntilAssessment <= 0 ? `${label} is due` : `${label} in ${signal.daysUntilAssessment} days`,
+      signal.daysUntilAssessment <= 0
+        ? `${label} is due`
+        : signal.daysUntilAssessment === 1
+          ? `${label} tomorrow`
+          : `${label} in ${signal.daysUntilAssessment} days`,
+    );
+  }
+
+  if (signal.reviewOverdueDays !== null) {
+    reasons.push(
+      signal.reviewOverdueDays === 0
+        ? "Review due today"
+        : `Review overdue by ${signal.reviewOverdueDays} ${signal.reviewOverdueDays === 1 ? "day" : "days"}`,
     );
   }
 
@@ -62,7 +76,7 @@ function reasonsFor(signal: ActivitySignal): string[] {
   return reasons;
 }
 
-function scoreOf(signal: ActivitySignal): number {
+export function scoreOf(signal: ActivitySignal): number {
   const gap = Math.max(0, 1 - signal.mastery);
   let score = gap * 55;
 
@@ -72,6 +86,12 @@ function scoreOf(signal: ActivitySignal): number {
     const proximity = 1 - Math.max(0, signal.daysUntilAssessment) / 14;
     score += 10 + proximity * 30;
   }
+
+  // A due FSRS card means something already learned is slipping. Below the
+  // mastery target it must outrank a never-studied objective (55 + 10 = 65),
+  // or a fresh syllabus would bury every review: 0.3 gap x 55 + 50 > 65.
+  // Overdue days add a little, capped at a week.
+  if (signal.reviewOverdueDays !== null) score += 50 + Math.min(Math.max(0, signal.reviewOverdueDays), 7);
 
   if (signal.lastStudiedDaysAgo === null) score += 10;
   else if (signal.lastStudiedDaysAgo >= 14) score += 8;
@@ -84,7 +104,7 @@ function scoreOf(signal: ActivitySignal): number {
 }
 
 function actionFor(signal: ActivitySignal): PlannedTask["action"] {
-  if (signal.openMistakes > 0) return "review";
+  if (signal.openMistakes > 0 || signal.reviewOverdueDays !== null) return "review";
   if (signal.mastery < 0.4) return "learn";
   return "practice";
 }
@@ -103,4 +123,15 @@ export function rankActivities(signals: ActivitySignal[], limit = 3): PlannedTas
 
 export function totalMinutes(tasks: PlannedTask[]) {
   return tasks.reduce((sum, task) => sum + task.minutes, 0);
+}
+
+/**
+ * How many minutes a period can give to study. A break never counts against
+ * the day's cap; anything else takes what is left of the cap, never more than
+ * the period itself and never less than zero.
+ */
+export function allowanceFor(periodMinutes: number, isBreak: boolean, cap: number | null, plannedSoFar: number) {
+  if (periodMinutes <= 0) return 0;
+  if (isBreak || cap === null) return periodMinutes;
+  return Math.min(periodMinutes, Math.max(0, cap - plannedSoFar));
 }

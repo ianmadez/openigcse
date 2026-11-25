@@ -18,6 +18,8 @@ export type Mistake = {
   /** What the learner wrote for a parent to approve, once submitted. */
   correction: string | null;
   questionSnapshot: string;
+  /** Whether a parent logged it at the marking desk or the learner added it from a checkpoint. */
+  source: "marking" | "student";
 };
 
 type MistakeRow = {
@@ -30,6 +32,7 @@ type MistakeRow = {
   created_at: string;
   question_template_id: string | null;
   correction_submitted_at: string | null;
+  source: string | null;
 };
 
 type SafeQuestionRow = { id: string; question_type: string; prompt_template: string; options_schema: unknown };
@@ -54,7 +57,7 @@ export async function getMistakes(learnerId: string): Promise<Mistake[]> {
   const supabase = await createServerClientInstance();
   const { data: rows } = await supabase
     .from("mistake_notebook")
-    .select("id, objective_id, error_category, question_snapshot, student_reflection, resolved, created_at, question_template_id, correction_submitted_at")
+    .select("id, objective_id, error_category, question_snapshot, student_reflection, resolved, created_at, question_template_id, correction_submitted_at, source")
     .eq("student_id", learnerId)
     .order("created_at", { ascending: false });
 
@@ -119,6 +122,7 @@ export async function getMistakes(learnerId: string): Promise<Mistake[]> {
       correctionSubmitted: Boolean(row.correction_submitted_at),
       correction: row.correction_submitted_at ? row.student_reflection : null,
       questionSnapshot: row.question_snapshot,
+      source: row.source === "student" ? "student" : "marking",
     };
   });
 }
@@ -150,6 +154,89 @@ export async function approveCorrection(mistakeId: string) {
     .select("id");
   if (error) return { ok: false as const, error: error.message };
   return data?.length ? { ok: true as const } : { ok: false as const, error: "That correction is not waiting for approval." };
+}
+
+/** A guardian changes the reason on a notebook entry; the learner's own pick is only a first guess. */
+export async function recategoriseMistake(mistakeId: string, errorTag: ErrorTag) {
+  const supabase = await createServerClientInstance();
+  const { data, error } = await supabase
+    .from("mistake_notebook")
+    .update({ error_category: errorTag })
+    .eq("id", mistakeId)
+    .select("id");
+  if (error) return { ok: false as const, error: error.message };
+  return data?.length ? { ok: true as const } : { ok: false as const, error: "That mistake is not in this household." };
+}
+
+function chosenAnswer(options: Array<{ letter: string; text: string }>, option: string) {
+  const chosen = options.find((entry) => entry.letter === option);
+  return {
+    text: chosen?.text ?? "",
+    snapshot: `you chose ${option}${chosen?.text ? `: ${chosen.text}` : ""}`,
+  };
+}
+
+/**
+ * "Add to my notebook" from a checkpoint on /today. The row is linked to the question, so it
+ * resolves later by a correct retry rather than a written correction.
+ */
+export async function addCheckpointMistake(
+  learnerId: string,
+  input: { questionId: string; option: string; errorTag: ErrorTag },
+) {
+  const supabase = await createServerClientInstance();
+  const { data: question } = await supabase
+    .from("learner_questions")
+    .select("id, objective_id, prompt_template, options_schema")
+    .eq("id", input.questionId)
+    .maybeSingle();
+
+  if (!question) return { ok: false as const, error: "That checkpoint is not available." };
+
+  const chosen = chosenAnswer(optionList(question.options_schema), input.option);
+  const { error } = await supabase.from("mistake_notebook").insert({
+    student_id: learnerId,
+    objective_id: question.objective_id,
+    question_template_id: question.id,
+    error_category: input.errorTag,
+    question_snapshot: `${question.prompt_template} - ${chosen.snapshot}`,
+    student_wrong_answer: chosen.text || input.option,
+    correct_model_answer: "",
+    source: "student",
+  });
+
+  return error ? { ok: false as const, error: error.message } : { ok: true as const };
+}
+
+/**
+ * "Add to my notebook" from a trivia checkpoint. Trivia is not syllabus content, so the entry has
+ * no objective and no question to retry: it closes when the learner writes the answer and a
+ * parent accepts it.
+ */
+export async function addTriviaMistake(
+  learnerId: string,
+  input: { questionId: string; option: string; errorTag: ErrorTag },
+) {
+  const supabase = await createServerClientInstance();
+  const { data: question } = await supabase
+    .from("learner_trivia_questions")
+    .select("id, prompt, options")
+    .eq("id", input.questionId)
+    .maybeSingle();
+
+  if (!question) return { ok: false as const, error: "That checkpoint is not available." };
+
+  const chosen = chosenAnswer(optionList(question.options), input.option);
+  const { error } = await supabase.from("mistake_notebook").insert({
+    student_id: learnerId,
+    error_category: input.errorTag,
+    question_snapshot: `${question.prompt} - ${chosen.snapshot}`,
+    student_wrong_answer: chosen.text || input.option,
+    correct_model_answer: "",
+    source: "student",
+  });
+
+  return error ? { ok: false as const, error: error.message } : { ok: true as const };
 }
 
 export function countOpen(mistakes: Mistake[]) {

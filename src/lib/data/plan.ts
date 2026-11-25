@@ -1,6 +1,6 @@
 import { dayOfWeekFor, getOverrideForDate, getTimetableSlots, type SlotType } from "@/lib/data/timetable";
 import { getLearnerWorkspace, type ActivitySignal } from "@/lib/data/workspace";
-import { rankActivities } from "@/lib/planning/nextBestActivity";
+import { allowanceFor, rankActivities } from "@/lib/planning/nextBestActivity";
 import { createServerClientInstance } from "@/lib/supabase/server";
 
 /**
@@ -91,7 +91,7 @@ export async function generateDayPlan(input: {
     const isAcademic = slot.slotType === "subject" || slot.slotType === "revision" || slot.slotType === "free_study";
 
     // A break never counts against the study cap; everything else does.
-    const allowance = itemType === "break" || cap === null ? minutes : Math.min(minutes, Math.max(0, cap - planned));
+    const allowance = allowanceFor(minutes, itemType === "break", cap, planned);
     if (allowance <= 0) continue;
     if (itemType !== "break") planned += allowance;
 

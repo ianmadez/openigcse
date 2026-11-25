@@ -32,7 +32,7 @@ Until then this register is the plan; nothing is removed early.
 | 3 | `parent/(gated)/timetable/page.tsx` | Uses `createAdminClient()` in an app route | Session client + RLS | Open |
 | 4 | `POST /api/learning-events`, `PATCH /api/mistakes` | Service role and "one student per household" | Learner session + RLS (Phase 4 RLS step) | Done: routes deleted, server actions on the learner session |
 | 5 | `src/lib/config/site.ts` `examSeriesYears` | Fixed list 2027-2031 | Derive from the current year | Open |
-| 6 | `src/lib/data/trivia.ts` `topicArea` union | Four fixed topic areas | Read from `trivia_modules` (4.2 authoring form) | Open |
+| 6 | `src/lib/data/trivia.ts` `topicArea` union | Four fixed topic areas | Read from `trivia_modules` (4.2 authoring form) | Done: the check constraint is dropped, the column is free text and the form suggests the areas already saved |
 | 7 | `AssessmentBuilder` placeholder "Cells and transport quiz" | Example title text | Neutral placeholder | Open (cosmetic) |
 
 Add a row whenever you find another. Close a row only when no copy remains in the code.

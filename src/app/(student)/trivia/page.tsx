@@ -10,12 +10,11 @@ export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Trivia" };
 
-const areaTone = {
-  Science: "info",
-  History: "warning",
-  Engineering: "accent",
-  Nature: "success",
-} as const;
+/** Areas are free text, so only the four familiar ones get their own tone. */
+function areaTone(area: string) {
+  const tones = { science: "info", history: "warning", engineering: "accent", nature: "success" } as const;
+  return tones[area.toLowerCase() as keyof typeof tones] ?? "neutral";
+}
 
 export default async function TriviaPage() {
   const state = await getSetupState();
@@ -50,7 +49,7 @@ export default async function TriviaPage() {
             <li key={module.id}>
               <Link href={`/trivia/${module.id}`} className="surface lift group flex h-full flex-col gap-3 p-4">
                 <div className="flex items-center justify-between gap-2">
-                  <Status tone={areaTone[module.topicArea]}>{module.topicArea}</Status>
+                  <Status tone={areaTone(module.topicArea)}>{module.topicArea}</Status>
                   <span className="text-caption text-muted tabular">{module.durationMinutes} min</span>
                 </div>
 
@@ -62,7 +61,7 @@ export default async function TriviaPage() {
                 <div className="mt-auto flex items-center justify-between gap-2 border-t border-subtle pt-3">
                   <span className="flex items-center gap-1.5 text-caption text-muted">
                     <Clapperboard aria-hidden="true" className="size-3.5" strokeWidth={2} />
-                    {module.provider} - {module.questions.length} checkpoints
+                    {module.provider} - {module.questions.length} {module.questions.length === 1 ? "checkpoint" : "checkpoints"}
                   </span>
                   <ArrowRight
                     aria-hidden="true"

@@ -17,6 +17,9 @@ export const ERROR_TAGS: Array<{ value: ErrorTag; label: string; hint: string }>
   { value: "TimePressure", label: "Time pressure", hint: "Ran out of time or left it blank" },
 ];
 
+/** The same list as a tuple, for validating input that names a category. */
+export const ERROR_TAG_VALUES = ERROR_TAGS.map((tag) => tag.value) as [ErrorTag, ...ErrorTag[]];
+
 /**
  * The sheet a parent opens. Saved marks (and the reasons on their notebook
  * entries) win; otherwise multiple choice is marked from the key, and a wrong

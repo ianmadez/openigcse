@@ -45,10 +45,14 @@ Storage: private bucket `household-files`, paths `{household}/{kind}/{profile}/{
 
 | Table                  | Purpose                                         | Write access today → target |
 | ---------------------- | ----------------------------------------------- | --------------------------- |
-| `learning_events`      | Every study action, typed, with `score_ratio`   | Learner inserts only unscored own rows (lesson time, stuck); scored rows via `answer_checkpoint` / `resolve_mistake`; staff all in household |
-| `mistake_notebook`     | Mistakes from marking or the learner            | Learner inserts own `source=student`; resolves only via `resolve_mistake`; staff all in household |
-| `fsrs_retention_items` | FSRS card state per objective                   | Nothing writes it yet → server on each recall/assessment event |
-| `trivia_modules`, `trivia_questions` | Documentary checkpoints           | Staff authoring form in 4.2 |
+| `learning_events`      | Every study action, typed, with `score_ratio`   | Learner inserts only unscored own rows (lesson time, stuck); scored rows via `answer_checkpoint` / `answer_trivia_checkpoint` / `resolve_mistake` / `save_assessment_marks`; staff all in household |
+| `mistake_notebook`     | Mistakes from marking or the learner            | Learner inserts own `source=student` (marking mistakes, or "Add to my notebook" from a checkpoint); resolves only via `resolve_mistake`; staff all in household, including changing `error_category` |
+| `fsrs_retention_items` | FSRS card per objective                         | Written only by `record_review()`; learners and staff read their own household |
+| `fsrs_review_log`      | One row per folded learning event (idempotency, compliance) | Insert only inside `record_review()`; readable by the learner and staff |
+| `trivia_modules`, `trivia_questions` | Documentary checkpoints, household-scoped | Staff author on `/parent/trivia`; learners read `learner_trivia_questions` (no `correct_letter` or `explanation`) and answer through `answer_trivia_checkpoint` |
+
+Mastery is never stored: `objective_mastery()` computes it on every read from `learning_events` and the FSRS card, and
+coverage is any objective with an event. Review compliance comes from `fsrs_review_log.previous_due_at / on_time`.
 
 ## Messaging (Phase 5 scaffolding)
 
@@ -64,5 +68,11 @@ Storage: private bucket `household-files`, paths `{household}/{kind}/{profile}/{
 | `evidence_portfolio_guard`   | Trigger: learners cannot set status or feedback          |
 | `device_session_state`       | Revoked-device check for middleware                       |
 | `answer_checkpoint(q, option, kind)` | Server-side MCQ check; writes the scored Active_Recall / Application_Question event |
+| `answer_trivia_checkpoint(q, option)` | Server-side documentary check; writes an Active_Recall event with no objective (Step 4.2) |
+| `pending_review_events(student, limit)` | Scored events with no FSRS row yet, oldest first (Step 4.3) |
+| `record_review(event, rating, card)` | Claims the event once in `fsrs_review_log` and upserts the card; returns `applied = false` on a replay (Step 4.3) |
+| `fsrs_retrievability(stability, last_reviewed_at, now)` | FSRS-6 forgetting curve with the whole-day floor ts-fsrs uses (Step 4.4) |
+| `objective_mastery(student)` | Per objective: recency-weighted event mastery, FSRS retrievability, the 70/30 blend and coverage (Step 4.4) |
+| `review_compliance(student)` | Reviews that had a due date, and how many beat it (Step 4.4) |
 | `finish_plan_item(id, minutes)` | Done + one Exposure_Lesson, idempotent (Step 4.1) |
 | `resolve_mistake(id, option?, correction?)` | Correct retry → resolved + Error_Correction; else correction waits for a parent |

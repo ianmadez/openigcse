@@ -4,7 +4,8 @@ import { isoDate } from "@/lib/data/dates";
 import { getLearningEvents, type LearningEvent } from "@/lib/data/events";
 import { getMistakes, type Mistake } from "@/lib/data/mistakes";
 import { getCheckpoints, type Checkpoint } from "@/lib/data/questions";
-import { getRetention, masteryByObjective } from "@/lib/data/retention";
+import { getObjectiveMastery } from "@/lib/data/mastery";
+import { getRetention } from "@/lib/data/retention";
 import { demoMode, getSetupState } from "@/lib/data/session";
 import type { TermSummary } from "@/lib/data/terms";
 import { getDayPlanItems, type DayPlanItem } from "@/lib/data/timetable";
@@ -123,13 +124,14 @@ export async function getLearnerWorkspace(learnerId: string | null, now: Date = 
   const id = learnerId ?? state.learnerId;
   const term = state.term;
 
-  const [subjects, mistakes, assessments, events, dayPlan, retention] = await Promise.all([
+  const [subjects, mistakes, assessments, events, dayPlan, retention, masteryRows] = await Promise.all([
     getEnrolledCurriculum(id, term?.id ?? ""),
     getMistakes(id),
     getTermAssessments(term?.id ?? "", now),
     getLearningEvents(id, isoDate(-28, now)),
     getDayPlanItems(id, isoDate(0, now)),
     getRetention(id),
+    getObjectiveMastery(id),
   ]);
 
   const objectiveCodeById = new Map<string, string>();
@@ -154,7 +156,17 @@ export async function getLearnerWorkspace(learnerId: string | null, now: Date = 
   }
 
   const checkpoints = await getCheckpoints([...objectiveCodeById.keys()], objectiveCodeById);
-  const mastery = masteryByObjective(retention);
+  // Step 4.5: the planner reads the same mastery `/progress` shows
+  // (`objective_mastery()`), plus each FSRS card's due date.
+  const mastery = new Map(masteryRows.items.map((row) => [row.objectiveId, row.mastery]));
+  const lastEventById = new Map(
+    masteryRows.items.filter((row) => row.lastEventAt).map((row) => [row.objectiveId, row.lastEventAt as string]),
+  );
+  const overdueById = new Map<string, number>();
+  for (const card of retention) {
+    if (!card.dueAt || new Date(card.dueAt).getTime() > now.getTime()) continue;
+    overdueById.set(card.objectiveId, daysAgo(card.dueAt, now));
+  }
 
   const openByObjective = new Map<string, number>();
   for (const mistake of mistakes) {
@@ -199,10 +211,14 @@ export async function getLearnerWorkspace(learnerId: string | null, now: Date = 
         minutes: 20,
         mastery: mastery.get(objective.id) ?? 0,
         openMistakes: openByObjective.get(objective.code) ?? 0,
-        lastStudiedDaysAgo: lastStudied.get(objective.code) ?? null,
+        // Events older than the 28-day window still count, via the mastery read.
+        lastStudiedDaysAgo:
+          lastStudied.get(objective.code) ??
+          (lastEventById.has(objective.id) ? daysAgo(lastEventById.get(objective.id)!, now) : null),
         daysUntilAssessment: assessment ? assessment.daysUntil : null,
         assessmentTitle: assessment?.title ?? null,
         hasLesson: resources.some((resource) => resource.objectiveCode === objective.code),
+        reviewOverdueDays: overdueById.get(objective.id) ?? null,
       });
     }
   }
@@ -261,6 +277,7 @@ function demoWorkspace(now: Date): Workspace {
       daysUntilAssessment: 2,
       assessmentTitle: "Biology weekly quiz",
       hasLesson: true,
+      reviewOverdueDays: null,
     },
     {
       objectiveCode: "PH-0625-1.1.1",
@@ -277,6 +294,7 @@ function demoWorkspace(now: Date): Workspace {
       daysUntilAssessment: null,
       assessmentTitle: null,
       hasLesson: true,
+      reviewOverdueDays: null,
     },
     {
       objectiveCode: "MA-0580-1.1.1",
@@ -293,6 +311,7 @@ function demoWorkspace(now: Date): Workspace {
       daysUntilAssessment: null,
       assessmentTitle: null,
       hasLesson: false,
+      reviewOverdueDays: null,
     },
   ];
 
@@ -336,6 +355,7 @@ function demoWorkspace(now: Date): Workspace {
         daysUntil: 2,
         durationMinutes: 25,
         totalMarks: 20,
+        score: null,
         status: "scheduled",
       },
     ],
@@ -352,6 +372,7 @@ function demoWorkspace(now: Date): Workspace {
         correctionSubmitted: false,
         correction: null,
         questionSnapshot: "Describe the characteristics of living organisms.",
+        source: "marking",
       },
     ],
     checkpoints: [

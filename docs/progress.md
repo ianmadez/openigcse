@@ -7,7 +7,7 @@ A phase is **Done** only when its roadmap exit gate has actually been observed. 
 reads or writes Postgres, but the two-device exit gate has not been re-run for this document. **Partial** means only
 part of the steps in that phase exist.
 
-Last checked: 2026-11-17.
+Last checked: 2026-11-25.
 
 | Phase | Roadmap goal                               | State                                                |
 | ----- | ------------------------------------------ | ---------------------------------------------------- |
@@ -15,7 +15,7 @@ Last checked: 2026-11-17.
 | 1     | Repositories replace the demo seam         | Done                                                 |
 | 2     | Parent timetable, student follows it       | Built; exit gate needs a phone and a student device  |
 | 3     | Parent authoring and the marking desk      | Done (exit gate observed 2026-11-17)                 |
-| 4     | The student learning loop                  | Partial: events are written, retention is not        |
+| 4     | The student learning loop                  | Done (exit gate observed 2026-11-25)                 |
 | 5     | Messaging, requests and remote monitoring  | Scaffolding only                                     |
 | 6     | Curriculum extraction for ten packages     | Partial: five drafts, three have no route            |
 | 7     | Mobile pass and installable app            | Not started                                          |
@@ -46,19 +46,43 @@ screen (3.4), marking desk through `save_assessment_marks` (3.5) and evidence re
 two browser sessions on a throwaway household: 3-question quiz, sat, one question marked down, mistake on `/review`,
 Resolve persisted. Plan and rulings: `docs/superpowers/plans/2026-11-17-phase3-authoring-and-marking.md`.
 
+**Phase 4 - the student learning loop (done).** Step 4.1 rebuilds `/today` from `day_plan_items`; Start, Finish,
+Skip and reordering write to Postgres. Step 4.2 makes every checkpoint produce a scored event: `answer_checkpoint()`
+writes `Active_Recall` or `Application_Question` on `/today`, `answer_trivia_checkpoint()` writes `Active_Recall` for a
+documentary, and a wrong answer offers "Add to my notebook" with a reason the learner picks and a parent can change on
+the marking desk. Trivia is household content authored on `/parent/trivia`; learners read `learner_trivia_questions`,
+which carries no key, and the correct letter plus explanation come back only after an answer.
+
+Step 4.3 adds spaced review with `ts-fsrs`: `src/lib/retention/fsrs.ts` maps `score_ratio` to a rating and schedules the
+next card, and `record_review()` claims each learning event once through `fsrs_review_log`, so two devices answering the
+same checkpoint move the card once. Answering a checkpoint folds the event immediately; marking a paper folds the
+`Formal_Assessment` events; opening `/review` folds anything left over. `/review` now has two tabs, **Due for review**
+(FSRS, with the same checkpoint shown inline) and **Mistake notebook**.
+
+Step 4.4 computes mastery on read. `objective_mastery()` weights each scored event (Formal 1.0, Application 0.8,
+Recall 0.6), halves every event's weight every 30 days, and blends the weighted mean 70/30 with FSRS retrievability;
+coverage counts any objective with an event. `src/lib/retention/mastery.ts` is the tested twin, including a
+`retrievabilityOf()` that matches the SQL forgetting curve and ts-fsrs. The student `/progress` gets a syllabus map
+coloured by mastery plus minutes against the plan and the next exam; the parent `/progress` gets per-subject coverage,
+assessment average, review compliance and an explicitly unofficial readiness index.
+
+Step 4.5 feeds the planner real inputs: `getLearnerWorkspace()` takes mastery from `objective_mastery()` (the same
+number `/progress` shows), last-studied from its `last_event_at`, and a `reviewOverdueDays` signal from each FSRS card's
+due date. A due review scores +50 (+1 per overdue day, capped at 7), so below the 70% target it always outranks a
+never-studied objective; the exit gate showed that at +15 a missed objective lost to every fresh one. Scoring
+boundaries and the period allowance (`allowanceFor`) are pinned in `nextBestActivity.test.ts`. Exit gate observed in
+`verify:phase4`: lesson, then a wrong checkpoint, mastery drops, a review is due by tomorrow, and tomorrow's ranking
+picks that objective. All migrations are applied.
+
 ## What still looks finished but is not
 
-- **Answer keys (Phase 3, fix in 4.2/8).** Pages never send answer keys, but RLS lets any household member read
-  `question_templates` columns through the REST API with their own token.
 - **Forms that lose input on error (Phase 0-2).** Onboarding, pairing, settings, PIN gate and overrides use
   `<form action>`, which React 19 resets even when the server refuses.
 - **Real household terms 2 and 3** carry Term 1's mid-term and final weeks (old onboarding bug, now fixed); the term
   planner flags them and refuses to save until a parent corrects them.
 - **AO tagging** waits for assessment objectives to be imported (none are yet).
-- **Review (Phase 4.3).** `/review` lists mistakes and lets the learner resolve one, but there is no FSRS tab.
-  `getRetention()` only reads `fsrs_retention_items`; nothing writes it, so mastery renders as zero.
-- **Checkpoints (Phase 4.2).** The stopwatch posts `Exposure_Lesson`, and the stuck button posts an
-  `Application_Question` with `flagged_stuck`; answering a checkpoint writes nothing.
+- **Trivia carries no objective (Phase 4.2).** A documentary checkpoint writes `Active_Recall` with `objective_id`
+  null, so it counts towards time and streak but not mastery. Only syllabus checkpoints move mastery.
 - **Requests (Phase 5.1).** `getRequests()` reads the table and the parent overview counts them, but no learner flow
   creates a typed request with a decision, and there are no messages, realtime subscription, push or `/parent/live`.
 - **Curriculum (Phase 6).** The parser, ingest, validate and import pipeline work, and all ten PDFs are in
@@ -69,40 +93,44 @@ Resolve persisted. Plan and rulings: `docs/superpowers/plans/2026-11-17-phase3-a
 
 ## Known gaps worth fixing on the way through
 
-1. `POST /api/learning-events` and `PATCH /api/mistakes` use the service-role client and assume "one student per
-   household". That contradicts Phase 0 step 0.2 ("move all reads off `createAdminClient()`") and will break the first
-   time a household has a second learner.
-2. `useLocalDraft` survives only for the marking desk; it should disappear with Phase 3 rather than spread.
-3. `ARCHITECTURE_MAP.txt` predates Phases 0-2 and still describes bundled JSON curriculum and a demo seam.
-4. No service worker, manifest or offline queue yet, so `/today` needs a connection and failed event posts are only
+1. `useLocalDraft` survives only on `/parent/focus`, where the controls are not written to Postgres at all. It should
+   go when the focus policy gains a real form.
+2. `ARCHITECTURE_MAP.txt` predates Phases 0-2 and still describes bundled JSON curriculum and a demo seam.
+3. No service worker, manifest or offline queue yet, so `/today` needs a connection and failed event posts are only
    reported to the learner, not retried.
 
 ## Verification
 
-Every command below passed on 2026-11-17 at the current tree:
+Every command below passed on 2026-11-25 at the current tree:
 
 ```powershell
 pnpm typecheck      # clean
 pnpm test:parser    # 7 passed
 pnpm validate       # 5 packages structurally valid
-pnpm test:unit      # 53 passed
+pnpm test:unit      # 118 passed
 pnpm test:rls       # 22/22
 pnpm verify:phase3  # 34/34, 0 leftovers
-pnpm test:unit      # 60 passed after the review fixes
+pnpm verify:phase4  # 74/74, 0 leftovers (includes the Phase 4 exit gate)
 pnpm check:contrast # 56/56 pairs
 pnpm build          # clean
 ```
 
-A fresh whole-branch review found one critical and two important issues (a stale second device could blank
-answers, hand-in after a failed save, editing questions on sat papers); all three are fixed with tests and re-checked in
-the browser. Deferred minors and every ruling are in `docs/superpowers/plans/2026-11-17-phase3-ledger.md`.
+
+Step 4.2 was also walked in a browser at 390 px on a throwaway household: a wrong `/today` checkpoint and a wrong
+documentary checkpoint each reached the notebook (row `source=student`, linked question on `/review`), the parent
+authored and edited a module on `/parent/trivia`, the key never reached the page, and no checked screen scrolled
+sideways. The end-of-phase pass (2026-11-25) opened `/today`, `/review`, `/progress`, `/trivia`, a documentary,
+`/parent/marking-desk`, `/parent/progress` and `/parent/trivia` at 390 px and 1280 px: no sideways scroll, no console
+errors, no NaN. It fixed "in 0 days" wording, a topic count that included parent topic rows, "1 checkpoints", and the
+shared `Panel` header, whose action squeezed the description into a narrow column on phones. The earlier
+whole-branch Phase 3 review's deferred minors and rulings remain in
+`docs/superpowers/plans/2026-11-17-phase3-ledger.md`.
 
 `pnpm check:contrast` and `pnpm test:rls` need a built tree and a linked Supabase project respectively; run them before
 claiming a UI or policy change is done. `pnpm build` is the last check, not the first.
 
 ## Next, in order
 
-Phase 4 next: start with the RLS tightening Step 4.2 needs (answer keys, learner-writable events and mistakes), then
-FSRS with `ts-fsrs`, the mastery view and checkpoint events. Then Phase 5.
+Phase 5 (messaging, requests and remote monitoring).
 Phase 6 runs alongside all of them, starting with the heading and Core/Supplement parser variants that leave 0455 with no
 topics and 0460, 0470, 0530 without packages.

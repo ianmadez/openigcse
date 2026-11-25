@@ -16,3 +16,11 @@ export function checkpointMessage(result: { correct: boolean; correctOption: str
   if (result.correct) return "Correct.";
   return result.correctOption ? `Not quite. The answer is ${result.correctOption}.` : "Not quite.";
 }
+
+/**
+ * The event a checkpoint writes (Step 4.2). A practice task earns Application_Question; a lesson
+ * or a review earns Active_Recall.
+ */
+export function checkpointKind(action: "review" | "learn" | "practice"): "recall" | "practice" {
+  return action === "practice" ? "practice" : "recall";
+}

@@ -29,12 +29,13 @@ export function Panel({
   return (
     <section className={cn("surface p-4 sm:p-5", className)}>
       {(title || action) && (
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <div>
-            {title && <h2 className="text-heading font-semibold text-primary">{title}</h2>}
-            {description && <p className="mt-1 text-caption text-muted">{description}</p>}
+        <div className="mb-3">
+          {/* The action sits beside the title only, so on a phone it never squeezes the description. */}
+          <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+            {title && <h2 className="min-w-0 text-heading font-semibold text-primary">{title}</h2>}
+            {action && <div className="shrink-0">{action}</div>}
           </div>
-          {action}
+          {description && <p className="mt-1 text-caption text-muted">{description}</p>}
         </div>
       )}
       {children}

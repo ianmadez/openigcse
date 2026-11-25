@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { checkpointMessage, resolveMode } from "./resolve";
+import { checkpointKind, checkpointMessage, resolveMode } from "./resolve";
 
 test("a resolved mistake is done", () => {
   assert.equal(resolveMode({ status: "resolved", questionType: "MCQ", hasOptions: true, correctionSubmitted: false }), "done");
@@ -28,4 +28,10 @@ test("checkpoint message names the right answer when wrong", () => {
   assert.equal(checkpointMessage({ correct: true, correctOption: "B" }), "Correct.");
   assert.equal(checkpointMessage({ correct: false, correctOption: "B" }), "Not quite. The answer is B.");
   assert.equal(checkpointMessage({ correct: false, correctOption: null }), "Not quite.");
+});
+
+test("a practice task's checkpoint writes Application_Question, everything else recall", () => {
+  assert.equal(checkpointKind("practice"), "practice");
+  assert.equal(checkpointKind("learn"), "recall");
+  assert.equal(checkpointKind("review"), "recall");
 });

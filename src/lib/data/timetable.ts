@@ -194,6 +194,26 @@ export async function getDayPlanItems(learnerId: string, date: string): Promise<
   });
 }
 
+/**
+ * Minutes the day plans expected over a date range, breaks excluded. The student progress screen
+ * reads actual time from learning events, so the comparison is planned against logged.
+ */
+export async function getPlannedMinutes(learnerId: string, fromDate: string, toDate: string): Promise<number> {
+  if (!learnerId) return 0;
+
+  const supabase = await createServerClientInstance();
+  const { data } = await supabase
+    .from("day_plan_items")
+    .select("planned_minutes, item_type")
+    .eq("student_id", learnerId)
+    .gte("plan_date", fromDate)
+    .lte("plan_date", toDate);
+
+  return (data ?? [])
+    .filter((row) => row.item_type !== "break")
+    .reduce((sum, row) => sum + (row.planned_minutes ?? 0), 0);
+}
+
 export type SlotInput = {
   id?: string;
   termId: string;

@@ -4,12 +4,13 @@ import { ArrowDown, ArrowUp, Check, CircleDot, Clock, Play } from "lucide-react"
 import { useState } from "react";
 
 import { SandboxedVideoPlayer } from "@/components/player/SandboxedVideoPlayer";
+import { AddToNotebook } from "@/components/student/AddToNotebook";
 import { StuckButton } from "@/components/student/StuckButton";
 import { StudyTimer } from "@/components/student/StudyTimer";
 import { EmptyState } from "@/components/ui/primitives";
-import { answerCheckpointAction } from "@/app/(student)/learning-actions";
+import { addCheckpointMistakeAction, answerCheckpointAction } from "@/app/(student)/learning-actions";
 import type { Checkpoint, LessonResource } from "@/lib/data/workspace";
-import { checkpointMessage } from "@/lib/learning/resolve";
+import { checkpointKind, checkpointMessage } from "@/lib/learning/resolve";
 import type { PlannedTask } from "@/lib/planning/nextBestActivity";
 import { cn } from "@/lib/utils/cn";
 
@@ -35,10 +36,10 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
   >(null);
   const [checking, setChecking] = useState(false);
 
-  const check = async (questionId: string) => {
+  const check = async (questionId: string, kind: "recall" | "practice") => {
     if (!selected) return;
     setChecking(true);
-    const outcome = await answerCheckpointAction({ questionId, option: selected }).catch(() => ({
+    const outcome = await answerCheckpointAction({ questionId, option: selected, kind }).catch(() => ({
       ok: false as const,
       error: "The server could not be reached.",
     }));
@@ -254,7 +255,7 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
                 <>
                   <button
                     type="button"
-                    onClick={() => check(checkpoint.id)}
+                    onClick={() => check(checkpoint.id, checkpointKind(active.action))}
                     disabled={!selected || checking}
                     className="btn-primary pressable mt-2.5 w-full disabled:cursor-not-allowed disabled:opacity-40"
                   >
@@ -267,18 +268,27 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
                   )}
                 </>
               ) : (
-                <div
-                  role="status"
-                  className={cn(
-                    "mt-2.5 rounded-panel border px-3 py-2 text-caption",
-                    result.correct
-                      ? "border-success/40 bg-success-soft text-success-text"
-                      : "border-warning/40 bg-warning-soft text-warning-text",
+                <>
+                  <div
+                    role="status"
+                    className={cn(
+                      "mt-2.5 rounded-panel border px-3 py-2 text-caption",
+                      result.correct
+                        ? "border-success/40 bg-success-soft text-success-text"
+                        : "border-warning/40 bg-warning-soft text-warning-text",
+                    )}
+                  >
+                    <p className="font-semibold">{checkpointMessage(result)}</p>
+                    {result.explanation && <p className="mt-0.5">{result.explanation}</p>}
+                  </div>
+                  {!result.correct && selected && (
+                    <AddToNotebook
+                      onAdd={(category) =>
+                        addCheckpointMistakeAction({ questionId: checkpoint.id, option: selected, category })
+                      }
+                    />
                   )}
-                >
-                  <p className="font-semibold">{checkpointMessage(result)}</p>
-                  {result.explanation && <p className="mt-0.5">{result.explanation}</p>}
-                </div>
+                </>
               )}
             </div>
           ) : (

@@ -1,4 +1,5 @@
 import { CalendarClock, ShieldCheck } from "lucide-react";
+import { relativeDays } from "@/lib/data/dates";
 
 import { NeedsSignIn } from "@/components/auth/NeedsSignIn";
 import { DayStrip } from "@/components/student/DayStrip";
@@ -76,14 +77,14 @@ export default async function TodayPage() {
           : workspace.planned.length > 0
             ? `${workspace.planned.length} things are worth doing today, in the order you choose. ${minutes} minutes in total.`
             : "Nothing is queued yet."}{" "}
-        {next ? `The ${next.title.toLowerCase()} is ${next.daysUntil} days away.` : ""}
+        {next ? `The ${next.title.toLowerCase()} is ${relativeDays(next.daysUntil)}.` : ""}
       </PageHeading>
 
       {next && (
         <div className="mb-5 flex flex-wrap items-center gap-2">
           <Status tone="warning">
             <CalendarClock aria-hidden="true" className="size-3.5" strokeWidth={2} />
-            {next.title} in {next.daysUntil} days
+            {next.title} {relativeDays(next.daysUntil)}
           </Status>
           <Status tone="neutral">
             <ShieldCheck aria-hidden="true" className="size-3.5" strokeWidth={2} />
@@ -122,7 +123,7 @@ export default async function TodayPage() {
 
       <div className="mt-5 grid items-start gap-3 sm:grid-cols-2">
         {workspace.planned.length > 0 && (
-          <Panel title="Why this order" description="Ranked from mistakes, assessment dates and mastery.">
+          <Panel title="Why this order" description="Ranked from due reviews, mistakes, assessment dates and mastery.">
             <ul className="space-y-2 text-caption leading-relaxed text-secondary">
               {workspace.planned.map((task) => (
                 <li key={task.objectiveCode} className="flex gap-2">
