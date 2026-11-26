@@ -410,18 +410,20 @@ export async function importPackage(
   const changedMeaning = new Set(pkg.lineage.filter((row) => row.method !== "unchanged").map((row) => row.from_code));
   const retiredIds = new Map<string, string>();
   const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  for (const row of (existingObjectives ?? []) as Array<{
-    id: string;
-    objective_code: string;
-    retired_at: string | null;
-  }>) {
+  const rows = (existingObjectives ?? []) as Array<{ id: string; objective_code: string; retired_at: string | null }>;
+  // Codes whose old meaning is already retired: the active row with that code is the replacement itself.
+  const alreadyRetired = new Set(
+    rows.filter((row) => row.retired_at).map((row) => row.objective_code.replace(/~retired-\d{8}$/, "")),
+  );
+  for (const row of rows) {
     if (row.retired_at) {
       // Retired by an earlier import: still a valid source for links confirmed since.
       const original = row.objective_code.replace(/~retired-\d{8}$/, "");
       if (!retiredIds.has(original)) retiredIds.set(original, row.id);
       continue;
     }
-    if (newCodes.has(row.objective_code) && !changedMeaning.has(row.objective_code)) continue;
+    const replaced = changedMeaning.has(row.objective_code) && !alreadyRetired.has(row.objective_code);
+    if (newCodes.has(row.objective_code) && !replaced) continue;
     const { error } = await client
       .from("learning_objectives")
       .update({ objective_code: `${row.objective_code}~retired-${stamp}`, retired_at: new Date().toISOString() })
