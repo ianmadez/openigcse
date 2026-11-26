@@ -94,10 +94,9 @@ end the school day; the digest goes once per day.
   planner flags them and refuses to save until a parent corrects them.
 - **AO tagging** waits for assessment objectives to be imported (none are yet).
   creates a typed request with a decision, and there are no messages, realtime subscription, push or `/parent/live`.
-- **Curriculum (Phase 6).** Step 6.1 landed 2026-11-26 on `phase-6`: the parser reads all ten PDFs (one reader per
-  layout family, counts pinned in `pnpm test:parser`), but the packages in `curriculum-packages/` have not been
-  regenerated yet. They are still the five `manual-draft` packages with 15 objectives each, and 0478, 0500 and 0580
-  have no entry routes, so those subjects cannot be enrolled. Next: Step 6.2 (assessment overview and entry routes).
+- **Curriculum (Phase 6).** All ten packages are extracted from the PDFs and imported (2026-11-26), with entry
+  routes, AOs and command words. They are still drafts: each needs a parent review on `/parent/curriculum` before the
+  exit gate (`pnpm validate --gate`) passes. Only 0610 and 0625 are enrolled; add the rest on the term planner.
 - **Kiosk (Phase 9).** `src-tauri/` holds four zero-byte files, and the old kiosk components were deleted. Nothing
   enforces focus beyond the `focus_policies` row the parent can edit.
 

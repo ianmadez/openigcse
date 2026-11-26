@@ -415,7 +415,12 @@ export async function importPackage(
     objective_code: string;
     retired_at: string | null;
   }>) {
-    if (row.retired_at) continue;
+    if (row.retired_at) {
+      // Retired by an earlier import: still a valid source for links confirmed since.
+      const original = row.objective_code.replace(/~retired-\d{8}$/, "");
+      if (!retiredIds.has(original)) retiredIds.set(original, row.id);
+      continue;
+    }
     if (newCodes.has(row.objective_code) && !changedMeaning.has(row.objective_code)) continue;
     const { error } = await client
       .from("learning_objectives")
