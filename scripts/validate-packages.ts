@@ -75,7 +75,8 @@ ${entry.name}`);
     process.exit(1);
   }
 
-  console.log(`\nAll ${rows.length} packages are structurally valid.`);
+  console.log(`
+All ${rows.length} packages are ${GATE ? "verified, have an entry route, and are " : ""}structurally valid.`);
 }
 
 main().catch((error) => {

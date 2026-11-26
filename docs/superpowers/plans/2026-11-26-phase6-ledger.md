@@ -39,6 +39,12 @@ Rulings (what, why, cost if wrong) and deferred minors.
 12. **Production migrations wait for one approval.** `supabase db push --remote` needs the user's consent in agent mode,
     so 6.2's `command_words` and 6.4's lineage table are applied together near the end of the phase.
 
+13. **Verification by spot-check, at the user's request (2026-11-26).** Six objectives per package (spread across the
+    package) were found on their recorded PDF page: 60/60, three after a by-hand look because superscripts reorder
+    the text. Progress links: the household's single learning event (CS 0478 1.1.2, convert between bases) was
+    checked by hand and confirmed; other undecided links carry no household data, so text matches of 40% or more were
+    confirmed and the rest marked "no successor". `reviewed_by` says it was a spot-check.
+
 ## Deferred minors
 
 - Reference-data RLS lets staff of any household write shared curriculum rows (pre-existing, all curriculum tables;

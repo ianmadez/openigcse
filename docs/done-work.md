@@ -77,7 +77,7 @@ Summary: [phases/phase-3.md](phases/phase-3.md).
 
 | Phase | Goal                                    | State            |
 | ----- | --------------------------------------- | ---------------- |
-| 6     | Curriculum extraction, ten packages     | Built; parent review pending |
+| 6     | Curriculum extraction, ten packages     | Done, gate observed 2026-11-26 |
 | 7     | Mobile pass and installable app         | Not started      |
 | 8     | Hardening and staging                   | Not started      |
 | 9     | Device lockdown app                     | Not started      |

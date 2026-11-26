@@ -32,9 +32,11 @@ skew); it now asks the database. `pnpm build` clean.
 
 ## Carried forward
 
-- **Exit gate is the parent's step:** `pnpm validate --gate` fails only on "not verified". Review each package on
-  `/parent/curriculum`, then re-run `pnpm run import --subject=…` (note `pnpm import` is pnpm's own command).
-- Enrol the learner in the new subjects on the term planner (only 0610 and 0625 are enrolled).
+- **Exit gate observed 2026-11-26:** `pnpm validate --gate` passes for all ten after a spot-check verification (ledger
+  ruling 13); the verified packages were re-imported. Use `pnpm run import` (`pnpm import` is pnpm's own command).
+- The household's one lesson on a retired objective moves when a guardian presses "Move progress" on
+  `/parent/curriculum`.
+- Terms, enrolment and term planning are left to the household; user guides come after Phase 9.
 - The browser walk of the new screens at 390/1280 px did not finish (the run timed out loading the list on a cold
   dev server); repeat it before Phase 7.
 - Maths notation from the PDF text layer needs hand fixes on review. Spanish topic areas are not extracted.

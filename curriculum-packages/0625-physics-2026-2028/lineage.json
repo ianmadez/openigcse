@@ -3,9 +3,9 @@
     "from_code": "PH-0625-1.1.1",
     "from_text": "Use and convert SI units and select suitable measuring instruments for length, volume and time.",
     "to_code": null,
-    "method": "text-match",
+    "method": "manual",
     "score": 0,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-1.2.1",
@@ -13,95 +13,95 @@
     "to_code": "PH-0625-1.2.11",
     "method": "text-match",
     "score": 0.56,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-1.3.1",
     "from_text": "Distinguish between mass and weight, calculate weight using W = mg, and calculate density using = m / V.",
     "to_code": null,
-    "method": "text-match",
+    "method": "manual",
     "score": 0,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-1.4.1",
     "from_text": "Describe the effects of forces and apply Newton's laws to calculate resultant force, mass and acceleration.",
     "to_code": null,
-    "method": "text-match",
+    "method": "manual",
     "score": 0,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-1.5.1",
     "from_text": "Describe energy stores and transfers and calculate work done, power and efficiency.",
-    "to_code": "PH-0625-1.7.3.3",
-    "method": "text-match",
-    "score": 0.25,
-    "confirmed": false
+    "to_code": null,
+    "method": "manual",
+    "score": 0,
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-2.1.1",
     "from_text": "Use the kinetic particle model to explain the states of matter and changes of state.",
-    "to_code": "PH-0625-2.1.2.4",
-    "method": "text-match",
-    "score": 0.27,
-    "confirmed": false
+    "to_code": null,
+    "method": "manual",
+    "score": 0,
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-2.2.1",
     "from_text": "Explain thermal expansion and describe how temperature is measured using thermometers.",
-    "to_code": "PH-0625-2.2.1.2",
-    "method": "text-match",
-    "score": 0.27,
-    "confirmed": false
+    "to_code": null,
+    "method": "manual",
+    "score": 0,
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-2.3.1",
     "from_text": "Describe conduction, convection and radiation and explain how each transfer is reduced in everyday situations.",
     "to_code": null,
-    "method": "text-match",
+    "method": "manual",
     "score": 0,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-2.4.1",
     "from_text": "Calculate the energy required to change the temperature of a substance using E = mcT.",
     "to_code": null,
-    "method": "text-match",
+    "method": "manual",
     "score": 0,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-2.5.1",
     "from_text": "Explain latent heat and calculate the energy required for a change of state using E = mL.",
     "to_code": null,
-    "method": "text-match",
+    "method": "manual",
     "score": 0,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-3.1.1",
     "from_text": "Describe the properties of transverse and longitudinal waves and use the wave equation v = f.",
-    "to_code": "PH-0625-3.4.2",
-    "method": "text-match",
-    "score": 0.33,
-    "confirmed": false
+    "to_code": null,
+    "method": "manual",
+    "score": 0,
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-3.2.1",
     "from_text": "Describe reflection and refraction of light and draw accurate ray diagrams.",
     "to_code": null,
-    "method": "text-match",
+    "method": "manual",
     "score": 0,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-3.3.1",
     "from_text": "Describe the electromagnetic spectrum, including the uses and dangers of each region.",
     "to_code": null,
-    "method": "text-match",
+    "method": "manual",
     "score": 0,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-3.4.1",
@@ -109,14 +109,14 @@
     "to_code": "PH-0625-3.4.7",
     "method": "text-match",
     "score": 0.54,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "from_code": "PH-0625-3.5.1",
     "from_text": "Explain total internal reflection and describe its use in optical fibres and prisms.",
-    "to_code": "PH-0625-3.2.2.5",
-    "method": "text-match",
-    "score": 0.33,
-    "confirmed": false
+    "to_code": null,
+    "method": "manual",
+    "score": 0,
+    "confirmed": true
   }
 ]

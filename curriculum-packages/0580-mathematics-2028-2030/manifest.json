@@ -21,10 +21,12 @@
     "is_elective": false
   },
   "provenance": {
+    "reviewed_by": "Spot-check by Claude (6 objectives per package found on their PDF page)",
+    "reviewed_at": "2026-11-26T07:02:41.318Z",
     "method": "pdf-extraction",
     "source_file": "raw-syllabuses/0580-mathematics-2028-2030.pdf",
     "extracted_at": "2026-11-26T06:15:07.292Z",
-    "verified": false,
+    "verified": true,
     "notes": "Parsed 5203 text items with the maths layout (tiered). Topics, objectives, papers, entry routes, assessment objectives and command words all come from the PDF."
   },
   "files": {

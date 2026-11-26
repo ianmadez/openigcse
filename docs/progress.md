@@ -94,9 +94,9 @@ end the school day; the digest goes once per day.
   planner flags them and refuses to save until a parent corrects them.
 - **AO tagging** waits for assessment objectives to be imported (none are yet).
   creates a typed request with a decision, and there are no messages, realtime subscription, push or `/parent/live`.
-- **Curriculum (Phase 6).** All ten packages are extracted from the PDFs and imported (2026-11-26), with entry
-  routes, AOs and command words. They are still drafts: each needs a parent review on `/parent/curriculum` before the
-  exit gate (`pnpm validate --gate`) passes. Only 0610 and 0625 are enrolled; add the rest on the term planner.
+- **Curriculum (Phase 6).** Done 2026-11-26: ten verified packages imported with entry routes, AOs and command words
+  (exit gate `pnpm validate --gate` passes; verification was a spot-check, see the Phase 6 ledger). Enrolment and term
+  planning are left to the household.
 - **Kiosk (Phase 9).** `src-tauri/` holds four zero-byte files, and the old kiosk components were deleted. Nothing
   enforces focus beyond the `focus_policies` row the parent can edit.
 
@@ -148,7 +148,6 @@ and belongs with Phase 7's installable app (iOS only delivers push to a home-scr
 
 ## Next, in order
 
-Phase 6 (curriculum extraction), then Phase 7 (mobile pass and installable app, which also carries the real-phone push
+Phase 7 (mobile pass and installable app, which also carries the real-phone push
 check).
-Phase 6 runs alongside all of them, starting with the heading and Core/Supplement parser variants that leave 0455 with no
-topics and 0460, 0470, 0530 without packages.
+It also repeats the browser walk of `/parent/curriculum` at 390 and 1280 px that Phase 6 could not finish.

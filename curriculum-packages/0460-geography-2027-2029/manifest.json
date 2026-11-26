@@ -20,10 +20,12 @@
     "is_elective": false
   },
   "provenance": {
+    "reviewed_by": "Spot-check by Claude (6 objectives per package found on their PDF page)",
+    "reviewed_at": "2026-11-26T07:02:41.306Z",
     "method": "pdf-extraction",
     "source_file": "raw-syllabuses/0460-geography-2027-2029.pdf",
     "extracted_at": "2026-11-26T06:11:44.598Z",
-    "verified": false,
+    "verified": true,
     "notes": "Parsed 2477 text items with the decimal layout (untiered). Topics, objectives, papers, entry routes, assessment objectives and command words all come from the PDF."
   },
   "files": {

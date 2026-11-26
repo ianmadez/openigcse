@@ -21,10 +21,12 @@
     "is_elective": false
   },
   "provenance": {
+    "reviewed_by": "Spot-check by Claude (6 objectives per package found on their PDF page)",
+    "reviewed_at": "2026-11-26T07:02:41.328Z",
     "method": "pdf-extraction",
     "source_file": "raw-syllabuses/0625-physics-2026-2028.pdf",
     "extracted_at": "2026-11-26T06:15:14.008Z",
-    "verified": false,
+    "verified": true,
     "notes": "Parsed 4068 text items with the science layout (tiered). Topics, objectives, papers, entry routes, assessment objectives and command words all come from the PDF."
   },
   "files": {
