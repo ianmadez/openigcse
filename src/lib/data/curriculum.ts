@@ -94,6 +94,8 @@ async function loadSubjectBodies(
       .from("topics")
       .select("id, syllabus_version_id, parent_topic_id, topic_code, name, sequence")
       .in("syllabus_version_id", batch)
+      // Retired topics stay in the database for history but are not taught (Step 6.4).
+      .is("retired_at", null)
       .order("sequence", { ascending: true });
     return (data ?? []) as TopicRow[];
   });
@@ -104,6 +106,7 @@ async function loadSubjectBodies(
       .from("learning_objectives")
       .select("id, topic_id, objective_code, summary_title, official_description, tier, command_words")
       .in("topic_id", batch)
+      .is("retired_at", null)
       .order("sequence", { ascending: true });
     return (data ?? []) as ObjectiveRow[];
   });

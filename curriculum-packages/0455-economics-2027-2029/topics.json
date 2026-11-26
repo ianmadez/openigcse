@@ -1,0 +1,224 @@
+[
+  {
+    "topic_code": "1",
+    "name": "The basic economic problem",
+    "sequence": 1,
+    "subtopics": [
+      {
+        "topic_code": "1.1",
+        "name": "The nature of the basic economic problem",
+        "sequence": 1
+      },
+      {
+        "topic_code": "1.2",
+        "name": "Factors of production",
+        "sequence": 2
+      },
+      {
+        "topic_code": "1.3",
+        "name": "Opportunity cost",
+        "sequence": 3
+      },
+      {
+        "topic_code": "1.4",
+        "name": "Production possibility curve (PPC) diagrams",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "2",
+    "name": "The allocation of resources",
+    "sequence": 2,
+    "subtopics": [
+      {
+        "topic_code": "2.1",
+        "name": "The role of markets in allocating resources",
+        "sequence": 1
+      },
+      {
+        "topic_code": "2.2",
+        "name": "Demand",
+        "sequence": 2
+      },
+      {
+        "topic_code": "2.3",
+        "name": "Supply",
+        "sequence": 3
+      },
+      {
+        "topic_code": "2.4",
+        "name": "Price determination",
+        "sequence": 4
+      },
+      {
+        "topic_code": "2.5",
+        "name": "Price changes",
+        "sequence": 5
+      },
+      {
+        "topic_code": "2.6",
+        "name": "Price elasticity of demand (PED)",
+        "sequence": 6
+      },
+      {
+        "topic_code": "2.7",
+        "name": "Price elasticity of supply (PES)",
+        "sequence": 7
+      },
+      {
+        "topic_code": "2.8",
+        "name": "Market economic system",
+        "sequence": 8
+      },
+      {
+        "topic_code": "2.9",
+        "name": "Market failure",
+        "sequence": 9
+      },
+      {
+        "topic_code": "2.10",
+        "name": "Mixed economic system",
+        "sequence": 10
+      }
+    ]
+  },
+  {
+    "topic_code": "3",
+    "name": "Microeconomic decision-makers",
+    "sequence": 3,
+    "subtopics": [
+      {
+        "topic_code": "3.1",
+        "name": "Money and banking",
+        "sequence": 1
+      },
+      {
+        "topic_code": "3.2",
+        "name": "Households",
+        "sequence": 2
+      },
+      {
+        "topic_code": "3.3",
+        "name": "Workers",
+        "sequence": 3
+      },
+      {
+        "topic_code": "3.4",
+        "name": "Firms",
+        "sequence": 4
+      },
+      {
+        "topic_code": "3.5",
+        "name": "Firms and production",
+        "sequence": 5
+      },
+      {
+        "topic_code": "3.6",
+        "name": "Firms’ costs, revenue and objectives",
+        "sequence": 6
+      },
+      {
+        "topic_code": "3.7",
+        "name": "Types of markets",
+        "sequence": 7
+      }
+    ]
+  },
+  {
+    "topic_code": "4",
+    "name": "Government and the macroeconomy",
+    "sequence": 4,
+    "subtopics": [
+      {
+        "topic_code": "4.1",
+        "name": "Government macroeconomic intervention",
+        "sequence": 1
+      },
+      {
+        "topic_code": "4.2",
+        "name": "Fiscal policy",
+        "sequence": 2
+      },
+      {
+        "topic_code": "4.3",
+        "name": "Monetary policy",
+        "sequence": 3
+      },
+      {
+        "topic_code": "4.4",
+        "name": "Supply-side policy",
+        "sequence": 4
+      },
+      {
+        "topic_code": "4.5",
+        "name": "Economic growth",
+        "sequence": 5
+      },
+      {
+        "topic_code": "4.6",
+        "name": "Employment and unemployment",
+        "sequence": 6
+      },
+      {
+        "topic_code": "4.7",
+        "name": "Inflation",
+        "sequence": 7
+      }
+    ]
+  },
+  {
+    "topic_code": "5",
+    "name": "Economic development",
+    "sequence": 5,
+    "subtopics": [
+      {
+        "topic_code": "5.1",
+        "name": "Living standards",
+        "sequence": 1
+      },
+      {
+        "topic_code": "5.2",
+        "name": "Poverty",
+        "sequence": 2
+      },
+      {
+        "topic_code": "5.3",
+        "name": "Population",
+        "sequence": 3
+      },
+      {
+        "topic_code": "5.4",
+        "name": "Differences in economic development between countries",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "6",
+    "name": "International trade and globalisation",
+    "sequence": 6,
+    "subtopics": [
+      {
+        "topic_code": "6.1",
+        "name": "Specialisation and free trade",
+        "sequence": 1
+      },
+      {
+        "topic_code": "6.2",
+        "name": "Globalisation and trade restrictions",
+        "sequence": 2
+      },
+      {
+        "topic_code": "6.3",
+        "name": "Foreign exchange rates",
+        "sequence": 3
+      },
+      {
+        "topic_code": "6.4",
+        "name": "Current account of the balance of payments",
+        "sequence": 4
+      }
+    ]
+  }
+]

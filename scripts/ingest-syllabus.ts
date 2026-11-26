@@ -10,13 +10,20 @@
  * be found it exits non-zero instead of writing a partial package.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
-
 import { getSubject, registry } from "../src/lib/curriculum/registry";
+import { proposeLineage, remapResources } from "../src/lib/curriculum/lineage";
 import { SCHEMA_VERSION } from "../src/lib/curriculum/schemas";
-import { commandWordOf, parseSubjectContent, type TextItem } from "./lib/syllabusParser";
+import {
+  buildEntryRoutes,
+  parseAssessmentObjectives,
+  parseCommandWords,
+  parseComponents,
+} from "./lib/assessmentParser";
+import { extractItems } from "./lib/pdfItems";
+import { commandWordOf, parseSyllabus } from "./lib/syllabusParser";
 
 const ROOT = process.cwd();
 const RAW_DIR = path.join(ROOT, "raw-syllabuses");
@@ -42,44 +49,21 @@ type Args = {
   years?: string;
   dryRun: boolean;
   list: boolean;
+  force: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
-  const args: Args = { dryRun: false, list: false };
+  const args: Args = { dryRun: false, list: false, force: false };
   for (const raw of argv) {
     if (raw === "--dry-run") args.dryRun = true;
     else if (raw === "--list") args.list = true;
+    else if (raw === "--force") args.force = true;
     else if (raw.startsWith("--subject=")) args.subject = raw.slice("--subject=".length);
     else if (raw.startsWith("--pdf=")) args.pdf = raw.slice("--pdf=".length);
     else if (raw.startsWith("--url=")) args.url = raw.slice("--url=".length);
     else if (raw.startsWith("--years=")) args.years = raw.slice("--years=".length);
   }
   return args;
-}
-
-async function extractItems(buffer: Buffer): Promise<TextItem[]> {
-  const loadingTask = getDocument({ data: new Uint8Array(buffer), useSystemFonts: true });
-  const doc = await loadingTask.promise;
-
-  const items: TextItem[] = [];
-
-  for (let page = 1; page <= doc.numPages; page += 1) {
-    const pageProxy = await doc.getPage(page);
-    const content = await pageProxy.getTextContent();
-
-    for (const item of content.items) {
-      if (!("str" in item) || !item.str.trim()) continue;
-      const transform = item.transform as number[];
-      const x = transform[4] ?? 0;
-      const y = transform[5] ?? 0;
-      items.push({ text: item.str, x, y, width: item.width, height: item.height, page });
-    }
-
-    pageProxy.cleanup();
-  }
-
-  await loadingTask.destroy();
-  return items;
 }
 
 async function download(url: string, target: string) {
@@ -145,7 +129,7 @@ async function main() {
   }
 
   const items = await extractItems(buffer);
-  const parsed = parseSubjectContent(items);
+  const parsed = parseSyllabus(items, subject.content_layout);
   const prefix = CODE_PREFIX[subject.code] ?? subject.code;
 
   const topics = parsed.topics.map((topic, index) => ({
@@ -169,20 +153,31 @@ async function main() {
         tier: objective.tier,
         sequence: index + 1,
         supplement_text: null,
+        source_page: objective.page > 0 ? objective.page : null,
       })),
     ),
   );
 
-  const routes = subject.private_candidate.components.map((component) => ({
+  const assessment = parseComponents(items);
+  const tiers: Array<"Core" | "Extended" | "Untiered"> = assessment.components.some((c) => c.tier === "Core")
+    ? ["Core", "Extended"]
+    : ["Untiered"];
+  const routes = assessment.components.map((component) => ({
     component_code: component.component_code,
     name: component.name,
     duration_minutes: component.duration_minutes,
     weighting_percent: component.weighting_percent,
     tier: component.tier,
-    assessment_style: "written",
+    assessment_style: component.internally_assessed ? "coursework" : "written",
     private_candidate_eligible: component.private_candidate_eligible,
-    note: component.note ?? "",
+    note: component.note,
+    marks: component.marks,
   }));
+  const entryRoutes = buildEntryRoutes(assessment.components, tiers);
+  const assessmentObjectives = parseAssessmentObjectives(items).map((objective) => ({ ...objective, rubric: [] }));
+  const commandWords = parseCommandWords(items);
+  const warnings = [...parsed.warnings, ...assessment.warnings];
+  if (entryRoutes.length === 0) warnings.push("No private candidate entry route could be built from the papers.");
 
   const manifest = {
     schema_version: SCHEMA_VERSION,
@@ -195,7 +190,7 @@ async function main() {
       awarding_body: "Cambridge Assessment International Education",
       version_label: years,
       exam_series: subject.exam_series,
-      tiers: subject.tiers,
+      tiers,
       grade_scale: "A*-G",
       mastery_mode: subject.code === "0500" ? "skill-rubric" : "objective-mastery",
       is_elective: subject.is_elective,
@@ -204,31 +199,68 @@ async function main() {
       method: "pdf-extraction",
       source_file: path.relative(ROOT, pdfPath).replace(/\\/g, "/"),
       extracted_at: new Date().toISOString(),
-      verified: true,
+      // A person checks every extraction on the package review screen before it is verified.
+      verified: false,
       notes:
-        `Parsed ${items.length} text items in ${parsed.mode} column mode. ` +
-        "Components come from the subject registry; objectives come from the PDF.",
+        `Parsed ${items.length} text items with the ${parsed.layout} layout (${parsed.mode}). ` +
+        "Topics, objectives, papers, entry routes, assessment objectives and command words all come from the PDF.",
     },
     files: {
       topics: "topics.json",
       objectives: "objectives.json",
       routes: "routes.json",
       assessment_objectives: "assessment_objectives.json",
+      entry_routes: "entry_routes.json",
+      command_words: "command_words.json",
+      resources: "resources.json",
+      lineage: "lineage.json",
     },
     counts: {
       topics: topics.length,
       subtopics: topics.reduce((sum, topic) => sum + topic.subtopics.length, 0),
       objectives: objectives.length,
       components: routes.length,
-      assessment_objectives: 0,
+      assessment_objectives: assessmentObjectives.length,
     },
     generated_at: new Date().toISOString(),
   };
 
-  for (const warning of parsed.warnings) console.warn(`warning: ${warning}`);
+  for (const warning of warnings) console.warn(`warning: ${warning}`);
+
+  // A previous package in the same folder: keep its resources by following the objective lineage.
+  const previous = (file: string): unknown[] => {
+    const target = path.join(outDir, file);
+    return existsSync(target) ? (JSON.parse(readFileSync(target, "utf8")) as unknown[]) : [];
+  };
+  const previousManifest = existsSync(path.join(outDir, "manifest.json"))
+    ? (JSON.parse(readFileSync(path.join(outDir, "manifest.json"), "utf8")) as { provenance?: { verified?: boolean } })
+    : null;
+  if (previousManifest?.provenance?.verified && !args.force && !args.dryRun) {
+    throw new Error(
+      `${slug} has been reviewed and verified. Re-extracting would discard the reviewer's edits; pass --force to do it anyway.`,
+    );
+  }
+  const previousObjectives = previous("objectives.json") as Array<{ objective_code: string; objective_text: string }>;
+  const lineage = proposeLineage(previousObjectives, objectives);
+  const { kept: resources, dropped } = remapResources(
+    previous("resources.json") as Array<{ objective_code: string; title?: string }>,
+    lineage,
+    new Set(objectives.map((objective) => objective.objective_code)),
+  );
+  if (previousObjectives.length > 0) {
+    console.log(
+      `Lineage: ${lineage.filter((row) => row.to_code).length} of ${previousObjectives.length} earlier objectives matched; ` +
+        `${resources.length} resources kept, ${dropped.length} parked in resources_unmapped.json for review.`,
+    );
+    for (const resource of dropped)
+      console.log(`  unmapped resource: ${resource.title ?? "(untitled)"} (${resource.objective_code})`);
+  }
 
   if (args.dryRun) {
-    console.log(`Dry run: ${topics.length} topics, ${objectives.length} objectives, ${routes.length} components.`);
+    console.log(
+      `Dry run: ${topics.length} topics, ${objectives.length} objectives, ${routes.length} papers, ` +
+        `${entryRoutes.length} entry route(s), ${assessmentObjectives.length} AOs, ${commandWords.length} command words.`,
+    );
     return;
   }
 
@@ -240,13 +272,18 @@ async function main() {
   await write("topics.json", topics);
   await write("objectives.json", objectives);
   await write("routes.json", routes);
-  await write("assessment_objectives.json", []);
+  await write("assessment_objectives.json", assessmentObjectives);
+  await write("entry_routes.json", entryRoutes);
+  await write("command_words.json", commandWords);
+  await write("resources.json", resources);
+  await write("lineage.json", lineage);
+  await write("resources_unmapped.json", dropped);
 
   console.log(
     `Wrote ${path.relative(ROOT, outDir)}: ${topics.length} topics, ` +
       `${manifest.counts.subtopics} subtopics, ${objectives.length} objectives.`,
   );
-  console.log("Assessment objectives were not found in this pass; extract them before publishing.");
+  console.log("Review the package on /parent/curriculum before marking it verified.");
 }
 
 main().catch((error: unknown) => {

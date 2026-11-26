@@ -1,0 +1,23 @@
+[
+  {
+    "code": "AO1",
+    "name": "Knowledge and understanding",
+    "description": "Demonstrate knowledge and understanding of economic definitions, formulas, concepts and theories; Use economic terminology.",
+    "weighting_percent": 43,
+    "rubric": []
+  },
+  {
+    "code": "AO2",
+    "name": "Analysis",
+    "description": "Select, organise and interpret economics data and information; Apply economic analysis to written, numerical, diagrammatic and graphical data; Analyse economic issues, identifying and developing links and relationships.",
+    "weighting_percent": 47,
+    "rubric": []
+  },
+  {
+    "code": "AO3",
+    "name": "Evaluation",
+    "description": "Evaluate economic information, data and arguments, and recognise that economic decisions have uncertain outcomes.",
+    "weighting_percent": 10,
+    "rubric": []
+  }
+]

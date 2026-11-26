@@ -13,32 +13,35 @@
       "November"
     ],
     "tiers": [
-      "Core",
-      "Extended"
+      "Untiered"
     ],
     "grade_scale": "A*-G",
     "mastery_mode": "objective-mastery",
     "is_elective": false
   },
   "provenance": {
-    "method": "manual-draft",
+    "method": "pdf-extraction",
     "source_file": "raw-syllabuses/0478-computer-science-2026-2028.pdf",
-    "extracted_at": "2026-10-19",
+    "extracted_at": "2026-11-26T06:14:59.561Z",
     "verified": false,
-    "notes": "Draft content written before the extraction pipeline existed. Replaced by `pnpm ingest --subject=<code>` once the official PDF is in raw-syllabuses/."
+    "notes": "Parsed 3423 text items with the cs layout (untiered). Topics, objectives, papers, entry routes, assessment objectives and command words all come from the PDF."
   },
   "files": {
     "topics": "topics.json",
     "objectives": "objectives.json",
     "routes": "routes.json",
-    "assessment_objectives": "assessment_objectives.json"
+    "assessment_objectives": "assessment_objectives.json",
+    "entry_routes": "entry_routes.json",
+    "command_words": "command_words.json",
+    "resources": "resources.json",
+    "lineage": "lineage.json"
   },
   "counts": {
     "topics": 10,
-    "subtopics": 26,
-    "objectives": 15,
-    "components": 0,
-    "assessment_objectives": 0
+    "subtopics": 24,
+    "objectives": 96,
+    "components": 2,
+    "assessment_objectives": 3
   },
-  "generated_at": "2026-10-19T17:43:13.815Z"
+  "generated_at": "2026-11-26T06:14:59.562Z"
 }

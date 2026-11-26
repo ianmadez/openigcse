@@ -1,0 +1,262 @@
+[
+  {
+    "objective_code": "SP-0530-1.1.1",
+    "topic_code": "1.1",
+    "objective_text": "Understand short recordings dealing with everyday needs (e.g. simple transactions in shops, simple directions or instructions).",
+    "command_word": "Understand",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-1.1.2",
+    "topic_code": "1.1",
+    "objective_text": "Understand factual information and ideas from a range of sources (e.g. announcements, phone messages, news items, interviews, dialogues) on familiar topics.",
+    "command_word": "Understand",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-1.1.3",
+    "topic_code": "1.1",
+    "objective_text": "Understand descriptions of events, opinions, emotions, hopes and ambitions in simple texts (e.g. in radio broadcasts, interviews, dialogues).",
+    "command_word": "Understand",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-1.1.4",
+    "topic_code": "1.1",
+    "objective_text": "Identify main points, specific information and details on everyday topics (e.g. personal and family information, shopping, local area, employment, school, leisure activities).",
+    "command_word": "Identify",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-1.1.5",
+    "topic_code": "1.1",
+    "objective_text": "Identify main points, themes, opinions, ideas, emotions and attitudes in predictable texts (e.g. news reports, conversations, interviews, simple monologues).",
+    "command_word": "Identify",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-1.1.6",
+    "topic_code": "1.1",
+    "objective_text": "Deduce the meaning of occasional unknown words and expressions from the context.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-2.1.1",
+    "topic_code": "2.1",
+    "objective_text": "Understand short, simple texts (e.g. signs and notices in public places, such as streets, restaurants and bus/railway stations and airports).",
+    "command_word": "Understand",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-2.1.2",
+    "topic_code": "2.1",
+    "objective_text": "Understand authentic texts on familiar topics and situations (e.g. newspaper/magazine articles, email messages, blogs and letters).",
+    "command_word": "Understand",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-2.1.3",
+    "topic_code": "2.1",
+    "objective_text": "Understand descriptions of events, opinions, emotions, hopes and ambitions in simple texts (e.g. in articles, interviews or personal messages).",
+    "command_word": "Understand",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-2.1.4",
+    "topic_code": "2.1",
+    "objective_text": "Identify main points, specific information and details in predictable texts (e.g. advertisements, brochures, menus, timetables, instructions, messages).",
+    "command_word": "Identify",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-2.1.5",
+    "topic_code": "2.1",
+    "objective_text": "Identify main points, themes, opinions, ideas, emotions and attitudes in predictable texts (e.g. newspaper/magazine articles, simple plots of films or books).",
+    "command_word": "Identify",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-2.1.6",
+    "topic_code": "2.1",
+    "objective_text": "Deduce the meaning of occasional unknown words and expressions from the context.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 12
+  },
+  {
+    "objective_code": "SP-0530-3.1.1",
+    "topic_code": "3.1",
+    "objective_text": "Participate in short social exchanges (e.g. greet people, make and respond to invitations, apologies) and communicate on familiar topics to meet simple needs (e.g. order food and drink, simple transactions in shops, use public transport, ask and give directions, request information).",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-3.1.2",
+    "topic_code": "3.1",
+    "objective_text": "Participate in unprepared conversations on familiar topics of personal interest or relevant to everyday life (e.g. family, friends, home environment, hobbies and interests, education, work, travel).",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-3.1.3",
+    "topic_code": "3.1",
+    "objective_text": "Describe past events and experiences, hopes and ambitions and give brief reasons for opinions and plans.",
+    "command_word": "Describe",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-3.1.4",
+    "topic_code": "3.1",
+    "objective_text": "Communicate with reasonable accuracy, using a range of structures, tenses and vocabulary relevant to the given situation.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-3.1.5",
+    "topic_code": "3.1",
+    "objective_text": "Use simple connectors (e.g. and, but, because, then) to link a series of shorter discrete elements into a connected sequence of points.",
+    "command_word": "Use",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-3.1.6",
+    "topic_code": "3.1",
+    "objective_text": "Use appropriate strategies to maintain interaction.",
+    "command_word": "Use",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-3.1.7",
+    "topic_code": "3.1",
+    "objective_text": "Use features of pronunciation and intonation to convey meaning and attitude.",
+    "command_word": "Use",
+    "tier": "Untiered",
+    "sequence": 7,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-4.1.1",
+    "topic_code": "4.1",
+    "objective_text": "Fill in forms providing simple details.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-4.1.2",
+    "topic_code": "4.1",
+    "objective_text": "Communicate simple factual information in writing using everyday vocabulary and expressions.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-4.1.3",
+    "topic_code": "4.1",
+    "objective_text": "Write a series of simple phrases and sentences linked with simple connectors, relating to personal life, immediate environment and everyday topics (e.g. writing about a holiday).",
+    "command_word": "Write",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-4.1.4",
+    "topic_code": "4.1",
+    "objective_text": "Write simple connected texts (e.g. email messages, articles) on familiar topics (e.g. plans and arrangements, likes and dislikes, family, home environment, hobbies and interests, education, work and travel).",
+    "command_word": "Write",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-4.1.5",
+    "topic_code": "4.1",
+    "objective_text": "Describe past events and experiences, opinions, hopes and ambitions and give brief reasons for opinions and plans.",
+    "command_word": "Describe",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-4.1.6",
+    "topic_code": "4.1",
+    "objective_text": "Communicate with reasonable accuracy, using a range of structures, tenses, time frames and vocabulary relevant to the given situation.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 13
+  },
+  {
+    "objective_code": "SP-0530-4.1.7",
+    "topic_code": "4.1",
+    "objective_text": "Use simple connectors (e.g. and, but, because, then) to link a series of shorter discrete elements into a connected sequence of points.",
+    "command_word": "Use",
+    "tier": "Untiered",
+    "sequence": 7,
+    "supplement_text": null,
+    "source_page": 13
+  }
+]

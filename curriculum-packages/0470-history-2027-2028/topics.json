@@ -1,0 +1,206 @@
+[
+  {
+    "topic_code": "A",
+    "name": "Option A: The nineteenth century: the development of modern nation states, 1848–1914",
+    "sequence": 1,
+    "subtopics": [
+      {
+        "topic_code": "A.1",
+        "name": "Were the revolutions of 1848 important?",
+        "sequence": 1
+      },
+      {
+        "topic_code": "A.2",
+        "name": "How was Italy unified?",
+        "sequence": 2
+      },
+      {
+        "topic_code": "A.3",
+        "name": "How was Germany unified?",
+        "sequence": 3
+      },
+      {
+        "topic_code": "A.4",
+        "name": "Why was there a civil war in the United States and what were its results?",
+        "sequence": 4
+      },
+      {
+        "topic_code": "A.5",
+        "name": "Why, and with what effects, did nations gain and expand their overseas empires in the",
+        "sequence": 5
+      },
+      {
+        "topic_code": "A.6",
+        "name": "What caused the First World War?",
+        "sequence": 6
+      }
+    ]
+  },
+  {
+    "topic_code": "B",
+    "name": "Option B: The twentieth century: international relations from 1919",
+    "sequence": 2,
+    "subtopics": [
+      {
+        "topic_code": "B.1",
+        "name": "Was the Treaty of Versailles fair?",
+        "sequence": 1
+      },
+      {
+        "topic_code": "B.2",
+        "name": "To what extent was the League of Nations a success?",
+        "sequence": 2
+      },
+      {
+        "topic_code": "B.3",
+        "name": "How far was Hitler’s foreign policy to blame for the outbreak of war in Europe in 1939?",
+        "sequence": 3
+      },
+      {
+        "topic_code": "B.4",
+        "name": "Who was to blame for the Cold War?",
+        "sequence": 4
+      },
+      {
+        "topic_code": "B.5",
+        "name": "How effectively did the United States contain the spread of communism?",
+        "sequence": 5
+      },
+      {
+        "topic_code": "B.6",
+        "name": "How secure was the USSR’s control over Eastern Europe, 1948–c.1989?",
+        "sequence": 6
+      }
+    ]
+  },
+  {
+    "topic_code": "DA",
+    "name": "Depth study A: The First World War, 1914–18",
+    "sequence": 3,
+    "subtopics": [
+      {
+        "topic_code": "DA.1",
+        "name": "Why was there stalemate on the Western Front?",
+        "sequence": 1
+      },
+      {
+        "topic_code": "DA.2",
+        "name": "To what extent was it a world war?",
+        "sequence": 2
+      },
+      {
+        "topic_code": "DA.3",
+        "name": "How important were other fronts?",
+        "sequence": 3
+      },
+      {
+        "topic_code": "DA.4",
+        "name": "Why did Germany ask for an armistice in 1918?",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "DB",
+    "name": "Depth study B: Germany, 1918–45",
+    "sequence": 4,
+    "subtopics": [
+      {
+        "topic_code": "DB.1",
+        "name": "Was the Weimar Republic doomed from the start?",
+        "sequence": 1
+      },
+      {
+        "topic_code": "DB.2",
+        "name": "Why was Hitler able to dominate Germany by 1934?",
+        "sequence": 2
+      },
+      {
+        "topic_code": "DB.3",
+        "name": "The Nazi regime",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "DC",
+    "name": "Depth study C: Russia, 1905–41",
+    "sequence": 5,
+    "subtopics": [
+      {
+        "topic_code": "DC.1",
+        "name": "Why did the Tsarist regime collapse in 1917?",
+        "sequence": 1
+      },
+      {
+        "topic_code": "DC.2",
+        "name": "How did the Bolsheviks gain power, and how did they consolidate their rule?",
+        "sequence": 2
+      },
+      {
+        "topic_code": "DC.3",
+        "name": "How did Stalin gain and hold on to power?",
+        "sequence": 3
+      },
+      {
+        "topic_code": "DC.4",
+        "name": "What was the impact of Stalin’s economic policies?",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "DD",
+    "name": "Depth study D: The United States, 1919–41",
+    "sequence": 6,
+    "subtopics": [
+      {
+        "topic_code": "DD.1",
+        "name": "How far did the US economy boom in the 1920s?",
+        "sequence": 1
+      },
+      {
+        "topic_code": "DD.2",
+        "name": "How far did US society change in the 1920s?",
+        "sequence": 2
+      },
+      {
+        "topic_code": "DD.3",
+        "name": "What were the causes and consequences of the Wall Street Crash?",
+        "sequence": 3
+      },
+      {
+        "topic_code": "DD.4",
+        "name": "How successful was the New Deal?",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "DE",
+    "name": "Depth study E: The Second World War in Europe and the Asia–Pacific,",
+    "sequence": 7,
+    "subtopics": [
+      {
+        "topic_code": "DE.1",
+        "name": "How did the Second World War in Europe develop?",
+        "sequence": 1
+      },
+      {
+        "topic_code": "DE.2",
+        "name": "How did the Second World War in the Asia–Pacific develop?",
+        "sequence": 2
+      },
+      {
+        "topic_code": "DE.3",
+        "name": "What was the impact of war on civilian populations in Europe and the Asia–Pacific?",
+        "sequence": 3
+      },
+      {
+        "topic_code": "DE.4",
+        "name": "How did the Allies achieve victory over the Axis powers?",
+        "sequence": 4
+      }
+    ]
+  }
+]

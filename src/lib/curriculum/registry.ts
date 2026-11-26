@@ -36,6 +36,8 @@ export type RegistrySubject = {
   syllabus_page: string;
   /** Expected file in raw-syllabuses/. Null means download from syllabus_page. */
   pdf_hint: string;
+  /** How the PDF prints its subject content; picks the parser strategy in scripts/lib/syllabusParser.ts. */
+  content_layout: "decimal" | "science" | "maths" | "cs" | "history" | "skills";
 };
 
 export const registry: RegistrySubject[] = [
@@ -57,6 +59,7 @@ export const registry: RegistrySubject[] = [
     syllabus_page:
       "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-mathematics-0580/",
     pdf_hint: "0580-mathematics-2028-2030.pdf",
+    content_layout: "maths",
   },
   {
     code: "0478",
@@ -76,6 +79,7 @@ export const registry: RegistrySubject[] = [
     syllabus_page:
       "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-computer-science-0478/",
     pdf_hint: "0478-computer-science-2026-2028.pdf",
+    content_layout: "cs",
   },
   {
     code: "0610",
@@ -120,6 +124,7 @@ export const registry: RegistrySubject[] = [
     },
     syllabus_page: "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-biology-0610/",
     pdf_hint: "0610-biology-2026-2028.pdf",
+    content_layout: "science",
   },
   {
     code: "0620",
@@ -165,6 +170,7 @@ export const registry: RegistrySubject[] = [
     syllabus_page:
       "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chemistry-0620/",
     pdf_hint: "0620-chemistry-2026-2028.pdf",
+    content_layout: "science",
   },
   {
     code: "0625",
@@ -209,6 +215,7 @@ export const registry: RegistrySubject[] = [
     },
     syllabus_page: "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physics-0625/",
     pdf_hint: "0625-physics-2026-2028.pdf",
+    content_layout: "science",
   },
   {
     code: "0500",
@@ -228,6 +235,7 @@ export const registry: RegistrySubject[] = [
     syllabus_page:
       "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-first-language-0500/",
     pdf_hint: "0500-english-first-language-2027-2029.pdf",
+    content_layout: "skills",
   },
   {
     code: "0460",
@@ -273,6 +281,7 @@ export const registry: RegistrySubject[] = [
     syllabus_page:
       "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-geography-0460/",
     pdf_hint: "0460-geography-2027-2029.pdf",
+    content_layout: "decimal",
   },
   {
     code: "0470",
@@ -318,6 +327,7 @@ export const registry: RegistrySubject[] = [
     },
     syllabus_page: "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-history-0470/",
     pdf_hint: "0470-history-2027-2028.pdf",
+    content_layout: "history",
   },
   {
     code: "0455",
@@ -337,6 +347,7 @@ export const registry: RegistrySubject[] = [
     syllabus_page:
       "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-economics-0455/",
     pdf_hint: "0455-economics-2027-2029.pdf",
+    content_layout: "decimal",
   },
   {
     code: "0530",
@@ -390,6 +401,7 @@ export const registry: RegistrySubject[] = [
     syllabus_page:
       "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-spanish-foreign-language-0530/",
     pdf_hint: "0530-spanish-2028-2030.pdf",
+    content_layout: "skills",
   },
 ];
 

@@ -1,0 +1,46 @@
+[
+  {
+    "component_code": "1",
+    "name": "Paper 1: Physical Geography",
+    "duration_minutes": 105,
+    "weighting_percent": 36,
+    "tier": "Both",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": "",
+    "marks": 75
+  },
+  {
+    "component_code": "2",
+    "name": "Paper 2: Human Geography",
+    "duration_minutes": 105,
+    "weighting_percent": 36,
+    "tier": "Both",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": "",
+    "marks": 75
+  },
+  {
+    "component_code": "3",
+    "name": "Component 3: Coursework",
+    "duration_minutes": null,
+    "weighting_percent": 28,
+    "tier": "Both",
+    "assessment_style": "coursework",
+    "private_candidate_eligible": false,
+    "note": "Internally assessed by a school; not available to private candidates.",
+    "marks": 60
+  },
+  {
+    "component_code": "4",
+    "name": "Paper 4: Geographical Investigations",
+    "duration_minutes": 90,
+    "weighting_percent": 28,
+    "tier": "Both",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": "",
+    "marks": 60
+  }
+]

@@ -332,7 +332,9 @@ async function run() {
 
   await guardian.rpc("parent_live_action", { p_action: "end_break" });
   const { data: brkRow } = await admin.from("requests").select("effect_until").eq("id", brk!.id).single();
-  check("end break stops the running break", Date.parse(brkRow!.effect_until) <= Date.now() + 1000);
+  // Ask the database how long is left: this machine's clock can drift seconds from the server's.
+  const { data: leftAfterEnd } = await admin.rpc("seconds_left", { p_until: brkRow!.effect_until });
+  check("end break stops the running break", Number(leftAfterEnd) <= 1, `${leftAfterEnd}s left`);
   await guardian.rpc("parent_live_action", { p_action: "lock" });
   const { data: locked } = await admin.from("focus_policies").select("is_locked").eq("household_id", a.id).single();
   await guardian.rpc("parent_live_action", { p_action: "unlock", p_minutes: 30 });

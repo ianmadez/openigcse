@@ -1,0 +1,247 @@
+[
+  {
+    "topic_code": "1",
+    "name": "Changing river environments",
+    "sequence": 1,
+    "subtopics": [
+      {
+        "topic_code": "1.1",
+        "name": "The main hydrological characteristics and processes which operate in rivers and drainage basins",
+        "sequence": 1
+      },
+      {
+        "topic_code": "1.2",
+        "name": "The main landforms associated with these processes",
+        "sequence": 2
+      },
+      {
+        "topic_code": "1.3",
+        "name": "Rivers present opportunities and hazards for people",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "2",
+    "name": "Changing coastal environments",
+    "sequence": 2,
+    "subtopics": [
+      {
+        "topic_code": "2.1",
+        "name": "Physical processes that shape the coast",
+        "sequence": 1
+      },
+      {
+        "topic_code": "2.2",
+        "name": "The main landforms associated with these processes",
+        "sequence": 2
+      },
+      {
+        "topic_code": "2.3",
+        "name": "Coasts present opportunities and hazards for people",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "3",
+    "name": "Changing ecosystems",
+    "sequence": 3,
+    "subtopics": [
+      {
+        "topic_code": "3.1",
+        "name": "Characteristics of the Antarctic ecosystem",
+        "sequence": 1
+      },
+      {
+        "topic_code": "3.2",
+        "name": "Threats to the Antarctic ecosystem and how they can be managed",
+        "sequence": 2
+      },
+      {
+        "topic_code": "3.3",
+        "name": "Characteristics of the tropical rainforest ecosystem",
+        "sequence": 3
+      },
+      {
+        "topic_code": "3.4",
+        "name": "Threats to tropical rainforest ecosystems and how they can be managed",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "4",
+    "name": "Tectonic hazards",
+    "sequence": 4,
+    "subtopics": [
+      {
+        "topic_code": "4.1",
+        "name": "The structure of the Earth and distribution of earthquakes and volcanoes",
+        "sequence": 1
+      },
+      {
+        "topic_code": "4.2",
+        "name": "The processes and features associated with earthquakes and volcanoes",
+        "sequence": 2
+      },
+      {
+        "topic_code": "4.3",
+        "name": "The impacts of tectonic hazards",
+        "sequence": 3
+      },
+      {
+        "topic_code": "4.4",
+        "name": "Managing the impacts of tectonic hazards",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "5",
+    "name": "Climate change",
+    "sequence": 5,
+    "subtopics": [
+      {
+        "topic_code": "5.1",
+        "name": "The natural and human causes of climate change",
+        "sequence": 1
+      },
+      {
+        "topic_code": "5.2",
+        "name": "The impacts of climate change at a range of geographic scales",
+        "sequence": 2
+      },
+      {
+        "topic_code": "5.3",
+        "name": "Responses to climate change",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "6",
+    "name": "Changing populations",
+    "sequence": 6,
+    "subtopics": [
+      {
+        "topic_code": "6.1",
+        "name": "Populations grow and decline",
+        "sequence": 1
+      },
+      {
+        "topic_code": "6.2",
+        "name": "Population structures change over time",
+        "sequence": 2
+      },
+      {
+        "topic_code": "6.3",
+        "name": "The causes and impacts of international migration",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "7",
+    "name": "Changing towns and cities",
+    "sequence": 7,
+    "subtopics": [
+      {
+        "topic_code": "7.1",
+        "name": "Where people live",
+        "sequence": 1
+      },
+      {
+        "topic_code": "7.2",
+        "name": "Opportunities and challenges of urbanisation",
+        "sequence": 2
+      },
+      {
+        "topic_code": "7.3",
+        "name": "The management of urban growth",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "8",
+    "name": "Development",
+    "sequence": 8,
+    "subtopics": [
+      {
+        "topic_code": "8.1",
+        "name": "Measuring development",
+        "sequence": 1
+      },
+      {
+        "topic_code": "8.2",
+        "name": "The world is developing unevenly",
+        "sequence": 2
+      },
+      {
+        "topic_code": "8.3",
+        "name": "Achieving sustainable development",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "9",
+    "name": "Changing economies",
+    "sequence": 9,
+    "subtopics": [
+      {
+        "topic_code": "9.1",
+        "name": "Changing employment structures",
+        "sequence": 1
+      },
+      {
+        "topic_code": "9.2",
+        "name": "The impact of globalisation and the role of transnational corporations",
+        "sequence": 2
+      },
+      {
+        "topic_code": "9.3",
+        "name": "Tourism is a growing industry",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "10",
+    "name": "Resource provision",
+    "sequence": 10,
+    "subtopics": [
+      {
+        "topic_code": "10.1",
+        "name": "How food is produced",
+        "sequence": 1
+      },
+      {
+        "topic_code": "10.2",
+        "name": "The global patterns of food supply and demand",
+        "sequence": 2
+      },
+      {
+        "topic_code": "10.3",
+        "name": "The challenges of food supply",
+        "sequence": 3
+      },
+      {
+        "topic_code": "10.4",
+        "name": "How our energy is produced",
+        "sequence": 4
+      },
+      {
+        "topic_code": "10.5",
+        "name": "The global patterns of energy supply and demand",
+        "sequence": 5
+      },
+      {
+        "topic_code": "10.6",
+        "name": "The impacts of energy production",
+        "sequence": 6
+      }
+    ]
+  }
+]

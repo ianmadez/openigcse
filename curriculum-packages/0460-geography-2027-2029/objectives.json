@@ -1,0 +1,1292 @@
+[
+  {
+    "objective_code": "GG-0460-1.1.1",
+    "topic_code": "1.1",
+    "objective_text": "Characteristics of rivers and drainage basins: the long profile, width, depth, speed of flow/velocity, discharge, wetted perimeter, channel, watershed, tributary, confluence, source, mouth.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.1.2",
+    "topic_code": "1.1",
+    "objective_text": "The Bradshaw model.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.1.3",
+    "topic_code": "1.1",
+    "objective_text": "How the drainage basin operates within the water cycle.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.1.4",
+    "topic_code": "1.1",
+    "objective_text": "Processes which operate in a drainage basin: precipitation, interception, infiltration, percolation, overland flow, channel flow, throughflow, groundwater flow, transpiration, evaporation, evapotranspiration.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.1.5",
+    "topic_code": "1.1",
+    "objective_text": "Processes which operate within a river: erosion; hydraulic action, abrasion, attrition, solution; transportation; traction, suspension, saltation, solution; deposition.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.2.1",
+    "topic_code": "1.2",
+    "objective_text": "The characteristics and formation of landforms: waterfalls, rapids, gorges, V-shaped valleys, meanders, oxbow lakes, levées, floodplains, deltas, interlocking spurs, potholes.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.1",
+    "topic_code": "1.3",
+    "objective_text": "The opportunities and hazards of living near a river.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.2",
+    "topic_code": "1.3",
+    "objective_text": "The human and natural causes of river flooding.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.3",
+    "topic_code": "1.3",
+    "objective_text": "The impacts of river flooding.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.4",
+    "topic_code": "1.3",
+    "objective_text": "An evaluation of the strategies and techniques used to manage river flooding; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.5",
+    "topic_code": "1.3",
+    "objective_text": "The human causes of river pollution.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.6",
+    "topic_code": "1.3",
+    "objective_text": "The impacts of river pollution.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.7",
+    "topic_code": "1.3",
+    "objective_text": "An evaluation of the strategies and techniques used to manage river pollution; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 7,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.8",
+    "topic_code": "1.3",
+    "objective_text": "One detailed specific example to include: the causes and impacts of a flood for a named river; the strategies and techniques used to manage the flooding of the river; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 8,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-1.3.9",
+    "topic_code": "1.3",
+    "objective_text": "One detailed specific example to include: the causes and impacts of pollution in a named river; the strategies and techniques used to manage pollution levels in the river; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 9,
+    "supplement_text": null,
+    "source_page": 14
+  },
+  {
+    "objective_code": "GG-0460-2.1.1",
+    "topic_code": "2.1",
+    "objective_text": "Coastal erosion: hydraulic action, corrosion, corrasion, attrition; transportation; deposition; longshore drift.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.1.2",
+    "topic_code": "2.1",
+    "objective_text": "Types of waves: constructive and destructive and wave refraction.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.2.1",
+    "topic_code": "2.2",
+    "objective_text": "The characteristics and formation of landforms: headlands, bays, cliffs, wave-cut platforms, caves, arches, stacks, stumps, beaches, spits, bars, sand dunes.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.2.2",
+    "topic_code": "2.2",
+    "objective_text": "The formation and characteristics of discordant and concordant coastlines.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.3.1",
+    "topic_code": "2.3",
+    "objective_text": "The opportunities of living near the coast.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.3.2",
+    "topic_code": "2.3",
+    "objective_text": "The hazards of living near the coast.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.3.3",
+    "topic_code": "2.3",
+    "objective_text": "An evaluation of hard and soft engineering strategies and techniques used to manage coastal erosion and flooding; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.3.4",
+    "topic_code": "2.3",
+    "objective_text": "The distribution and impacts of tropical storms: cyclones, hurricanes, and typhoons.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.3.5",
+    "topic_code": "2.3",
+    "objective_text": "An evaluation of the strategies and techniques used to manage the impacts of tropical storms: preparation, planning, protection, prediction.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.3.6",
+    "topic_code": "2.3",
+    "objective_text": "The global distribution, importance of, threats to, and strategies and techniques used to protect and manage coral reefs and mangroves; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.3.7",
+    "topic_code": "2.3",
+    "objective_text": "One detailed specific example of a named country or coastal area to include: the causes and impacts of coastal erosion; the strategies and techniques used to protect the coast from tropical storms and manage erosion; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 7,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-2.3.8",
+    "topic_code": "2.3",
+    "objective_text": "One detailed specific example of a named country or coastal area to include: why the coral reef is important; threats to the coral reef; the strategies and techniques used to protect and manage and the coral reef; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 8,
+    "supplement_text": null,
+    "source_page": 15
+  },
+  {
+    "objective_code": "GG-0460-3.1.1",
+    "topic_code": "3.1",
+    "objective_text": "The location of the Antarctic ecosystem.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.1.2",
+    "topic_code": "3.1",
+    "objective_text": "The characteristics of the Antarctic climate: high pressure, the influence of latitude, angle of the sun, temperature, precipitation.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.1.3",
+    "topic_code": "3.1",
+    "objective_text": "The features of the Antarctic ecosystem.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.1.4",
+    "topic_code": "3.1",
+    "objective_text": "The interrelationships between abiotic and biotic factors in the Antarctic ecosystem and how flora and fauna adapt to survive.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.2.1",
+    "topic_code": "3.2",
+    "objective_text": "The threats posed to Antarctica, for example, resource exploitation, climate change, fishing, tourism.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.2.2",
+    "topic_code": "3.2",
+    "objective_text": "The impacts of the destruction of the Antarctic ecosystem.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.2.3",
+    "topic_code": "3.2",
+    "objective_text": "An evaluation of the strategies and techniques used to manage the Antarctic ecosystem; including sustainable. For example, international agreements and environmental impact surveys. For the Antarctic ecosystem, a detailed specific example is not listed, this is because the topic content is only based upon Antarctica.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.3.1",
+    "topic_code": "3.3",
+    "objective_text": "The global distribution of tropical rainforests.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.3.2",
+    "topic_code": "3.3",
+    "objective_text": "The characteristics of the equatorial climate: overhead sun, low pressure, convectional rainfall, temperature, latitude.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.3.3",
+    "topic_code": "3.3",
+    "objective_text": "The characteristics and structure of the tropical rainforest ecosystem.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.3.4",
+    "topic_code": "3.3",
+    "objective_text": "The interrelationships between abiotic and biotic factors in the tropical rainforest ecosystem and how flora and fauna adapt to survive.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.4.1",
+    "topic_code": "3.4",
+    "objective_text": "The threats to tropical rainforest ecosystems, for example, deforestation, resource exploitation, logging, road and railway building, cattle ranching, hydroelectric power, farming, settlements.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.4.2",
+    "topic_code": "3.4",
+    "objective_text": "The impacts of the destruction and deforestation of tropical rainforest ecosystems.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.4.3",
+    "topic_code": "3.4",
+    "objective_text": "An evaluation of the strategies and techniques used to manage the tropical rainforest ecosystem; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-3.4.4",
+    "topic_code": "3.4",
+    "objective_text": "One detailed specific example of a named country or tropical rainforest area to include: threats to the tropical rainforest ecosystem; impacts of the destruction and deforestation of the tropical rainforest ecosystem; the strategies and techniques used to manage the tropical rainforest ecosystem; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 16
+  },
+  {
+    "objective_code": "GG-0460-4.1.1",
+    "topic_code": "4.1",
+    "objective_text": "The characteristics of the layers of the Earth: inner core, outer core, mantle, crust, lithosphere.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.1.2",
+    "topic_code": "4.1",
+    "objective_text": "The names and location of the main tectonic plates and how tectonic plates move.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.1.3",
+    "topic_code": "4.1",
+    "objective_text": "Types of plate boundary: divergent/constructive, convergent/destructive, convergent/collision, conservative/transform and the location of earthquakes and volcanoes.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.2.1",
+    "topic_code": "4.2",
+    "objective_text": "The processes experienced at each type of plate boundary which cause earthquakes and volcanic eruptions.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.2.2",
+    "topic_code": "4.2",
+    "objective_text": "The main characteristics of earthquakes: focus, epicentre, seismic waves.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.2.3",
+    "topic_code": "4.2",
+    "objective_text": "Types of volcano: strato-volcano (composite cone), shield, cinder cone.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.2.4",
+    "topic_code": "4.2",
+    "objective_text": "The classification of volcanoes as active, dormant, or extinct.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.2.5",
+    "topic_code": "4.2",
+    "objective_text": "The main features of volcanoes: crater, vent, magma, magma chamber, secondary cone.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.2.6",
+    "topic_code": "4.2",
+    "objective_text": "Volcanic hazards: lava flows, ash falls, lahars, pyroclastic flows, tephra, volcanic rocks, toxic gases; the significance of speed, size, frequency, and spread.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.3.1",
+    "topic_code": "4.3",
+    "objective_text": "Reasons why people live in areas at risk from earthquakes and volcanic eruptions.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.3.2",
+    "topic_code": "4.3",
+    "objective_text": "The impacts of earthquakes.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.3.3",
+    "topic_code": "4.3",
+    "objective_text": "The impacts of volcanic eruptions.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.3.4",
+    "topic_code": "4.3",
+    "objective_text": "How the magnitude of a tectonic event is measured: moment magnitude scale, Richter scale, Mercalli scale, the volcanic explosivity index (VEI).",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.4.1",
+    "topic_code": "4.4",
+    "objective_text": "Primary and secondary responses.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.4.2",
+    "topic_code": "4.4",
+    "objective_text": "An evaluation of the strategies and techniques used to manage the impacts of earthquakes and volcanic eruptions: monitoring, prediction, protection, planning and technology.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.4.3",
+    "topic_code": "4.4",
+    "objective_text": "One detailed specific example to include: the causes and impacts of an earthquake on a named country/area; the responses to the earthquake; the strategies and techniques used to manage the impacts of earthquakes.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-4.4.4",
+    "topic_code": "4.4",
+    "objective_text": "One detailed specific example to include: the causes and impacts of an eruption of a named volcano; the responses to the volcanic eruption; the strategies and techniques used to manage the impacts of volcanic eruptions.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 17
+  },
+  {
+    "objective_code": "GG-0460-5.1.1",
+    "topic_code": "5.1",
+    "objective_text": "Evidence of climate change: global temperature data, ice cores, sea ice positions, historic writing and paintings.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 18
+  },
+  {
+    "objective_code": "GG-0460-5.1.2",
+    "topic_code": "5.1",
+    "objective_text": "Factors influencing natural climate change: orbital changes (Milankovitch cycles), sunspots, volcanic activity.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 18
+  },
+  {
+    "objective_code": "GG-0460-5.1.3",
+    "topic_code": "5.1",
+    "objective_text": "The human influence on the atmosphere causing the enhanced greenhouse effect. For example, the use of fossil fuels, deforestation, agriculture.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 18
+  },
+  {
+    "objective_code": "GG-0460-5.2.1",
+    "topic_code": "5.2",
+    "objective_text": "The present day and predicted future impacts of climate change. For example, rising sea levels, and changes to global temperature, weather patterns, and food production.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 18
+  },
+  {
+    "objective_code": "GG-0460-5.3.1",
+    "topic_code": "5.3",
+    "objective_text": "The strategies (including national and international agreements) and techniques used to manage the impacts of climate change.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 18
+  },
+  {
+    "objective_code": "GG-0460-5.3.2",
+    "topic_code": "5.3",
+    "objective_text": "An evaluation of mitigation (including international agreements) and adaptation strategies and techniques used to manage the impacts of climate change.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 18
+  },
+  {
+    "objective_code": "GG-0460-5.3.3",
+    "topic_code": "5.3",
+    "objective_text": "One detailed specific example of a named country or region to include: the impacts of climate change; the responses to climate change; the strategies and techniques being used to manage climate change; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 18
+  },
+  {
+    "objective_code": "GG-0460-6.1.1",
+    "topic_code": "6.1",
+    "objective_text": "Patterns and trends in global population growth.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.1.2",
+    "topic_code": "6.1",
+    "objective_text": "Reasons for the growth and decline of a country’s population: fertility rate, birth rate, death rate, natural increase, migration.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.1.3",
+    "topic_code": "6.1",
+    "objective_text": "An evaluation of the impacts of pro-natalist and anti-natalist policies on birth rates.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.1.4",
+    "topic_code": "6.1",
+    "objective_text": "The demographic transition model (DTM) and its strengths and limitations.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.2.1",
+    "topic_code": "6.2",
+    "objective_text": "Factors influencing population structures: natural increase and net migration.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.2.2",
+    "topic_code": "6.2",
+    "objective_text": "The causes and impacts of youthful and ageing population structures, and an evaluation of their impacts.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.2.3",
+    "topic_code": "6.2",
+    "objective_text": "One detailed specific example of a named country to include: reasons for population growth or decline; the impacts of a population policy (pro or anti-natalist).",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.3.1",
+    "topic_code": "6.3",
+    "objective_text": "Types of migrant: economic migrant, asylum seeker and refugee.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.3.2",
+    "topic_code": "6.3",
+    "objective_text": "Causes of migration, to include push and pull factors.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.3.3",
+    "topic_code": "6.3",
+    "objective_text": "The impacts of migration on the migrant, their country of origin and the destination country.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.3.4",
+    "topic_code": "6.3",
+    "objective_text": "An evaluation of the strategies and techniques used to manage international migration.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-6.3.5",
+    "topic_code": "6.3",
+    "objective_text": "One detailed specific example to include: push and pull factors of a named international migration (named to include the country of origin and destination country); the impacts of the migration (on the migrants, their country of origin and the destination country); how the migration is managed; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 20
+  },
+  {
+    "objective_code": "GG-0460-7.1.1",
+    "topic_code": "7.1",
+    "objective_text": "Reasons for variations in global urban growth rates.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 21
+  },
+  {
+    "objective_code": "GG-0460-7.1.2",
+    "topic_code": "7.1",
+    "objective_text": "Causes of rapid urban growth in LICs: rural to urban migration, social, economic, environmental, and political factors, natural increase.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 21
+  },
+  {
+    "objective_code": "GG-0460-7.2.1",
+    "topic_code": "7.2",
+    "objective_text": "Opportunities of urban living, for example, culture, housing, services, leisure, consumption, economic development.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 21
+  },
+  {
+    "objective_code": "GG-0460-7.2.2",
+    "topic_code": "7.2",
+    "objective_text": "The opportunities and challenges of rapid urban growth: inequality, service provision, housing, employment, transport, waste management, unplanned settlements.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 21
+  },
+  {
+    "objective_code": "GG-0460-7.2.3",
+    "topic_code": "7.2",
+    "objective_text": "The impact of urban sprawl on the rural-urban fringe/surrounding areas.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 21
+  },
+  {
+    "objective_code": "GG-0460-7.3.1",
+    "topic_code": "7.3",
+    "objective_text": "An evaluation of the strategies and techniques used to manage urban growth; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 21
+  },
+  {
+    "objective_code": "GG-0460-7.3.2",
+    "topic_code": "7.3",
+    "objective_text": "One detailed specific example of a named urban area to include: causes of urban growth; challenges and opportunities brought about by urban growth; the strategies and techniques used to manage urban growth; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 21
+  },
+  {
+    "objective_code": "GG-0460-8.1.1",
+    "topic_code": "8.1",
+    "objective_text": "Social and economic indicators of development. For example, gross national product (GNP), gross domestic product (GDP), gross national income (GNI), literacy rate, life expectancy, Human Development Index (HDI), infant mortality rate, calorie intake, doctors per person.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-8.1.2",
+    "topic_code": "8.1",
+    "objective_text": "The use of indicators of development to compare countries at different levels of development and an evaluation of their usefulness.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-8.1.3",
+    "topic_code": "8.1",
+    "objective_text": "Factors affecting quality of life and standard of living.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-8.2.1",
+    "topic_code": "8.2",
+    "objective_text": "Reasons for differences in levels of development and the development gap, to include social, economic, and environmental factors.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-8.2.2",
+    "topic_code": "8.2",
+    "objective_text": "The current global pattern of low-income countries (LICs), middle-income countries (MICs) and high - income countries (HICs).",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-8.3.1",
+    "topic_code": "8.3",
+    "objective_text": "Definition(s) of sustainable development.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-8.3.2",
+    "topic_code": "8.3",
+    "objective_text": "Social, economic, and environmental strategies and techniques used to try to achieve sustainable development.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-8.3.3",
+    "topic_code": "8.3",
+    "objective_text": "An evaluation of the strategies and techniques used to try to reduce uneven development, for example, trade, international aid, and debt relief.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-8.3.4",
+    "topic_code": "8.3",
+    "objective_text": "One detailed specific example of a named country classified as an MIC or LIC, to include: the reasons for its current level of development; the strategies and techniques used to try to raise its level of economic development, quality of life and standard of living.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 22
+  },
+  {
+    "objective_code": "GG-0460-9.1.1",
+    "topic_code": "9.1",
+    "objective_text": "Classification of different industries: primary, secondary, tertiary, and quaternary.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.1.2",
+    "topic_code": "9.1",
+    "objective_text": "The changing employment structure of low-income countries (LICs), middle-income countries (MICs) and high-income countries (HICs).",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.1.3",
+    "topic_code": "9.1",
+    "objective_text": "Factors influencing the location and distribution of different types of industries: land, labour, raw materials, energy, transportation, markets, political policies, technology, communications, containerisation.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.2.1",
+    "topic_code": "9.2",
+    "objective_text": "What is meant by globalisation.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.2.2",
+    "topic_code": "9.2",
+    "objective_text": "The key features of globalisation.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.2.3",
+    "topic_code": "9.2",
+    "objective_text": "The impacts of globalisation on trade, transport, culture, communications, and technology.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.2.4",
+    "topic_code": "9.2",
+    "objective_text": "The role and global organisation of transnational corporations (TNCs).",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.2.5",
+    "topic_code": "9.2",
+    "objective_text": "An evaluation of the impacts of TNCs on the countries in which they are located.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.2.6",
+    "topic_code": "9.2",
+    "objective_text": "One detailed specific example of a named country or area, to include: the impacts of globalisation; the impacts of a named TNC which is located in the country or area.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.3.1",
+    "topic_code": "9.3",
+    "objective_text": "The factors that have led to the growth of tourism as an industry.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.3.2",
+    "topic_code": "9.3",
+    "objective_text": "The Butler model and its strengths and limitations.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.3.3",
+    "topic_code": "9.3",
+    "objective_text": "The benefits and problems caused by tourism, at a range of scales.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.3.4",
+    "topic_code": "9.3",
+    "objective_text": "An evaluation of the strategies and techniques used to sustainably manage tourism, at a range of scales.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-9.3.5",
+    "topic_code": "9.3",
+    "objective_text": "One detailed specific example of a named country or area to include: reasons for the growth of tourism; the benefits and problems caused by tourism; the strategies and techniques used to sustainably manage tourism in the named country or area.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 23
+  },
+  {
+    "objective_code": "GG-0460-10.1.1",
+    "topic_code": "10.1",
+    "objective_text": "Farming types: subsistence, commercial, arable, pastoral, mixed, aeroponics, aquaponics, hydroponics.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.1.2",
+    "topic_code": "10.1",
+    "objective_text": "Farming systems: inputs, processes, outputs.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.2.1",
+    "topic_code": "10.2",
+    "objective_text": "Global patterns of calorie intake and reasons for variations.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.2.2",
+    "topic_code": "10.2",
+    "objective_text": "The reasons for the changing global production and consumption of food.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.2.3",
+    "topic_code": "10.2",
+    "objective_text": "The strategies used to increase food supply.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.2.4",
+    "topic_code": "10.2",
+    "objective_text": "The reasons for the globalisation of food supplies.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.2.5",
+    "topic_code": "10.2",
+    "objective_text": "The impacts of the globalisation of food supplies.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.3.1",
+    "topic_code": "10.3",
+    "objective_text": "The human and natural factors negatively affecting food supply.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.3.2",
+    "topic_code": "10.3",
+    "objective_text": "The problems caused by food insecurity in countries at different levels of development.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.3.3",
+    "topic_code": "10.3",
+    "objective_text": "The strategies and techniques used to increase food supply.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.3.4",
+    "topic_code": "10.3",
+    "objective_text": "An evaluation of the role of food aid in improving food security.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.3.5",
+    "topic_code": "10.3",
+    "objective_text": "An evaluation of the strategies and techniques used to manage desertification and soil erosion; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 5,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.3.6",
+    "topic_code": "10.3",
+    "objective_text": "One detailed specific example of a named country or area to include: factors affecting food supply; causes of food insecurity; problems caused by food insecurity; strategies and techniques used to increase food supply.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 6,
+    "supplement_text": null,
+    "source_page": 24
+  },
+  {
+    "objective_code": "GG-0460-10.4.1",
+    "topic_code": "10.4",
+    "objective_text": "Types of energy: renewable: biomass, geothermal, hydroelectric power (HEP), solar, tidal, wave, wind; non-renewable: fossil fuels (coal, gas, oil), nuclear; fuelwood, which can be either renewable or non-renewable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 25
+  },
+  {
+    "objective_code": "GG-0460-10.5.1",
+    "topic_code": "10.5",
+    "objective_text": "Reasons for the increasing global production and consumption of energy.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 25
+  },
+  {
+    "objective_code": "GG-0460-10.5.2",
+    "topic_code": "10.5",
+    "objective_text": "The global patterns of energy surplus and deficit and the importance of energy security.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 25
+  },
+  {
+    "objective_code": "GG-0460-10.5.3",
+    "topic_code": "10.5",
+    "objective_text": "The reasons for variations in types of energy used within a country and between countries at different levels of development.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 25
+  },
+  {
+    "objective_code": "GG-0460-10.6.1",
+    "topic_code": "10.6",
+    "objective_text": "The advantages and disadvantages of different energy sources, including renewable and non - renewable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 1,
+    "supplement_text": null,
+    "source_page": 25
+  },
+  {
+    "objective_code": "GG-0460-10.6.2",
+    "topic_code": "10.6",
+    "objective_text": "The strategies and techniques used to increase energy supplies.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 2,
+    "supplement_text": null,
+    "source_page": 25
+  },
+  {
+    "objective_code": "GG-0460-10.6.3",
+    "topic_code": "10.6",
+    "objective_text": "An evaluation of the strategies and techniques used to manage energy supplies; including sustainable.",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 3,
+    "supplement_text": null,
+    "source_page": 25
+  },
+  {
+    "objective_code": "GG-0460-10.6.4",
+    "topic_code": "10.6",
+    "objective_text": "One detailed specific example of a named country to include: the energy mix; the impacts of the different types of energy being used; the strategies and techniques used to manage energy supplies; including sustainable. relevant scales and annotations to present information oblique and ground level), cartoons, pictures, diagrams, satellite images sources including photographs (aerial: vertical and oblique and ground level) and diagrams and procedures, control groups and reliability",
+    "command_word": "",
+    "tier": "Untiered",
+    "sequence": 4,
+    "supplement_text": null,
+    "source_page": 25
+  }
+]

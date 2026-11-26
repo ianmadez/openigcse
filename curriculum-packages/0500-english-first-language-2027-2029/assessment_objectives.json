@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "code": "AO1",
+    "name": "Reading",
+    "description": "Candidates will be assessed on their ability to: R1 demonstrate understanding of explicit meanings R2 demonstrate understanding of implicit meanings and attitudes R3 analyse, evaluate and develop facts, ideas and opinions, using appropriate support from the text R4 demonstrate understanding of how writers achieve effects and influence readers R5 select and use information for specific purposes.",
+    "weighting_percent": 50,
+    "rubric": []
+  },
+  {
+    "code": "AO2",
+    "name": "Writing",
+    "description": "Candidates will be assessed on their ability to: W1 articulate experience and express what is thought, felt and imagined W2 organise and structure facts, ideas and opinions for deliberate effect W3 use a range of vocabulary and sentence structures appropriate to context W4 use language appropriate to purpose and to engage the audience W5 make accurate use of spelling, punctuation and grammar.",
+    "weighting_percent": 50,
+    "rubric": []
+  },
+  {
+    "code": "AO3",
+    "name": "Speaking and Listening",
+    "description": "Candidates will be assessed on their ability to: SL1 articulate experience and express what is thought, felt and imagined SL2 present facts, ideas and opinions for deliberate effect SL3 communicate clearly, purposefully and fluently appropriate to context SL4 use register appropriate to context SL5 listen and respond appropriately in conversation.",
+    "weighting_percent": null,
+    "rubric": []
+  }
+]

@@ -14,15 +14,16 @@
     "ingest": "tsx scripts/ingest-syllabus.ts",
     "ingest:list": "tsx scripts/ingest-syllabus.ts --list",
     "sync:packages": "tsx scripts/sync-package-manifests.ts",
-    "test:parser": "tsx --test scripts/lib/syllabusParser.test.ts",
+    "test:parser": "tsx --test scripts/lib/syllabusParser.test.ts scripts/lib/assessmentParser.test.ts",
     "test:rls": "tsx scripts/verify-rls.ts",
     "check:contrast": "node scripts/check-contrast.mjs",
     "import": "tsx scripts/import-package.ts",
     "verify:phase3": "tsx scripts/verify-phase3.ts",
-    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/assessment/question.test.ts src/lib/assessment/builder.test.ts src/lib/assessment/sitting.test.ts src/lib/assessment/marking.test.ts src/lib/assessment/evidence.test.ts src/lib/planning/series.test.ts src/lib/storage/rules.test.ts src/lib/learning/resolve.test.ts src/lib/planning/today.test.ts src/lib/data/dates.test.ts src/lib/trivia/module.test.ts src/lib/retention/fsrs.test.ts src/lib/retention/mastery.test.ts src/lib/planning/nextBestActivity.test.ts src/lib/requests/catalog.test.ts src/lib/push/quiet.test.ts src/lib/live/presence.test.ts",
+    "test:unit": "tsx --test src/lib/assessment/scoring.test.ts src/lib/assessment/question.test.ts src/lib/assessment/builder.test.ts src/lib/assessment/sitting.test.ts src/lib/assessment/marking.test.ts src/lib/assessment/evidence.test.ts src/lib/planning/series.test.ts src/lib/storage/rules.test.ts src/lib/learning/resolve.test.ts src/lib/planning/today.test.ts src/lib/data/dates.test.ts src/lib/trivia/module.test.ts src/lib/retention/fsrs.test.ts src/lib/retention/mastery.test.ts src/lib/planning/nextBestActivity.test.ts src/lib/requests/catalog.test.ts src/lib/push/quiet.test.ts src/lib/live/presence.test.ts src/lib/curriculum/schemas.test.ts src/lib/curriculum/lineage.test.ts src/lib/curriculum/review.test.ts",
     "dev:household": "tsx scripts/dev-household.ts",
     "verify:phase4": "tsx scripts/verify-phase4.ts",
     "verify:phase5": "tsx scripts/verify-phase5.ts",
+    "verify:phase6": "tsx scripts/verify-phase6.ts",
     "verify:push": "tsx --conditions=react-server scripts/verify-push.ts"
   },
   "dependencies": {

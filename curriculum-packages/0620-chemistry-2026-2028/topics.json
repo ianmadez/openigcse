@@ -1,0 +1,331 @@
+[
+  {
+    "topic_code": "1",
+    "name": "States of matter",
+    "sequence": 1,
+    "subtopics": [
+      {
+        "topic_code": "1.1",
+        "name": "Solids, liquids and gases",
+        "sequence": 1
+      },
+      {
+        "topic_code": "1.2",
+        "name": "Diffusion",
+        "sequence": 2
+      }
+    ]
+  },
+  {
+    "topic_code": "2",
+    "name": "Atoms, elements and compounds",
+    "sequence": 2,
+    "subtopics": [
+      {
+        "topic_code": "2.1",
+        "name": "Elements, compounds and mixtures",
+        "sequence": 1
+      },
+      {
+        "topic_code": "2.2",
+        "name": "Atomic structure and the Periodic Table",
+        "sequence": 2
+      },
+      {
+        "topic_code": "2.3",
+        "name": "Isotopes",
+        "sequence": 3
+      },
+      {
+        "topic_code": "2.4",
+        "name": "Ions and ionic bonds",
+        "sequence": 4
+      },
+      {
+        "topic_code": "2.5",
+        "name": "Simple molecules and covalent bonds",
+        "sequence": 5
+      },
+      {
+        "topic_code": "2.6",
+        "name": "Giant covalent structures",
+        "sequence": 6
+      },
+      {
+        "topic_code": "2.7",
+        "name": "Metallic bonding",
+        "sequence": 7
+      }
+    ]
+  },
+  {
+    "topic_code": "3",
+    "name": "Stoichiometry",
+    "sequence": 3,
+    "subtopics": [
+      {
+        "topic_code": "3.1",
+        "name": "Formulae",
+        "sequence": 1
+      },
+      {
+        "topic_code": "3.2",
+        "name": "Relative masses of atoms and molecules",
+        "sequence": 2
+      },
+      {
+        "topic_code": "3.3",
+        "name": "The mole and the Avogadro constant",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "4",
+    "name": "Electrochemistry",
+    "sequence": 4,
+    "subtopics": [
+      {
+        "topic_code": "4.1",
+        "name": "Electrolysis",
+        "sequence": 1
+      },
+      {
+        "topic_code": "4.2",
+        "name": "Hydrogen–oxygen fuel cells",
+        "sequence": 2
+      }
+    ]
+  },
+  {
+    "topic_code": "5",
+    "name": "Chemical energetics",
+    "sequence": 5,
+    "subtopics": [
+      {
+        "topic_code": "5.1",
+        "name": "Exothermic and endothermic reactions",
+        "sequence": 1
+      }
+    ]
+  },
+  {
+    "topic_code": "6",
+    "name": "Chemical reactions",
+    "sequence": 6,
+    "subtopics": [
+      {
+        "topic_code": "6.1",
+        "name": "Physical and chemical changes",
+        "sequence": 1
+      },
+      {
+        "topic_code": "6.2",
+        "name": "Rate of reaction",
+        "sequence": 2
+      },
+      {
+        "topic_code": "6.3",
+        "name": "Reversible reactions and equilibrium",
+        "sequence": 3
+      },
+      {
+        "topic_code": "6.4",
+        "name": "Redox",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "7",
+    "name": "Acids, bases and salts",
+    "sequence": 7,
+    "subtopics": [
+      {
+        "topic_code": "7.1",
+        "name": "The characteristic properties of acids and bases",
+        "sequence": 1
+      },
+      {
+        "topic_code": "7.2",
+        "name": "Oxides",
+        "sequence": 2
+      },
+      {
+        "topic_code": "7.3",
+        "name": "Preparation of salts",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "8",
+    "name": "The Periodic Table",
+    "sequence": 8,
+    "subtopics": [
+      {
+        "topic_code": "8.1",
+        "name": "Arrangement of elements",
+        "sequence": 1
+      },
+      {
+        "topic_code": "8.2",
+        "name": "Group I properties",
+        "sequence": 2
+      },
+      {
+        "topic_code": "8.3",
+        "name": "Group VII properties",
+        "sequence": 3
+      },
+      {
+        "topic_code": "8.4",
+        "name": "Transition elements",
+        "sequence": 4
+      },
+      {
+        "topic_code": "8.5",
+        "name": "Noble gases",
+        "sequence": 5
+      }
+    ]
+  },
+  {
+    "topic_code": "9",
+    "name": "Metals",
+    "sequence": 9,
+    "subtopics": [
+      {
+        "topic_code": "9.1",
+        "name": "Properties of metals",
+        "sequence": 1
+      },
+      {
+        "topic_code": "9.2",
+        "name": "Uses of metals",
+        "sequence": 2
+      },
+      {
+        "topic_code": "9.3",
+        "name": "Alloys and their properties",
+        "sequence": 3
+      },
+      {
+        "topic_code": "9.4",
+        "name": "Reactivity series",
+        "sequence": 4
+      },
+      {
+        "topic_code": "9.5",
+        "name": "Corrosion of metals",
+        "sequence": 5
+      },
+      {
+        "topic_code": "9.6",
+        "name": "Extraction of metals",
+        "sequence": 6
+      }
+    ]
+  },
+  {
+    "topic_code": "10",
+    "name": "Chemistry of the environment",
+    "sequence": 10,
+    "subtopics": [
+      {
+        "topic_code": "10.1",
+        "name": "Water",
+        "sequence": 1
+      },
+      {
+        "topic_code": "10.2",
+        "name": "Fertilisers",
+        "sequence": 2
+      },
+      {
+        "topic_code": "10.3",
+        "name": "Air quality and climate",
+        "sequence": 3
+      }
+    ]
+  },
+  {
+    "topic_code": "11",
+    "name": "Organic chemistry",
+    "sequence": 11,
+    "subtopics": [
+      {
+        "topic_code": "11.1",
+        "name": "Formulae, functional groups and terminology",
+        "sequence": 1
+      },
+      {
+        "topic_code": "11.2",
+        "name": "Naming organic compounds",
+        "sequence": 2
+      },
+      {
+        "topic_code": "11.3",
+        "name": "Fuels",
+        "sequence": 3
+      },
+      {
+        "topic_code": "11.4",
+        "name": "Alkanes",
+        "sequence": 4
+      },
+      {
+        "topic_code": "11.5",
+        "name": "Alkenes",
+        "sequence": 5
+      },
+      {
+        "topic_code": "11.6",
+        "name": "Alcohols",
+        "sequence": 6
+      },
+      {
+        "topic_code": "11.7",
+        "name": "Carboxylic acids",
+        "sequence": 7
+      },
+      {
+        "topic_code": "11.8",
+        "name": "Polymers",
+        "sequence": 8
+      }
+    ]
+  },
+  {
+    "topic_code": "12",
+    "name": "Experimental techniques and chemical analysis",
+    "sequence": 12,
+    "subtopics": [
+      {
+        "topic_code": "12.1",
+        "name": "Experimental design",
+        "sequence": 1
+      },
+      {
+        "topic_code": "12.2",
+        "name": "Acid–base titrations",
+        "sequence": 2
+      },
+      {
+        "topic_code": "12.3",
+        "name": "Chromatography",
+        "sequence": 3
+      },
+      {
+        "topic_code": "12.4",
+        "name": "Separation and purification",
+        "sequence": 4
+      },
+      {
+        "topic_code": "12.5",
+        "name": "Identification of ions and gases",
+        "sequence": 5
+      }
+    ]
+  }
+]

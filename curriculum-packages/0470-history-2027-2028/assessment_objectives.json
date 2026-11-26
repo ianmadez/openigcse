@@ -1,0 +1,23 @@
+[
+  {
+    "code": "AO1",
+    "name": "An ability to recall, select, organise and deploy knowledge of the syllabus…",
+    "description": "An ability to recall, select, organise and deploy knowledge of the syllabus content.",
+    "weighting_percent": 30,
+    "rubric": []
+  },
+  {
+    "code": "AO2",
+    "name": "An ability to construct historical explanations using an understanding of",
+    "description": "An ability to construct historical explanations using an understanding of: cause and consequence, change and continuity, similarity and difference; the motives, emotions, intentions and beliefs of people in the past.",
+    "weighting_percent": 45,
+    "rubric": []
+  },
+  {
+    "code": "AO3",
+    "name": "An ability to understand, interpret, evaluate and use a range of sources as…",
+    "description": "An ability to understand, interpret, evaluate and use a range of sources as evidence, in their historical context.",
+    "weighting_percent": 25,
+    "rubric": []
+  }
+]

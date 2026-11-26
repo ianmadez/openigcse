@@ -1,0 +1,50 @@
+[
+  {
+    "topic_code": "1",
+    "name": "Listening",
+    "sequence": 1,
+    "subtopics": [
+      {
+        "topic_code": "1.1",
+        "name": "Listening",
+        "sequence": 1
+      }
+    ]
+  },
+  {
+    "topic_code": "2",
+    "name": "Reading",
+    "sequence": 2,
+    "subtopics": [
+      {
+        "topic_code": "2.1",
+        "name": "Reading",
+        "sequence": 1
+      }
+    ]
+  },
+  {
+    "topic_code": "3",
+    "name": "Speaking",
+    "sequence": 3,
+    "subtopics": [
+      {
+        "topic_code": "3.1",
+        "name": "Speaking",
+        "sequence": 1
+      }
+    ]
+  },
+  {
+    "topic_code": "4",
+    "name": "Writing",
+    "sequence": 4,
+    "subtopics": [
+      {
+        "topic_code": "4.1",
+        "name": "Writing",
+        "sequence": 1
+      }
+    ]
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "component_code": "1",
+    "name": "Paper 1: Structured Questions",
+    "duration_minutes": 120,
+    "weighting_percent": 40,
+    "tier": "Both",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": "",
+    "marks": 60
+  },
+  {
+    "component_code": "2",
+    "name": "Paper 2: Document Questions",
+    "duration_minutes": 105,
+    "weighting_percent": 30,
+    "tier": "Both",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": "",
+    "marks": 40
+  },
+  {
+    "component_code": "3",
+    "name": "Component 3: Coursework",
+    "duration_minutes": null,
+    "weighting_percent": 30,
+    "tier": "Both",
+    "assessment_style": "coursework",
+    "private_candidate_eligible": false,
+    "note": "Internally assessed by a school; not available to private candidates.",
+    "marks": 40
+  },
+  {
+    "component_code": "4",
+    "name": "Paper 4: Alternative to Coursework",
+    "duration_minutes": 60,
+    "weighting_percent": 30,
+    "tier": "Both",
+    "assessment_style": "written",
+    "private_candidate_eligible": true,
+    "note": "",
+    "marks": 40
+  }
+]

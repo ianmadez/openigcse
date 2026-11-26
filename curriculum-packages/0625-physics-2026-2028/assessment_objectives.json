@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "code": "AO1",
+    "name": "Knowledge with understanding",
+    "description": "Candidates should be able to demonstrate knowledge and understanding of: scientific phenomena, facts, laws, definitions, concepts and theories; scientific vocabulary, terminology and conventions (including symbols, quantities and units); scientific instruments and apparatus, including techniques of operation and aspects of safety; scientific and technological applications with their social, economic and environmental implications. Subject content defines the factual material that candidates may be required to recall and explain. Candidates will also be asked questions which require them to apply this material to unfamiliar contexts and to apply knowledge from one area of the syllabus to another.",
+    "weighting_percent": 50,
+    "rubric": []
+  },
+  {
+    "code": "AO2",
+    "name": "Handling information and problem-solving",
+    "description": "Candidates should be able, in words or using other written forms of presentation (i.e. symbolic, graphical and numerical), to: locate, select, organise and present information from a variety of sources; translate information from one form to another; manipulate numerical and other data; use information to identify patterns, report trends and form conclusions; present reasoned explanations for phenomena, patterns and relationships; make predictions based on relationships and patterns; solve problems, including some of a quantitative nature. Questions testing these skills may be based on information that is unfamiliar to candidates, requiring them to apply the principles and concepts from the syllabus to a new situation, in a logical, deductive way.",
+    "weighting_percent": 30,
+    "rubric": []
+  },
+  {
+    "code": "AO3",
+    "name": "Experimental skills and investigations",
+    "description": "Candidates should be able to: demonstrate knowledge of how to select and safely use techniques, apparatus and materials (including following a sequence of instructions where appropriate); plan experiments and investigations; make and record observations, measurements and estimates; interpret and evaluate experimental observations and data; evaluate methods and suggest possible improvements.",
+    "weighting_percent": 20,
+    "rubric": []
+  }
+]

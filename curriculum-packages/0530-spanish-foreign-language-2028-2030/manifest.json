@@ -1,0 +1,47 @@
+{
+  "schema_version": "2.0.0",
+  "package_id": "0530-spanish-foreign-language-2028-2030",
+  "subject": {
+    "code": "0530",
+    "slug": "spanish-foreign-language",
+    "name": "Spanish - Foreign Language",
+    "qualification": "Cambridge IGCSE",
+    "awarding_body": "Cambridge Assessment International Education",
+    "version_label": "2028-2030",
+    "exam_series": [
+      "June",
+      "November"
+    ],
+    "tiers": [
+      "Untiered"
+    ],
+    "grade_scale": "A*-G",
+    "mastery_mode": "objective-mastery",
+    "is_elective": true
+  },
+  "provenance": {
+    "method": "pdf-extraction",
+    "source_file": "raw-syllabuses/0530-spanish-2028-2030.pdf",
+    "extracted_at": "2026-11-26T06:11:54.956Z",
+    "verified": false,
+    "notes": "Parsed 2053 text items with the skills layout (untiered). Topics, objectives, papers, entry routes, assessment objectives and command words all come from the PDF."
+  },
+  "files": {
+    "topics": "topics.json",
+    "objectives": "objectives.json",
+    "routes": "routes.json",
+    "assessment_objectives": "assessment_objectives.json",
+    "entry_routes": "entry_routes.json",
+    "command_words": "command_words.json",
+    "resources": "resources.json",
+    "lineage": "lineage.json"
+  },
+  "counts": {
+    "topics": 4,
+    "subtopics": 4,
+    "objectives": 26,
+    "components": 4,
+    "assessment_objectives": 4
+  },
+  "generated_at": "2026-11-26T06:11:54.956Z"
+}

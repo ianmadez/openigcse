@@ -1,0 +1,24 @@
+[
+  {
+    "route_code": "PRIVATE-CORE",
+    "name": "Private candidate route (Core)",
+    "tier": "Core",
+    "private_candidate_eligible": true,
+    "component_codes": [
+      "1",
+      "3",
+      "6"
+    ]
+  },
+  {
+    "route_code": "PRIVATE",
+    "name": "Private candidate route (Extended)",
+    "tier": "Extended",
+    "private_candidate_eligible": true,
+    "component_codes": [
+      "2",
+      "4",
+      "6"
+    ]
+  }
+]

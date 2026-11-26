@@ -21,24 +21,28 @@
     "is_elective": false
   },
   "provenance": {
-    "method": "manual-draft",
+    "method": "pdf-extraction",
     "source_file": "raw-syllabuses/0625-physics-2026-2028.pdf",
-    "extracted_at": "2026-10-19",
+    "extracted_at": "2026-11-26T06:15:14.008Z",
     "verified": false,
-    "notes": "Draft content written before the extraction pipeline existed. Replaced by `pnpm ingest --subject=<code>` once the official PDF is in raw-syllabuses/."
+    "notes": "Parsed 4068 text items with the science layout (tiered). Topics, objectives, papers, entry routes, assessment objectives and command words all come from the PDF."
   },
   "files": {
     "topics": "topics.json",
     "objectives": "objectives.json",
     "routes": "routes.json",
-    "assessment_objectives": "assessment_objectives.json"
+    "assessment_objectives": "assessment_objectives.json",
+    "entry_routes": "entry_routes.json",
+    "command_words": "command_words.json",
+    "resources": "resources.json",
+    "lineage": "lineage.json"
   },
   "counts": {
     "topics": 6,
-    "subtopics": 27,
-    "objectives": 15,
-    "components": 3,
-    "assessment_objectives": 0
+    "subtopics": 58,
+    "objectives": 324,
+    "components": 6,
+    "assessment_objectives": 3
   },
-  "generated_at": "2026-10-19T17:43:13.846Z"
+  "generated_at": "2026-11-26T06:15:14.008Z"
 }

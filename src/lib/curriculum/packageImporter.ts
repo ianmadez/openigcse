@@ -94,24 +94,41 @@ async function readJson(dir: string, file: string) {
   }
 }
 
+/** An optional package file: missing means empty, but malformed JSON still fails loudly. */
+async function readOptionalJson(dir: string, file: string) {
+  try {
+    return await readJson(dir, file);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw error;
+  }
+}
+
 /** Reads and validates one package folder. Throws with every problem found. */
 export async function readPackage(dir: string): Promise<CurriculumPackage> {
-  const [manifest, routes, assessmentObjectives, topics, objectives, resources] = await Promise.all([
-    readJson(dir, "manifest.json"),
-    readJson(dir, "routes.json"),
-    readJson(dir, "assessment_objectives.json"),
-    readJson(dir, "topics.json"),
-    readJson(dir, "objectives.json"),
-    readJson(dir, "resources.json").catch(() => []),
-  ]);
+  const [manifest, routes, entryRoutes, commandWords, assessmentObjectives, topics, objectives, resources] =
+    await Promise.all([
+      readJson(dir, "manifest.json"),
+      readJson(dir, "routes.json"),
+      readOptionalJson(dir, "entry_routes.json"),
+      readOptionalJson(dir, "command_words.json"),
+      readJson(dir, "assessment_objectives.json"),
+      readJson(dir, "topics.json"),
+      readJson(dir, "objectives.json"),
+      readOptionalJson(dir, "resources.json"),
+    ]);
+  const lineage = await readOptionalJson(dir, "lineage.json");
 
   const parsed = curriculumPackageSchema.safeParse({
     manifest,
     routes,
+    entryRoutes,
+    commandWords,
     assessmentObjectives,
     topics,
     objectives,
     resources,
+    lineage,
   });
 
   if (!parsed.success) {
@@ -272,7 +289,7 @@ export async function importPackage(
         name: route.name,
         assessment_type: assessmentTypeFor(route.component_code),
         duration_minutes: route.duration_minutes ?? 0,
-        max_marks: null,
+        max_marks: route.marks,
         private_candidate_eligible: route.private_candidate_eligible,
         notes: route.note || null,
       },
@@ -282,40 +299,82 @@ export async function importPackage(
   }
   note("components", "components", "inserted", `${pkg.routes.length} paper(s)`);
 
-  const privateRoute = pkg.routes.filter((route) => route.private_candidate_eligible);
-  if (privateRoute.length > 0) {
+  // Extracted packages declare their entry routes; older hand-written ones get one route of every eligible paper.
+  const declared =
+    pkg.entryRoutes.length > 0
+      ? pkg.entryRoutes
+      : (() => {
+          const eligible = pkg.routes.filter((route) => route.private_candidate_eligible);
+          return eligible.length === 0
+            ? []
+            : [
+                {
+                  route_code: "PRIVATE",
+                  name: "Private candidate route",
+                  tier: pkg.manifest.subject.tiers.length === 1 ? pkg.manifest.subject.tiers[0]! : "Extended",
+                  private_candidate_eligible: true,
+                  component_codes: eligible.map((route) => route.component_code),
+                },
+              ];
+        })();
+
+  for (const entryRoute of declared) {
     const routeId = await upsertId(
       client,
       "entry_routes",
       {
         syllabus_version_id: syllabusVersionId,
-        route_code: "PRIVATE",
-        name: "Private candidate route",
-        tier: pkg.manifest.subject.tiers.length === 1 ? pkg.manifest.subject.tiers[0] : "Extended",
-        private_candidate_eligible: true,
+        route_code: entryRoute.route_code,
+        name: entryRoute.name,
+        tier: entryRoute.tier,
+        private_candidate_eligible: entryRoute.private_candidate_eligible,
         notes: "Excludes any component that needs school-authenticated coursework.",
       },
       "syllabus_version_id,route_code",
     );
 
-    for (const route of privateRoute) {
-      const componentId = componentIds.get(route.component_code);
-      if (!componentId) continue;
-
-      const { error } = await client.from("entry_route_components").upsert(
-        {
-          entry_route_id: routeId,
-          component_id: componentId,
-          weighting_percent: route.weighting_percent,
-        },
-        { onConflict: "entry_route_id,component_id" },
-      );
+    const keep: string[] = [];
+    for (const code of entryRoute.component_codes) {
+      const componentId = componentIds.get(code);
+      if (!componentId)
+        throw new PackageImportError(`Entry route ${entryRoute.route_code} names unknown paper ${code}`);
+      keep.push(componentId);
+      const paper = pkg.routes.find((route) => route.component_code === code);
+      const { error } = await client
+        .from("entry_route_components")
+        .upsert(
+          { entry_route_id: routeId, component_id: componentId, weighting_percent: paper?.weighting_percent ?? null },
+          { onConflict: "entry_route_id,component_id" },
+        );
       if (error) throw new PackageImportError(`entry_route_components: ${error.message}`);
     }
-    note("entry route", "entry_routes", "inserted", `${privateRoute.length} private candidate paper(s)`);
-  } else {
-    warnings.push("No private candidate route declared for this package.");
+    // A re-import replaces the route's papers rather than accumulating stale ones.
+    const { error: pruneError } = await client
+      .from("entry_route_components")
+      .delete()
+      .eq("entry_route_id", routeId)
+      .not("component_id", "in", `(${keep.join(",")})`);
+    if (pruneError) throw new PackageImportError(`entry_route_components: ${pruneError.message}`);
+    note(
+      "entry route",
+      "entry_routes",
+      "inserted",
+      `${entryRoute.route_code}: ${entryRoute.component_codes.length} paper(s)`,
+    );
   }
+  if (declared.length === 0) warnings.push("No private candidate route declared for this package.");
+
+  for (const word of pkg.commandWords) {
+    const { error } = await client
+      .from("command_words")
+      .upsert(
+        { syllabus_version_id: syllabusVersionId, word: word.word, meaning: word.meaning },
+        { onConflict: "syllabus_version_id,word" },
+      );
+    if (error) throw new PackageImportError(`command_words: ${error.message}`);
+  }
+  if (pkg.commandWords.length > 0)
+    note("command words", "command_words", "inserted", `${pkg.commandWords.length} word(s)`);
 
   for (const objective of pkg.assessmentObjectives) {
     const { error } = await client.from("assessment_objectives").upsert(
@@ -333,6 +392,63 @@ export async function importPackage(
   }
   note("assessment objectives", "assessment_objectives", "inserted", `${pkg.assessmentObjectives.length} AO(s)`);
 
+  // Step 6.4: objectives this package replaces are retired, not overwritten. A code that
+  // survives with a different meaning would otherwise drag a learner's history onto the
+  // wrong objective, so the old row is renamed aside and the new one inserted fresh.
+  const { data: existingTopics, error: topicReadError } = await client
+    .from("topics")
+    .select("id, topic_code, retired_at")
+    .eq("syllabus_version_id", syllabusVersionId);
+  if (topicReadError) throw new PackageImportError(`topics: ${topicReadError.message}`);
+  const existingTopicIds = (existingTopics ?? []).map((row) => row.id as string);
+  const { data: existingObjectives, error: objectiveReadError } = existingTopicIds.length
+    ? await client.from("learning_objectives").select("id, objective_code, retired_at").in("topic_id", existingTopicIds)
+    : { data: [], error: null };
+  if (objectiveReadError) throw new PackageImportError(`learning_objectives: ${objectiveReadError.message}`);
+
+  const newCodes = new Set(pkg.objectives.map((objective) => objective.objective_code));
+  const changedMeaning = new Set(pkg.lineage.filter((row) => row.method !== "unchanged").map((row) => row.from_code));
+  const retiredIds = new Map<string, string>();
+  const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  for (const row of (existingObjectives ?? []) as Array<{
+    id: string;
+    objective_code: string;
+    retired_at: string | null;
+  }>) {
+    if (row.retired_at) {
+      // Retired by an earlier import: still a valid source for links confirmed since.
+      const original = row.objective_code.replace(/~retired-\d{8}$/, "");
+      if (!retiredIds.has(original)) retiredIds.set(original, row.id);
+      continue;
+    }
+    if (newCodes.has(row.objective_code) && !changedMeaning.has(row.objective_code)) continue;
+    const { error } = await client
+      .from("learning_objectives")
+      .update({ objective_code: `${row.objective_code}~retired-${stamp}`, retired_at: new Date().toISOString() })
+      .eq("id", row.id);
+    if (error) throw new PackageImportError(`retire ${row.objective_code}: ${error.message}`);
+    retiredIds.set(row.objective_code, row.id);
+  }
+  if (retiredIds.size > 0) note("retire", "learning_objectives", "updated", `${retiredIds.size} objective(s) retired`);
+
+  const packageTopicCodes = new Set(
+    pkg.topics.flatMap((topic) => [topic.topic_code, ...topic.subtopics.map((sub) => sub.topic_code)]),
+  );
+  const staleTopics = (existingTopics ?? []).filter(
+    (row) => !row.retired_at && !packageTopicCodes.has(row.topic_code as string),
+  );
+  if (staleTopics.length > 0) {
+    const { error } = await client
+      .from("topics")
+      .update({ retired_at: new Date().toISOString() })
+      .in(
+        "id",
+        staleTopics.map((row) => row.id as string),
+      );
+    if (error) throw new PackageImportError(`retire topics: ${error.message}`);
+    note("retire", "topics", "updated", `${staleTopics.length} topic(s) retired`);
+  }
+
   const topicIds = new Map<string, string>();
   for (const topic of pkg.topics) {
     const topicId = await upsertId(
@@ -344,6 +460,7 @@ export async function importPackage(
         topic_code: topic.topic_code,
         name: topic.name,
         sequence: topic.sequence,
+        retired_at: null,
       },
       "syllabus_version_id,topic_code",
     );
@@ -359,6 +476,7 @@ export async function importPackage(
           topic_code: subtopic.topic_code,
           name: subtopic.name,
           sequence: subtopic.sequence,
+          retired_at: null,
         },
         "syllabus_version_id,topic_code",
       );
@@ -384,12 +502,37 @@ export async function importPackage(
         command_words: objective.command_word ? [objective.command_word] : [],
         tier: objective.tier,
         sequence: objective.sequence,
+        retired_at: null,
       },
       "topic_id,objective_code",
     );
     objectiveIds.set(objective.objective_code, objectiveId);
   }
   note("objectives", "learning_objectives", "inserted", `${pkg.objectives.length} objective(s)`);
+
+  // Confirmed links from retired objectives to their successors. Progress moves only
+  // when a guardian runs carry_over_objective_progress() from the curriculum screen.
+  let links = 0;
+  for (const row of pkg.lineage) {
+    if (!row.confirmed || !row.to_code) continue;
+    const fromId = retiredIds.get(row.from_code);
+    const toId = objectiveIds.get(row.to_code);
+    if (!fromId || !toId || fromId === toId) continue;
+    const { error } = await client
+      .from("objective_lineage")
+      .upsert(
+        {
+          from_objective_id: fromId,
+          to_objective_id: toId,
+          method: row.method,
+          confirmed_by: pkg.manifest.provenance.reviewed_by,
+        },
+        { onConflict: "from_objective_id" },
+      );
+    if (error) throw new PackageImportError(`objective_lineage: ${error.message}`);
+    links += 1;
+  }
+  if (links > 0) note("lineage", "objective_lineage", "inserted", `${links} link(s)`);
 
   let resourceCount = 0;
   for (const resource of pkg.resources) {

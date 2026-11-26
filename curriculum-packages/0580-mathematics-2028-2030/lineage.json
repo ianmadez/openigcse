@@ -1,0 +1,122 @@
+[
+  {
+    "from_code": "MA-0580-1.1.1",
+    "from_text": "Identify types of number, including primes, squares, cubes and rational and irrational numbers, and apply the correct order of operations.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-1.2.1",
+    "from_text": "Convert between fractions, decimals and percentages and calculate a percentage of a quantity with and without a calculator.",
+    "to_code": "MA-0580-C1.13.1",
+    "method": "text-match",
+    "score": 0.27,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-1.3.1",
+    "from_text": "Simplify ratios and solve problems involving direct and inverse proportion.",
+    "to_code": "MA-0580-C1.12.3",
+    "method": "text-match",
+    "score": 0.3,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-1.4.1",
+    "from_text": "Apply the laws of indices and convert numbers to and from standard form.",
+    "to_code": "MA-0580-C1.8.2",
+    "method": "text-match",
+    "score": 0.5,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-1.5.1",
+    "from_text": "Round numbers to a given degree of accuracy, estimate calculations and state upper and lower bounds.",
+    "to_code": "MA-0580-E1.10.2",
+    "method": "text-match",
+    "score": 0.28,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-2.1.1",
+    "from_text": "Expand single and double brackets and factorise algebraic expressions by taking out common factors.",
+    "to_code": "MA-0580-C2.2.2",
+    "method": "text-match",
+    "score": 0.25,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-2.2.1",
+    "from_text": "Solve linear equations, including those with fractions, and represent the solution of an inequality on a number line.",
+    "to_code": "MA-0580-C2.6.1",
+    "method": "text-match",
+    "score": 0.31,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-2.3.1",
+    "from_text": "Solve simultaneous linear equations using elimination and substitution.",
+    "to_code": "MA-0580-C2.5.3",
+    "method": "text-match",
+    "score": 0.5,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-2.4.1",
+    "from_text": "Solve quadratic equations by factorising and by using the quadratic formula.",
+    "to_code": "MA-0580-E2.5.6",
+    "method": "text-match",
+    "score": 0.5,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-2.5.1",
+    "from_text": "Continue linear and quadratic sequences and find the nth term of a linear sequence.",
+    "to_code": "MA-0580-C2.7.3",
+    "method": "text-match",
+    "score": 0.42,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-3.1.1",
+    "from_text": "Plot and interpret straight-line graphs of the form y = mx + c from a table of values.",
+    "to_code": "MA-0580-C3.5.1",
+    "method": "text-match",
+    "score": 0.55,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-3.2.1",
+    "from_text": "Calculate the gradient of a straight line and interpret the gradient and intercept in context.",
+    "to_code": "MA-0580-E3.3.2",
+    "method": "text-match",
+    "score": 0.4,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-3.3.1",
+    "from_text": "Calculate the midpoint and the length of a line segment joining two points.",
+    "to_code": "MA-0580-E3.4.1",
+    "method": "text-match",
+    "score": 0.5,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-3.4.1",
+    "from_text": "Recognise and sketch the graphs of quadratic, cubic and reciprocal functions, identifying key features.",
+    "to_code": "MA-0580-E2.11.1",
+    "method": "text-match",
+    "score": 0.5,
+    "confirmed": false
+  },
+  {
+    "from_code": "MA-0580-3.5.1",
+    "from_text": "Use the relationships between the gradients of parallel and perpendicular lines to solve problems.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  }
+]

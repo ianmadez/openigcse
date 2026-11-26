@@ -15,7 +15,7 @@ Migrations in `supabase/migrations/` are the authority; this is the map. Helper 
 ## Curriculum (global, read-only to households; written by the importer)
 
 `awarding_bodies`, `qualifications`, `subjects`, `syllabus_versions`, `components`, `entry_routes`,
-`entry_route_components`, `topics`, `learning_objectives`, `assessment_objectives`, `resources`, `activities`.
+`entry_route_components`, `topics`, `learning_objectives`, `assessment_objectives`, `command_words` (Phase 6), `resources`, `activities`.
 
 ## Planning
 
