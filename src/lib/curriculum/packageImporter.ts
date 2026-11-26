@@ -94,20 +94,34 @@ async function readJson(dir: string, file: string) {
   }
 }
 
+/** An optional package file: missing means empty, but malformed JSON still fails loudly. */
+async function readOptionalJson(dir: string, file: string) {
+  try {
+    return await readJson(dir, file);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw error;
+  }
+}
+
 /** Reads and validates one package folder. Throws with every problem found. */
 export async function readPackage(dir: string): Promise<CurriculumPackage> {
-  const [manifest, routes, assessmentObjectives, topics, objectives, resources] = await Promise.all([
+  const [manifest, routes, entryRoutes, commandWords, assessmentObjectives, topics, objectives, resources] = await Promise.all([
     readJson(dir, "manifest.json"),
     readJson(dir, "routes.json"),
+    readOptionalJson(dir, "entry_routes.json"),
+    readOptionalJson(dir, "command_words.json"),
     readJson(dir, "assessment_objectives.json"),
     readJson(dir, "topics.json"),
     readJson(dir, "objectives.json"),
-    readJson(dir, "resources.json").catch(() => []),
+    readOptionalJson(dir, "resources.json"),
   ]);
 
   const parsed = curriculumPackageSchema.safeParse({
     manifest,
     routes,
+    entryRoutes,
+    commandWords,
     assessmentObjectives,
     topics,
     objectives,
@@ -272,7 +286,7 @@ export async function importPackage(
         name: route.name,
         assessment_type: assessmentTypeFor(route.component_code),
         duration_minutes: route.duration_minutes ?? 0,
-        max_marks: null,
+        max_marks: route.marks,
         private_candidate_eligible: route.private_candidate_eligible,
         notes: route.note || null,
       },
@@ -282,40 +296,73 @@ export async function importPackage(
   }
   note("components", "components", "inserted", `${pkg.routes.length} paper(s)`);
 
-  const privateRoute = pkg.routes.filter((route) => route.private_candidate_eligible);
-  if (privateRoute.length > 0) {
+  // Extracted packages declare their entry routes; older hand-written ones get one route of every eligible paper.
+  const declared =
+    pkg.entryRoutes.length > 0
+      ? pkg.entryRoutes
+      : (() => {
+          const eligible = pkg.routes.filter((route) => route.private_candidate_eligible);
+          return eligible.length === 0
+            ? []
+            : [
+                {
+                  route_code: "PRIVATE",
+                  name: "Private candidate route",
+                  tier: pkg.manifest.subject.tiers.length === 1 ? pkg.manifest.subject.tiers[0]! : "Extended",
+                  private_candidate_eligible: true,
+                  component_codes: eligible.map((route) => route.component_code),
+                },
+              ];
+        })();
+
+  for (const entryRoute of declared) {
     const routeId = await upsertId(
       client,
       "entry_routes",
       {
         syllabus_version_id: syllabusVersionId,
-        route_code: "PRIVATE",
-        name: "Private candidate route",
-        tier: pkg.manifest.subject.tiers.length === 1 ? pkg.manifest.subject.tiers[0] : "Extended",
-        private_candidate_eligible: true,
+        route_code: entryRoute.route_code,
+        name: entryRoute.name,
+        tier: entryRoute.tier,
+        private_candidate_eligible: entryRoute.private_candidate_eligible,
         notes: "Excludes any component that needs school-authenticated coursework.",
       },
       "syllabus_version_id,route_code",
     );
 
-    for (const route of privateRoute) {
-      const componentId = componentIds.get(route.component_code);
-      if (!componentId) continue;
-
+    const keep: string[] = [];
+    for (const code of entryRoute.component_codes) {
+      const componentId = componentIds.get(code);
+      if (!componentId) throw new PackageImportError(`Entry route ${entryRoute.route_code} names unknown paper ${code}`);
+      keep.push(componentId);
+      const paper = pkg.routes.find((route) => route.component_code === code);
       const { error } = await client.from("entry_route_components").upsert(
-        {
-          entry_route_id: routeId,
-          component_id: componentId,
-          weighting_percent: route.weighting_percent,
-        },
+        { entry_route_id: routeId, component_id: componentId, weighting_percent: paper?.weighting_percent ?? null },
         { onConflict: "entry_route_id,component_id" },
       );
       if (error) throw new PackageImportError(`entry_route_components: ${error.message}`);
     }
-    note("entry route", "entry_routes", "inserted", `${privateRoute.length} private candidate paper(s)`);
-  } else {
-    warnings.push("No private candidate route declared for this package.");
+    // A re-import replaces the route's papers rather than accumulating stale ones.
+    const { error: pruneError } = await client
+      .from("entry_route_components")
+      .delete()
+      .eq("entry_route_id", routeId)
+      .not("component_id", "in", `(${keep.join(",")})`);
+    if (pruneError) throw new PackageImportError(`entry_route_components: ${pruneError.message}`);
+    note("entry route", "entry_routes", "inserted", `${entryRoute.route_code}: ${entryRoute.component_codes.length} paper(s)`);
   }
+  if (declared.length === 0) warnings.push("No private candidate route declared for this package.");
+
+  for (const word of pkg.commandWords) {
+    const { error } = await client
+      .from("command_words")
+      .upsert(
+        { syllabus_version_id: syllabusVersionId, word: word.word, meaning: word.meaning },
+        { onConflict: "syllabus_version_id,word" },
+      );
+    if (error) throw new PackageImportError(`command_words: ${error.message}`);
+  }
+  if (pkg.commandWords.length > 0) note("command words", "command_words", "inserted", `${pkg.commandWords.length} word(s)`);
 
   for (const objective of pkg.assessmentObjectives) {
     const { error } = await client.from("assessment_objectives").upsert(

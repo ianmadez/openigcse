@@ -57,6 +57,27 @@ export const routesSchema = z.array(
     assessment_style: z.string().min(1),
     private_candidate_eligible: z.boolean(),
     note: z.string().default(""),
+    /** Printed total marks for the paper; null for older hand-written packages. */
+    marks: z.number().int().positive().nullable().default(null),
+  }),
+);
+
+/** Which papers a candidate sits together. Weightings of a route's papers sum to 100. */
+export const entryRoutesSchema = z.array(
+  z.object({
+    route_code: z.string().min(1),
+    name: z.string().min(1),
+    tier: tierSchema,
+    private_candidate_eligible: z.boolean(),
+    component_codes: z.array(z.string().min(1)).min(1),
+  }),
+);
+
+/** The syllabus's own command-word glossary. */
+export const commandWordsSchema = z.array(
+  z.object({
+    word: z.string().min(1),
+    meaning: z.string().min(1),
   }),
 );
 
@@ -172,6 +193,8 @@ export const resourcesSchema = z.array(
 export const curriculumPackageSchema = z.object({
   manifest: manifestSchema,
   routes: routesSchema,
+  entryRoutes: entryRoutesSchema.default([]),
+  commandWords: commandWordsSchema.default([]),
   assessmentObjectives: assessmentObjectivesSchema,
   topics: topicsSchema,
   objectives: objectivesSchema,
@@ -180,6 +203,8 @@ export const curriculumPackageSchema = z.object({
 
 export type Manifest = z.infer<typeof manifestSchema>;
 export type Route = z.infer<typeof routesSchema>[number];
+export type EntryRoute = z.infer<typeof entryRoutesSchema>[number];
+export type CommandWord = z.infer<typeof commandWordsSchema>[number];
 export type AssessmentObjective = z.infer<typeof assessmentObjectivesSchema>[number];
 export type TopicNode = z.infer<typeof topicsSchema>[number];
 export type LearningObjective = z.infer<typeof objectivesSchema>[number];
@@ -191,6 +216,14 @@ export function validatePackageIntegrity(pkg: CurriculumPackage): string[] {
   const problems: string[] = [];
   const subtopics = new Set(pkg.topics.flatMap((topic) => topic.subtopics.map((sub) => sub.topic_code)));
   const objectives = new Set<string>();
+
+  const papers = new Map(pkg.routes.map((route) => [route.component_code, route]));
+  for (const route of pkg.entryRoutes) {
+    const missing = route.component_codes.filter((code) => !papers.has(code));
+    if (missing.length > 0) problems.push(`entry route ${route.route_code}: unknown component ${missing.join(", ")}`);
+    const total = route.component_codes.reduce((sum, code) => sum + (papers.get(code)?.weighting_percent ?? 0), 0);
+    if (missing.length === 0 && total !== 100) problems.push(`entry route ${route.route_code}: weightings sum to ${total}, not 100`);
+  }
 
   for (const objective of pkg.objectives) {
     if (!subtopics.has(objective.topic_code)) {
