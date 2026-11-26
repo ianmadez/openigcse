@@ -12,11 +12,10 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
-
 import { getSubject, registry } from "../src/lib/curriculum/registry";
 import { SCHEMA_VERSION } from "../src/lib/curriculum/schemas";
-import { commandWordOf, parseSubjectContent, type TextItem } from "./lib/syllabusParser";
+import { extractItems } from "./lib/pdfItems";
+import { commandWordOf, parseSyllabus } from "./lib/syllabusParser";
 
 const ROOT = process.cwd();
 const RAW_DIR = path.join(ROOT, "raw-syllabuses");
@@ -55,31 +54,6 @@ function parseArgs(argv: string[]): Args {
     else if (raw.startsWith("--years=")) args.years = raw.slice("--years=".length);
   }
   return args;
-}
-
-async function extractItems(buffer: Buffer): Promise<TextItem[]> {
-  const loadingTask = getDocument({ data: new Uint8Array(buffer), useSystemFonts: true });
-  const doc = await loadingTask.promise;
-
-  const items: TextItem[] = [];
-
-  for (let page = 1; page <= doc.numPages; page += 1) {
-    const pageProxy = await doc.getPage(page);
-    const content = await pageProxy.getTextContent();
-
-    for (const item of content.items) {
-      if (!("str" in item) || !item.str.trim()) continue;
-      const transform = item.transform as number[];
-      const x = transform[4] ?? 0;
-      const y = transform[5] ?? 0;
-      items.push({ text: item.str, x, y, width: item.width, height: item.height, page });
-    }
-
-    pageProxy.cleanup();
-  }
-
-  await loadingTask.destroy();
-  return items;
 }
 
 async function download(url: string, target: string) {
@@ -145,7 +119,7 @@ async function main() {
   }
 
   const items = await extractItems(buffer);
-  const parsed = parseSubjectContent(items);
+  const parsed = parseSyllabus(items, subject.content_layout);
   const prefix = CODE_PREFIX[subject.code] ?? subject.code;
 
   const topics = parsed.topics.map((topic, index) => ({
@@ -204,9 +178,10 @@ async function main() {
       method: "pdf-extraction",
       source_file: path.relative(ROOT, pdfPath).replace(/\\/g, "/"),
       extracted_at: new Date().toISOString(),
-      verified: true,
+      // A person checks every extraction on the package review screen before it is verified.
+      verified: false,
       notes:
-        `Parsed ${items.length} text items in ${parsed.mode} column mode. ` +
+        `Parsed ${items.length} text items with the ${parsed.layout} layout (${parsed.mode}). ` +
         "Components come from the subject registry; objectives come from the PDF.",
     },
     files: {
