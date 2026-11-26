@@ -12,6 +12,8 @@ Read on demand, not all up front:
   [data model](docs/source-of-truth/data-model.md), [phase workflow](docs/source-of-truth/workflow.md),
   [hard-coded examples register](docs/source-of-truth/unhardcoding.md).
 - [docs/done-work.md](docs/done-work.md): roadmap step checklist. [docs/phases/](docs/phases/): one summary per merged phase.
+- [docs/syllabus-pdfs.md](docs/syllabus-pdfs.md): downloading the Cambridge PDFs (never committed), extracting and
+  importing them, and switching syllabus editions as the learner moves up a year.
 - [docs/progress.md](docs/progress.md): honest gaps. [docs/working-practices.md](docs/working-practices.md): fetching rules.
 - [README.md](README.md): product tour.
 

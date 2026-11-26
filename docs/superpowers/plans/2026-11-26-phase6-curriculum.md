@@ -22,6 +22,11 @@ heading miss; 0610 65 topics / 0 objectives; 0620 52 / 1; 0625 41 / 19. This mat
 - **6.4 Version lineage.** `objective_lineage` table mapping old to new objective codes so events and mastery carry
   over.
 
+- **6.5 Editions follow the exam year (added 2026-11-26).** The learner is in Form 2 / Year 8. The registry allows
+  several editions per subject; the importer and enrolment pick the edition covering the learner's
+  `target_exam_series`. Moving to Year 9 means changing the profile and adding editions, not editing code. Flags a
+  subject whose editions do not cover the target year.
+
 ## Checks
 
 `pnpm typecheck; pnpm test:unit; pnpm test:parser; pnpm validate; pnpm test:rls; pnpm build; pnpm check:contrast`,

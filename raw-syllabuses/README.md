@@ -33,18 +33,6 @@ expected name. When no link matches it reports the subject as missed instead of
 downloading the wrong document. History 0470 is published by Cambridge as two
 windows, 2027-2028 and 2029-2030; the registry tracks the 2027-2028 one.
 
-## Running the extraction
+## Next steps
 
-```powershell
-pnpm ingest -- --subject=0580 --pdf raw-syllabuses/0580-mathematics-2028-2030.pdf
-pnpm ingest -- --subject=0625 --pdf raw-syllabuses/0625-physics-2026-2028.pdf --dry-run
-```
-
-The parser writes `curriculum-packages/<code>-<slug>-<years>/` and refuses to
-write anything when it cannot find the "Subject content" section.
-
-## What is deliberately not extracted yet
-
-Assessment objectives live in a separate table in the PDF. The pipeline leaves
-`assessment_objectives.json` empty and says so, rather than filling it in from
-memory. Add them by hand from the PDF, or extend `parseSubjectContent`.
+Extraction, review, import and switching editions: [docs/syllabus-pdfs.md](../docs/syllabus-pdfs.md).
