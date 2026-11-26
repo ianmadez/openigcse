@@ -269,7 +269,10 @@ test("skills layout: each skill heading is a topic and its bullets are outcomes"
   );
   assert.deepEqual(
     objectives(result).map((objective) => objective.text),
-    ["Understand short recordings dealing with everyday needs (e.g. simple directions).", "Understand short, simple texts."],
+    [
+      "Understand short recordings dealing with everyday needs (e.g. simple directions).",
+      "Understand short, simple texts.",
+    ],
   );
 });
 
@@ -303,22 +306,29 @@ for (const [code, expected] of Object.entries(EXPECTED)) {
   const subject = getSubject(code)!;
   const file = path.join(process.cwd(), "raw-syllabuses", subject.pdf_hint);
 
-  test(`${code} ${subject.name}: extracts the full subject content`, { skip: !existsSync(file) && "PDF not present" }, async () => {
-    const result = parseSyllabus(await extractItems(readFileSync(file)), subject.content_layout);
-    const all = objectives(result);
+  test(
+    `${code} ${subject.name}: extracts the full subject content`,
+    { skip: !existsSync(file) && "PDF not present" },
+    async () => {
+      const result = parseSyllabus(await extractItems(readFileSync(file)), subject.content_layout);
+      const all = objectives(result);
 
-    assert.deepEqual(result.warnings, []);
-    assert.equal(result.topics.length, expected.topics, "topics");
-    assert.equal(
-      result.topics.reduce((sum, topic) => sum + topic.subtopics.length, 0),
-      expected.subtopics,
-      "subtopics",
-    );
-    assert.equal(all.length, expected.objectives, "objectives");
-    if (expected.core !== undefined) {
-      assert.equal(all.filter((objective) => objective.tier === "Core").length, expected.core, "core objectives");
-    }
-    assert.ok(all.every((objective) => objective.text.length >= 8), "every objective has real text");
-    assert.equal(new Set(all.map((objective) => objective.local_code)).size, all.length, "codes are unique");
-  });
+      assert.deepEqual(result.warnings, []);
+      assert.equal(result.topics.length, expected.topics, "topics");
+      assert.equal(
+        result.topics.reduce((sum, topic) => sum + topic.subtopics.length, 0),
+        expected.subtopics,
+        "subtopics",
+      );
+      assert.equal(all.length, expected.objectives, "objectives");
+      if (expected.core !== undefined) {
+        assert.equal(all.filter((objective) => objective.tier === "Core").length, expected.core, "core objectives");
+      }
+      assert.ok(
+        all.every((objective) => objective.text.length >= 8),
+        "every objective has real text",
+      );
+      assert.equal(new Set(all.map((objective) => objective.local_code)).size, all.length, "codes are unique");
+    },
+  );
 }

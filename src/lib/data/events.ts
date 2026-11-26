@@ -123,7 +123,13 @@ export async function getObjectiveRatios(learnerId: string): Promise<Map<string,
 /* ---------------------------------------------------------------- learner writes (Phase 4) */
 
 async function objectiveIdFor(supabase: Awaited<ReturnType<typeof createServerClientInstance>>, objectiveCode: string) {
-  const { data } = await supabase.from("learning_objectives").select("id").eq("objective_code", objectiveCode).limit(1).maybeSingle();
+  const { data } = await supabase
+    .from("learning_objectives")
+    .select("id")
+    .eq("objective_code", objectiveCode)
+    .is("retired_at", null)
+    .limit(1)
+    .maybeSingle();
   return (data?.id as string | undefined) ?? null;
 }
 

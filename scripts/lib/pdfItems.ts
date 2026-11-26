@@ -13,7 +13,14 @@ export async function extractItems(buffer: Buffer | Uint8Array): Promise<TextIte
     for (const item of content.items) {
       if (!("str" in item) || !item.str.trim()) continue;
       const transform = item.transform as number[];
-      items.push({ text: item.str, x: transform[4] ?? 0, y: transform[5] ?? 0, width: item.width, height: item.height, page });
+      items.push({
+        text: item.str,
+        x: transform[4] ?? 0,
+        y: transform[5] ?? 0,
+        width: item.width,
+        height: item.height,
+        page,
+      });
     }
     pageProxy.cleanup();
   }

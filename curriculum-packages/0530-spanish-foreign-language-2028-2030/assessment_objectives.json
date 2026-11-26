@@ -1,0 +1,30 @@
+[
+  {
+    "code": "AO1",
+    "name": "Listening",
+    "description": "Candidates will be assessed on their ability to: L1 understand the main points and key information in simple everyday material L2 understand clear speech on a range of familiar topics L3 understand the description of events and expression of ideas, opinions and attitudes in simple texts L4 identify and select relevant information in predictable texts",
+    "weighting_percent": 25,
+    "rubric": []
+  },
+  {
+    "code": "AO2",
+    "name": "Reading",
+    "description": "Candidates will be assessed on their ability to: R1 understand the main points and key information in simple everyday material R2 understand authentic factual texts on a range of familiar topics R3 understand the description of events and expression of ideas, opinions and attitudes in simple texts R4 identify and select relevant information in predictable texts",
+    "weighting_percent": 25,
+    "rubric": []
+  },
+  {
+    "code": "AO3",
+    "name": "Speaking",
+    "description": "Candidates will be assessed on their ability to: S1 communicate clearly and effectively in a range of predictable everyday situations S2 engage in conversations on familiar topics, expressing opinions and feelings S3 use a range of structures and vocabulary with reasonable accuracy S4 demonstrate some ability to maintain interaction S5 show some control of pronunciation and intonation",
+    "weighting_percent": 25,
+    "rubric": []
+  },
+  {
+    "code": "AO4",
+    "name": "Writing",
+    "description": "Candidates will be assessed on their ability to: W1 communicate simple factual information clearly for everyday purposes W2 write simple phrases and sentences on a familiar topic W3 write simple connected texts describing events, experiences, opinions and hopes and ambitions W4 use a range of simple vocabulary and language structures reasonably accurately",
+    "weighting_percent": 25,
+    "rubric": []
+  }
+]

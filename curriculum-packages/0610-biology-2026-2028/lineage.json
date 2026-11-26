@@ -1,0 +1,122 @@
+[
+  {
+    "from_code": "BI-0610-1.1.1",
+    "from_text": "State the characteristics shared by all living organisms and explain each one using a named example.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-1.2.1",
+    "from_text": "Explain why the binomial system is used and describe the hierarchical classification of organisms.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-1.3.1",
+    "from_text": "Describe the main features of the five kingdoms and give an example organism from each.",
+    "to_code": "BI-0610-17.4.3",
+    "method": "text-match",
+    "score": 0.27,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-1.4.1",
+    "from_text": "Describe the features used to classify vertebrates into their five groups and invertebrates into their major groups.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-1.5.1",
+    "from_text": "Construct and use a dichotomous key to identify an unknown organism.",
+    "to_code": "BI-0610-1.2.4",
+    "method": "text-match",
+    "score": 0.33,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-2.1.1",
+    "from_text": "Identify the structures of animal and plant cells and state the function of each structure.",
+    "to_code": "BI-0610-2.1.4",
+    "method": "text-match",
+    "score": 0.42,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-2.2.1",
+    "from_text": "Explain how the shape of a specialised cell is adapted to carry out its function.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-2.3.1",
+    "from_text": "Describe the levels of organisation from cell to organ system and give an example of each level.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-2.4.1",
+    "from_text": "Calculate the magnification of a drawing and the actual size of a specimen using the magnification equation.",
+    "to_code": "BI-0610-2.2.2",
+    "method": "text-match",
+    "score": 0.4,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-2.5.1",
+    "from_text": "Describe how organ systems work together in a mammal, using the digestive and transport systems as examples.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-3.1.1",
+    "from_text": "Define diffusion and describe the factors that affect the rate of diffusion across a membrane.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-3.2.1",
+    "from_text": "Define osmosis and predict the effect of solutions of different concentrations on plant and animal cells.",
+    "to_code": "BI-0610-3.2.5",
+    "method": "text-match",
+    "score": 0.36,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-3.3.1",
+    "from_text": "Describe active transport and explain why it is needed in root hair cells and in the gut.",
+    "to_code": "BI-0610-3.3.2",
+    "method": "text-match",
+    "score": 0.28,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-3.4.1",
+    "from_text": "Explain the importance of surface area to volume ratio for the exchange of substances in organisms.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "BI-0610-3.5.1",
+    "from_text": "Describe experiments that investigate diffusion and osmosis and interpret the results.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  }
+]

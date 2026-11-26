@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "code": "AO1",
+    "name": "Knowledge and understanding of mathematical techniques",
+    "description": "Candidates should be able to: recall and apply mathematical knowledge and techniques; carry out routine procedures in mathematical and everyday situations; understand and use mathematical notation and terminology; perform calculations with and without a calculator; organise, process, present and understand information in written form, tables, graphs and diagrams; estimate, approximate and work to degrees of accuracy appropriate to the context and convert between equivalent numerical forms; understand and use measurement systems in everyday use; measure and draw using geometrical instruments to an appropriate degree of accuracy; recognise and use spatial relationships in two and three dimensions. (Weighting 60–70% of the qualification.)",
+    "weighting_percent": null,
+    "rubric": []
+  },
+  {
+    "code": "AO2",
+    "name": "Analyse, interpret and communicate mathematically",
+    "description": "Candidates should be able to: analyse a problem and identify a suitable strategy to solve it, including using a combination of processes where appropriate; make connections between different areas of mathematics; recognise patterns in a variety of situations and make and justify generalisations; make logical inferences and draw conclusions from mathematical data or results; communicate methods and results in a clear and logical form; interpret information in different forms and change from one form of representation to another. (Weighting 30–40% of the qualification.)",
+    "weighting_percent": null,
+    "rubric": []
+  }
+]

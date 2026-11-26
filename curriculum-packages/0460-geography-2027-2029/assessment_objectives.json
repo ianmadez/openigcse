@@ -1,0 +1,23 @@
+[
+  {
+    "code": "AO1",
+    "name": "Knowledge and understanding",
+    "description": "Candidates should be able to demonstrate knowledge and understanding of: geographical terms, concepts and systems; geographical principles, theories and models; the location and character of environments and places; the physical and human factors and processes which contribute to different environments, spatial patterns and interactions; the similarities and differences between environments, people and places; the interactive nature of physical and human systems and environments; the causes and consequences of change in physical and human environments; the importance of spatial scale and time scale in the study of geography.",
+    "weighting_percent": 32,
+    "rubric": []
+  },
+  {
+    "code": "AO2",
+    "name": "Skills and analysis",
+    "description": "Candidates should be able to: select, adapt and use a variety of geographical skills and techniques; interpret, organise, present and analyse geographical data, information and sources presented in a variety of forms; use geographical data to identify patterns, trends and relationships; use and apply the stages of the route to geographical enquiry.",
+    "weighting_percent": 48,
+    "rubric": []
+  },
+  {
+    "code": "AO3",
+    "name": "Evaluation and decision-making",
+    "description": "Candidates should be able to: evaluate the importance of geographical factors, processes and change on physical and human environments; recognise the limitations of geographical data, principles, theories, models, and information presented in a variety of forms; evaluate the impact of different values and attitudes of people in the management of physical and human environments; make and justify a decision based upon information provided; evaluate the different options available to decision makers; evaluate the relative success or failure of strategies and techniques used to manage human and physical environments; including sustainable.",
+    "weighting_percent": 20,
+    "rubric": []
+  }
+]

@@ -53,7 +53,9 @@ function bodyLines(items: TextItem[], splitX: number | null): TextLine[] {
 
 /** Rows between a 16pt heading and the next heading of at least that size. */
 function sectionAfter(lines: TextLine[], heading: RegExp, from = 0): TextLine[] {
-  const start = lines.findIndex((line, index) => index >= from && line.height >= SECTION_SIZE && heading.test(line.text));
+  const start = lines.findIndex(
+    (line, index) => index >= from && line.height >= SECTION_SIZE && heading.test(line.text),
+  );
   if (start === -1) return [];
   const end = lines.findIndex((line, index) => index > start && line.height >= SECTION_SIZE);
   return lines.slice(start + 1, end === -1 ? undefined : end);
@@ -175,7 +177,8 @@ export function parseComponents(items: TextItem[]): { components: ParsedComponen
     } else if (component.separately_endorsed) {
       component.note = "Optional and separately endorsed; does not count towards the grade.";
     }
-    if (component.duration_minutes === null && !coursework) warnings.push(`Component ${component.component_code} has no duration.`);
+    if (component.duration_minutes === null && !coursework)
+      warnings.push(`Component ${component.component_code} has no duration.`);
     if (component.marks === null) warnings.push(`Component ${component.component_code} has no marks.`);
   }
   if (components.length === 0) warnings.push("No component cards were found in the assessment overview.");
@@ -250,7 +253,11 @@ export function parseAssessmentObjectives(items: TextItem[]): ParsedAssessmentOb
       // A printed range does not fit one number; keep the PDF's own words instead.
       objective.weighting_percent = null;
       objective.description = `${objective.description} (Weighting ${range[1]}% of the qualification.)`;
-      if (!objective.name) objective.name = row!.text.replace(/^AO\d\s+/, "").replace(range[1]!, "").trim();
+      if (!objective.name)
+        objective.name = row!.text
+          .replace(/^AO\d\s+/, "")
+          .replace(range[1]!, "")
+          .trim();
     } else if (match) {
       objective.weighting_percent = match[2] ? Number(match[2]) : null;
       if (!objective.name && match[1]) objective.name = match[1].trim();
@@ -260,7 +267,10 @@ export function parseAssessmentObjectives(items: TextItem[]): ParsedAssessmentOb
       objective.name = sentence.length <= 80 ? sentence : `${sentence.slice(0, 80).replace(/\s+\S*$/, "")}…`;
     }
   }
-  return objectives.map((objective) => ({ ...objective, description: objective.description.replace(/\s+/g, " ").trim() }));
+  return objectives.map((objective) => ({
+    ...objective,
+    description: objective.description.replace(/\s+/g, " ").trim(),
+  }));
 }
 
 /** The "Command words" glossary table: the word in the first cell, its meaning in the second. */

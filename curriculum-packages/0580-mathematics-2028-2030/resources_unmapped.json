@@ -1,0 +1,86 @@
+[
+  {
+    "objective_code": "MA-0580-1.1.1",
+    "title": "Types of Numbers",
+    "resource_type": "YouTubeVideo",
+    "provider": "Cognito",
+    "external_url": "https://www.youtube.com/watch?v=JXgduTLVjdg",
+    "youtube_video_id": "JXgduTLVjdg",
+    "start_timestamp_seconds": 0,
+    "end_timestamp_seconds": null,
+    "is_sandboxed": true,
+    "citation_reference": "Cognito, GCSE Maths - Types of Numbers"
+  },
+  {
+    "objective_code": "MA-0580-1.1.1",
+    "title": "Prime Numbers",
+    "resource_type": "YouTubeVideo",
+    "provider": "Corbettmaths",
+    "external_url": "https://www.youtube.com/watch?v=MUVQY6Oo5x8",
+    "youtube_video_id": "MUVQY6Oo5x8",
+    "start_timestamp_seconds": 0,
+    "end_timestamp_seconds": null,
+    "is_sandboxed": true,
+    "citation_reference": "Corbettmaths, 'Prime Numbers'"
+  },
+  {
+    "objective_code": "MA-0580-1.1.1",
+    "title": "Rational and irrational numbers",
+    "resource_type": "YouTubeVideo",
+    "provider": "Corbettmaths",
+    "external_url": "https://www.youtube.com/watch?v=weiy8z-e-sg",
+    "youtube_video_id": "weiy8z-e-sg",
+    "start_timestamp_seconds": 0,
+    "end_timestamp_seconds": null,
+    "is_sandboxed": true,
+    "citation_reference": "Corbettmaths, 'Rational and irrational numbers'"
+  },
+  {
+    "objective_code": "MA-0580-1.1.1",
+    "title": "Prealgebra 2e - The Language of Algebra",
+    "resource_type": "OpenStaxReading",
+    "provider": "OpenStax (Rice University)",
+    "external_url": "https://openstax.org/books/prealgebra-2e",
+    "youtube_video_id": null,
+    "start_timestamp_seconds": null,
+    "end_timestamp_seconds": null,
+    "is_sandboxed": false,
+    "citation_reference": "OpenStax, Prealgebra 2e, ch. 2 'The Language of Algebra'"
+  },
+  {
+    "objective_code": "MA-0580-3.5.1",
+    "title": "Linear graphs and parallel lines",
+    "resource_type": "YouTubeVideo",
+    "provider": "Corbettmaths",
+    "external_url": "https://www.youtube.com/watch?v=DWyaGrTA884",
+    "youtube_video_id": "DWyaGrTA884",
+    "start_timestamp_seconds": 0,
+    "end_timestamp_seconds": null,
+    "is_sandboxed": true,
+    "citation_reference": "Corbettmaths, 'Linear graphs and parallel lines'"
+  },
+  {
+    "objective_code": "MA-0580-3.5.1",
+    "title": "Perpendicular Lines",
+    "resource_type": "YouTubeVideo",
+    "provider": "Corbettmaths",
+    "external_url": "https://www.youtube.com/watch?v=XL0AWza-UH4",
+    "youtube_video_id": "XL0AWza-UH4",
+    "start_timestamp_seconds": 0,
+    "end_timestamp_seconds": null,
+    "is_sandboxed": true,
+    "citation_reference": "Corbettmaths, 'Perpendicular Lines'"
+  },
+  {
+    "objective_code": "MA-0580-3.5.1",
+    "title": "College Algebra 2e - Equations of Lines",
+    "resource_type": "OpenStaxReading",
+    "provider": "OpenStax (Rice University)",
+    "external_url": "https://openstax.org/books/college-algebra-2e/pages/1-introduction-to-prerequisites",
+    "youtube_video_id": null,
+    "start_timestamp_seconds": null,
+    "end_timestamp_seconds": null,
+    "is_sandboxed": false,
+    "citation_reference": "OpenStax, College Algebra 2e, 4.1 'Linear Functions'"
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "from_code": "CS-0478-1.1.1",
+    "from_text": "Understand why computers use binary to represent all forms of data.",
+    "to_code": "CS-0478-1.1.1",
+    "method": "unchanged",
+    "score": 1,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-1.1.2",
+    "from_text": "Convert between binary, denary and hexadecimal number systems and explain where each is used.",
+    "to_code": "CS-0478-1.1.2",
+    "method": "text-match",
+    "score": 0.5,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-1.1.3",
+    "from_text": "Perform binary addition and logical shifts on 8-bit registers and identify when overflow occurs.",
+    "to_code": "CS-0478-1.1.5",
+    "method": "text-match",
+    "score": 0.33,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-1.2.1",
+    "from_text": "Describe how text is represented using the ASCII and Unicode character sets, and explain why Unicode is needed.",
+    "to_code": "CS-0478-1.2.1",
+    "method": "text-match",
+    "score": 0.28,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-1.2.2",
+    "from_text": "Explain how sound and images are captured as digital data, using sampling, resolution, pixels and colour depth.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-1.3.1",
+    "from_text": "Explain why data compression is needed and distinguish lossless from lossy compression methods.",
+    "to_code": "CS-0478-1.3.4",
+    "method": "text-match",
+    "score": 0.36,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-2.1.1",
+    "from_text": "Describe how data is split into packets and reassembled at its destination using packet switching.",
+    "to_code": "CS-0478-2.1.1",
+    "method": "text-match",
+    "score": 0.31,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-2.1.2",
+    "from_text": "Compare serial and parallel transmission, and describe simplex, half-duplex and full-duplex communication.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-2.2.1",
+    "from_text": "Describe how IP addresses and MAC addresses are used to route data across a network.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-2.2.2",
+    "from_text": "Explain the role of the network interface card and the router when data is transmitted.",
+    "to_code": "CS-0478-3.4.4",
+    "method": "text-match",
+    "score": 0.33,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-2.3.1",
+    "from_text": "Explain how parity checks and checksums are used to detect errors in transmitted data.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-3.1.1",
+    "from_text": "Describe the components of the central processing unit and the fetch-decode-execute cycle.",
+    "to_code": "CS-0478-3.1.2",
+    "method": "text-match",
+    "score": 0.27,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-3.1.2",
+    "from_text": "Explain how clock speed, the number of cores and cache size affect the performance of a processor.",
+    "to_code": "CS-0478-3.1.3",
+    "method": "text-match",
+    "score": 0.31,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-3.2.1",
+    "from_text": "Select and justify suitable input and output devices for a given application or scenario.",
+    "to_code": null,
+    "method": "text-match",
+    "score": 0,
+    "confirmed": false
+  },
+  {
+    "from_code": "CS-0478-3.3.1",
+    "from_text": "Compare magnetic, optical and solid-state storage in terms of capacity, speed, durability and cost.",
+    "to_code": "CS-0478-3.3.3",
+    "method": "text-match",
+    "score": 0.28,
+    "confirmed": false
+  }
+]

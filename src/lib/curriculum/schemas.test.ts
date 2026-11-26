@@ -25,8 +25,25 @@ function pkg(entryRoutes: unknown[]) {
       generated_at: "2026-11-26",
     },
     routes: [
-      { component_code: "1", name: "Paper 1", duration_minutes: 60, weighting_percent: 60, tier: "Both", assessment_style: "written", private_candidate_eligible: true, marks: 40 },
-      { component_code: "2", name: "Paper 2", duration_minutes: 60, weighting_percent: 40, tier: "Both", assessment_style: "written", private_candidate_eligible: true },
+      {
+        component_code: "1",
+        name: "Paper 1",
+        duration_minutes: 60,
+        weighting_percent: 60,
+        tier: "Both",
+        assessment_style: "written",
+        private_candidate_eligible: true,
+        marks: 40,
+      },
+      {
+        component_code: "2",
+        name: "Paper 2",
+        duration_minutes: 60,
+        weighting_percent: 40,
+        tier: "Both",
+        assessment_style: "written",
+        private_candidate_eligible: true,
+      },
     ],
     entryRoutes,
     assessmentObjectives: [],
@@ -35,7 +52,13 @@ function pkg(entryRoutes: unknown[]) {
   });
 }
 
-const route = (codes: string[]) => ({ route_code: "PRIVATE", name: "Private", tier: "Untiered", private_candidate_eligible: true, component_codes: codes });
+const route = (codes: string[]) => ({
+  route_code: "PRIVATE",
+  name: "Private",
+  tier: "Untiered",
+  private_candidate_eligible: true,
+  component_codes: codes,
+});
 
 test("packages without entry_routes.json and marks still parse", () => {
   const parsed = pkg([]);
@@ -45,6 +68,8 @@ test("packages without entry_routes.json and marks still parse", () => {
 
 test("an entry route must name real papers whose weightings total 100", () => {
   assert.deepEqual(validatePackageIntegrity(pkg([route(["1", "2"])])), []);
-  assert.deepEqual(validatePackageIntegrity(pkg([route(["1"])])), ["entry route PRIVATE: weightings sum to 60, not 100"]);
+  assert.deepEqual(validatePackageIntegrity(pkg([route(["1"])])), [
+    "entry route PRIVATE: weightings sum to 60, not 100",
+  ]);
   assert.deepEqual(validatePackageIntegrity(pkg([route(["1", "9"])])), ["entry route PRIVATE: unknown component 9"]);
 });

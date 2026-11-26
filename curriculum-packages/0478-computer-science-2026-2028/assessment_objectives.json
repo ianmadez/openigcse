@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "code": "AO1",
+    "name": "Demonstrate knowledge and understanding of the principles and concepts of…",
+    "description": "Demonstrate knowledge and understanding of the principles and concepts of computer science.",
+    "weighting_percent": 40,
+    "rubric": []
+  },
+  {
+    "code": "AO2",
+    "name": "Apply knowledge and understanding of the principles and concepts of computer…",
+    "description": "Apply knowledge and understanding of the principles and concepts of computer science to a given context, including the analysis and design of computational or programming problems.",
+    "weighting_percent": 40,
+    "rubric": []
+  },
+  {
+    "code": "AO3",
+    "name": "Provide solutions to problems by",
+    "description": "Provide solutions to problems by: evaluating computer systems; making reasoned judgements; presenting conclusions.",
+    "weighting_percent": 20,
+    "rubric": []
+  }
+]

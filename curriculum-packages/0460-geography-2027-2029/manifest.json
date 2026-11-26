@@ -1,0 +1,47 @@
+{
+  "schema_version": "2.0.0",
+  "package_id": "0460-geography-2027-2029",
+  "subject": {
+    "code": "0460",
+    "slug": "geography",
+    "name": "Geography",
+    "qualification": "Cambridge IGCSE",
+    "awarding_body": "Cambridge Assessment International Education",
+    "version_label": "2027-2029",
+    "exam_series": [
+      "June",
+      "November"
+    ],
+    "tiers": [
+      "Untiered"
+    ],
+    "grade_scale": "A*-G",
+    "mastery_mode": "objective-mastery",
+    "is_elective": false
+  },
+  "provenance": {
+    "method": "pdf-extraction",
+    "source_file": "raw-syllabuses/0460-geography-2027-2029.pdf",
+    "extracted_at": "2026-11-26T06:11:44.598Z",
+    "verified": false,
+    "notes": "Parsed 2477 text items with the decimal layout (untiered). Topics, objectives, papers, entry routes, assessment objectives and command words all come from the PDF."
+  },
+  "files": {
+    "topics": "topics.json",
+    "objectives": "objectives.json",
+    "routes": "routes.json",
+    "assessment_objectives": "assessment_objectives.json",
+    "entry_routes": "entry_routes.json",
+    "command_words": "command_words.json",
+    "resources": "resources.json",
+    "lineage": "lineage.json"
+  },
+  "counts": {
+    "topics": 10,
+    "subtopics": 35,
+    "objectives": 129,
+    "components": 4,
+    "assessment_objectives": 3
+  },
+  "generated_at": "2026-11-26T06:11:44.599Z"
+}

@@ -10,11 +10,18 @@
  * be found it exits non-zero instead of writing a partial package.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { getSubject, registry } from "../src/lib/curriculum/registry";
+import { proposeLineage, remapResources } from "../src/lib/curriculum/lineage";
 import { SCHEMA_VERSION } from "../src/lib/curriculum/schemas";
-import { buildEntryRoutes, parseAssessmentObjectives, parseCommandWords, parseComponents } from "./lib/assessmentParser";
+import {
+  buildEntryRoutes,
+  parseAssessmentObjectives,
+  parseCommandWords,
+  parseComponents,
+} from "./lib/assessmentParser";
 import { extractItems } from "./lib/pdfItems";
 import { commandWordOf, parseSyllabus } from "./lib/syllabusParser";
 
@@ -42,13 +49,15 @@ type Args = {
   years?: string;
   dryRun: boolean;
   list: boolean;
+  force: boolean;
 };
 
 function parseArgs(argv: string[]): Args {
-  const args: Args = { dryRun: false, list: false };
+  const args: Args = { dryRun: false, list: false, force: false };
   for (const raw of argv) {
     if (raw === "--dry-run") args.dryRun = true;
     else if (raw === "--list") args.list = true;
+    else if (raw === "--force") args.force = true;
     else if (raw.startsWith("--subject=")) args.subject = raw.slice("--subject=".length);
     else if (raw.startsWith("--pdf=")) args.pdf = raw.slice("--pdf=".length);
     else if (raw.startsWith("--url=")) args.url = raw.slice("--url=".length);
@@ -144,6 +153,7 @@ async function main() {
         tier: objective.tier,
         sequence: index + 1,
         supplement_text: null,
+        source_page: objective.page > 0 ? objective.page : null,
       })),
     ),
   );
@@ -202,6 +212,8 @@ async function main() {
       assessment_objectives: "assessment_objectives.json",
       entry_routes: "entry_routes.json",
       command_words: "command_words.json",
+      resources: "resources.json",
+      lineage: "lineage.json",
     },
     counts: {
       topics: topics.length,
@@ -214,6 +226,35 @@ async function main() {
   };
 
   for (const warning of warnings) console.warn(`warning: ${warning}`);
+
+  // A previous package in the same folder: keep its resources by following the objective lineage.
+  const previous = (file: string): unknown[] => {
+    const target = path.join(outDir, file);
+    return existsSync(target) ? (JSON.parse(readFileSync(target, "utf8")) as unknown[]) : [];
+  };
+  const previousManifest = existsSync(path.join(outDir, "manifest.json"))
+    ? (JSON.parse(readFileSync(path.join(outDir, "manifest.json"), "utf8")) as { provenance?: { verified?: boolean } })
+    : null;
+  if (previousManifest?.provenance?.verified && !args.force && !args.dryRun) {
+    throw new Error(
+      `${slug} has been reviewed and verified. Re-extracting would discard the reviewer's edits; pass --force to do it anyway.`,
+    );
+  }
+  const previousObjectives = previous("objectives.json") as Array<{ objective_code: string; objective_text: string }>;
+  const lineage = proposeLineage(previousObjectives, objectives);
+  const { kept: resources, dropped } = remapResources(
+    previous("resources.json") as Array<{ objective_code: string; title?: string }>,
+    lineage,
+    new Set(objectives.map((objective) => objective.objective_code)),
+  );
+  if (previousObjectives.length > 0) {
+    console.log(
+      `Lineage: ${lineage.filter((row) => row.to_code).length} of ${previousObjectives.length} earlier objectives matched; ` +
+        `${resources.length} resources kept, ${dropped.length} parked in resources_unmapped.json for review.`,
+    );
+    for (const resource of dropped)
+      console.log(`  unmapped resource: ${resource.title ?? "(untitled)"} (${resource.objective_code})`);
+  }
 
   if (args.dryRun) {
     console.log(
@@ -234,6 +275,9 @@ async function main() {
   await write("assessment_objectives.json", assessmentObjectives);
   await write("entry_routes.json", entryRoutes);
   await write("command_words.json", commandWords);
+  await write("resources.json", resources);
+  await write("lineage.json", lineage);
+  await write("resources_unmapped.json", dropped);
 
   console.log(
     `Wrote ${path.relative(ROOT, outDir)}: ${topics.length} topics, ` +

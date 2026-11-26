@@ -1,49 +1,75 @@
 [
   {
     "topic_code": "1",
-    "name": "Characteristics and Classification of Living Organisms",
+    "name": "Characteristics and classification of living organisms",
     "sequence": 1,
     "subtopics": [
-      { "topic_code": "1.1", "name": "Characteristics of Living Organisms", "sequence": 1 },
-      { "topic_code": "1.2", "name": "Classification and Binomial Naming", "sequence": 2 },
-      { "topic_code": "1.3", "name": "The Five Kingdoms", "sequence": 3 },
-      { "topic_code": "1.4", "name": "Vertebrate and Invertebrate Groups", "sequence": 4 },
-      { "topic_code": "1.5", "name": "Dichotomous Keys", "sequence": 5 }
+      {
+        "topic_code": "1.1",
+        "name": "Characteristics of living organisms",
+        "sequence": 1
+      },
+      {
+        "topic_code": "1.2",
+        "name": "Concept and uses of classification systems",
+        "sequence": 2
+      },
+      {
+        "topic_code": "1.3",
+        "name": "Features of organisms",
+        "sequence": 3
+      }
     ]
   },
   {
     "topic_code": "2",
-    "name": "Organisation of the Organism",
+    "name": "Organisation of the organism",
     "sequence": 2,
     "subtopics": [
-      { "topic_code": "2.1", "name": "Animal and Plant Cell Structure", "sequence": 1 },
-      { "topic_code": "2.2", "name": "Cell Specialisation", "sequence": 2 },
-      { "topic_code": "2.3", "name": "Levels of Organisation", "sequence": 3 },
-      { "topic_code": "2.4", "name": "Magnification and Size of Specimens", "sequence": 4 },
-      { "topic_code": "2.5", "name": "Organ Systems and Transport", "sequence": 5 }
+      {
+        "topic_code": "2.1",
+        "name": "Cell structure",
+        "sequence": 1
+      },
+      {
+        "topic_code": "2.2",
+        "name": "Size of specimens",
+        "sequence": 2
+      }
     ]
   },
   {
     "topic_code": "3",
-    "name": "Movement Into and Out of Cells",
+    "name": "Movement into and out of cells",
     "sequence": 3,
     "subtopics": [
-      { "topic_code": "3.1", "name": "Diffusion", "sequence": 1 },
-      { "topic_code": "3.2", "name": "Osmosis", "sequence": 2 },
-      { "topic_code": "3.3", "name": "Active Transport", "sequence": 3 },
-      { "topic_code": "3.4", "name": "Surface Area to Volume Ratio", "sequence": 4 },
-      { "topic_code": "3.5", "name": "Investigating Movement of Substances", "sequence": 5 }
+      {
+        "topic_code": "3.1",
+        "name": "Diffusion",
+        "sequence": 1
+      },
+      {
+        "topic_code": "3.2",
+        "name": "Osmosis",
+        "sequence": 2
+      },
+      {
+        "topic_code": "3.3",
+        "name": "Active transport",
+        "sequence": 3
+      }
     ]
   },
   {
     "topic_code": "4",
-    "name": "Biological Molecules",
+    "name": "Biological molecules",
     "sequence": 4,
     "subtopics": [
-      { "topic_code": "4.1", "name": "Carbohydrates, Proteins and Lipids", "sequence": 1 },
-      { "topic_code": "4.2", "name": "Food Tests", "sequence": 2 },
-      { "topic_code": "4.3", "name": "DNA Structure", "sequence": 3 },
-      { "topic_code": "4.4", "name": "Water and Mineral Ions", "sequence": 4 }
+      {
+        "topic_code": "4.1",
+        "name": "Biological molecules",
+        "sequence": 1
+      }
     ]
   },
   {
@@ -51,69 +77,138 @@
     "name": "Enzymes",
     "sequence": 5,
     "subtopics": [
-      { "topic_code": "5.1", "name": "Enzyme Action and the Lock-and-Key Model", "sequence": 1 },
-      { "topic_code": "5.2", "name": "Effect of Temperature and pH", "sequence": 2 },
-      { "topic_code": "5.3", "name": "Enzymes in Industry", "sequence": 3 }
+      {
+        "topic_code": "5.1",
+        "name": "Enzymes",
+        "sequence": 1
+      }
     ]
   },
   {
     "topic_code": "6",
-    "name": "Plant Nutrition",
+    "name": "Plant nutrition",
     "sequence": 6,
     "subtopics": [
-      { "topic_code": "6.1", "name": "Photosynthesis", "sequence": 1 },
-      { "topic_code": "6.2", "name": "Leaf Structure", "sequence": 2 },
-      { "topic_code": "6.3", "name": "Mineral Requirements", "sequence": 3 }
+      {
+        "topic_code": "6.1",
+        "name": "Photosynthesis",
+        "sequence": 1
+      },
+      {
+        "topic_code": "6.2",
+        "name": "Leaf structure",
+        "sequence": 2
+      }
     ]
   },
   {
     "topic_code": "7",
-    "name": "Human Nutrition",
+    "name": "Human nutrition",
     "sequence": 7,
     "subtopics": [
-      { "topic_code": "7.1", "name": "Diet and Energy Requirements", "sequence": 1 },
-      { "topic_code": "7.2", "name": "The Digestive System", "sequence": 2 },
-      { "topic_code": "7.3", "name": "Absorption and Assimilation", "sequence": 3 }
+      {
+        "topic_code": "7.1",
+        "name": "Diet",
+        "sequence": 1
+      },
+      {
+        "topic_code": "7.2",
+        "name": "Digestive system",
+        "sequence": 2
+      },
+      {
+        "topic_code": "7.3",
+        "name": "Physical digestion",
+        "sequence": 3
+      },
+      {
+        "topic_code": "7.4",
+        "name": "Chemical digestion",
+        "sequence": 4
+      },
+      {
+        "topic_code": "7.5",
+        "name": "Absorption",
+        "sequence": 5
+      }
     ]
   },
   {
     "topic_code": "8",
-    "name": "Transport in Plants",
+    "name": "Transport in plants",
     "sequence": 8,
     "subtopics": [
-      { "topic_code": "8.1", "name": "Xylem and Transpiration", "sequence": 1 },
-      { "topic_code": "8.2", "name": "Phloem and Translocation", "sequence": 2 },
-      { "topic_code": "8.3", "name": "Water Uptake and Root Hair Cells", "sequence": 3 }
+      {
+        "topic_code": "8.1",
+        "name": "Xylem and phloem",
+        "sequence": 1
+      },
+      {
+        "topic_code": "8.2",
+        "name": "Water uptake",
+        "sequence": 2
+      },
+      {
+        "topic_code": "8.3",
+        "name": "Transpiration",
+        "sequence": 3
+      },
+      {
+        "topic_code": "8.4",
+        "name": "Translocation",
+        "sequence": 4
+      }
     ]
   },
   {
     "topic_code": "9",
-    "name": "Transport in Animals",
+    "name": "Transport in animals",
     "sequence": 9,
     "subtopics": [
-      { "topic_code": "9.1", "name": "The Heart and Circulation", "sequence": 1 },
-      { "topic_code": "9.2", "name": "Blood Vessels and Blood", "sequence": 2 },
-      { "topic_code": "9.3", "name": "Coronary Heart Disease", "sequence": 3 }
+      {
+        "topic_code": "9.1",
+        "name": "Circulatory systems",
+        "sequence": 1
+      },
+      {
+        "topic_code": "9.2",
+        "name": "Heart",
+        "sequence": 2
+      },
+      {
+        "topic_code": "9.3",
+        "name": "Blood vessels",
+        "sequence": 3
+      },
+      {
+        "topic_code": "9.4",
+        "name": "Blood",
+        "sequence": 4
+      }
     ]
   },
   {
     "topic_code": "10",
-    "name": "Diseases and Immunity",
+    "name": "Diseases and immunity",
     "sequence": 10,
     "subtopics": [
-      { "topic_code": "10.1", "name": "Pathogens and Transmission", "sequence": 1 },
-      { "topic_code": "10.2", "name": "Body Defences and Immunity", "sequence": 2 },
-      { "topic_code": "10.3", "name": "Vaccination and Antibiotics", "sequence": 3 }
+      {
+        "topic_code": "10.1",
+        "name": "Diseases and immunity",
+        "sequence": 1
+      }
     ]
   },
   {
     "topic_code": "11",
-    "name": "Gas Exchange in Humans",
+    "name": "Gas exchange in humans",
     "sequence": 11,
     "subtopics": [
-      { "topic_code": "11.1", "name": "The Respiratory System", "sequence": 1 },
-      { "topic_code": "11.2", "name": "Ventilation and Gas Exchange", "sequence": 2 },
-      { "topic_code": "11.3", "name": "Smoking and Lung Disease", "sequence": 3 }
+      {
+        "topic_code": "11.1",
+        "name": "Gas exchange in humans",
+        "sequence": 1
+      }
     ]
   },
   {
@@ -121,29 +216,65 @@
     "name": "Respiration",
     "sequence": 12,
     "subtopics": [
-      { "topic_code": "12.1", "name": "Aerobic Respiration", "sequence": 1 },
-      { "topic_code": "12.2", "name": "Anaerobic Respiration", "sequence": 2 },
-      { "topic_code": "12.3", "name": "Respiration Experiments", "sequence": 3 }
+      {
+        "topic_code": "12.1",
+        "name": "Respiration",
+        "sequence": 1
+      },
+      {
+        "topic_code": "12.2",
+        "name": "Aerobic respiration",
+        "sequence": 2
+      },
+      {
+        "topic_code": "12.3",
+        "name": "Anaerobic respiration",
+        "sequence": 3
+      }
     ]
   },
   {
     "topic_code": "13",
-    "name": "Excretion in Humans",
+    "name": "Excretion in humans",
     "sequence": 13,
     "subtopics": [
-      { "topic_code": "13.1", "name": "The Urinary System", "sequence": 1 },
-      { "topic_code": "13.2", "name": "Kidney Function and Dialysis", "sequence": 2 }
+      {
+        "topic_code": "13.1",
+        "name": "Excretion in humans",
+        "sequence": 1
+      }
     ]
   },
   {
     "topic_code": "14",
-    "name": "Coordination and Response",
+    "name": "Coordination and response",
     "sequence": 14,
     "subtopics": [
-      { "topic_code": "14.1", "name": "Nervous Control and Reflexes", "sequence": 1 },
-      { "topic_code": "14.2", "name": "The Eye and Pupil Reflex", "sequence": 2 },
-      { "topic_code": "14.3", "name": "Hormones and Homeostasis", "sequence": 3 },
-      { "topic_code": "14.4", "name": "Tropisms in Plants", "sequence": 4 }
+      {
+        "topic_code": "14.1",
+        "name": "Coordination and response",
+        "sequence": 1
+      },
+      {
+        "topic_code": "14.2",
+        "name": "Sense organs",
+        "sequence": 2
+      },
+      {
+        "topic_code": "14.3",
+        "name": "Hormones",
+        "sequence": 3
+      },
+      {
+        "topic_code": "14.4",
+        "name": "Homeostasis",
+        "sequence": 4
+      },
+      {
+        "topic_code": "14.5",
+        "name": "Tropic responses",
+        "sequence": 5
+      }
     ]
   },
   {
@@ -151,8 +282,11 @@
     "name": "Drugs",
     "sequence": 15,
     "subtopics": [
-      { "topic_code": "15.1", "name": "Medicinal Drugs", "sequence": 1 },
-      { "topic_code": "15.2", "name": "Misuse of Drugs", "sequence": 2 }
+      {
+        "topic_code": "15.1",
+        "name": "Drugs",
+        "sequence": 1
+      }
     ]
   },
   {
@@ -160,11 +294,36 @@
     "name": "Reproduction",
     "sequence": 16,
     "subtopics": [
-      { "topic_code": "16.1", "name": "Asexual and Sexual Reproduction", "sequence": 1 },
-      { "topic_code": "16.2", "name": "Plant Reproduction", "sequence": 2 },
-      { "topic_code": "16.3", "name": "Human Reproductive Systems", "sequence": 3 },
-      { "topic_code": "16.4", "name": "Development of the Fetus", "sequence": 4 },
-      { "topic_code": "16.5", "name": "Sexually Transmitted Infections", "sequence": 5 }
+      {
+        "topic_code": "16.1",
+        "name": "Asexual reproduction",
+        "sequence": 1
+      },
+      {
+        "topic_code": "16.2",
+        "name": "Sexual reproduction",
+        "sequence": 2
+      },
+      {
+        "topic_code": "16.3",
+        "name": "Sexual reproduction in plants",
+        "sequence": 3
+      },
+      {
+        "topic_code": "16.4",
+        "name": "Sexual reproduction in humans",
+        "sequence": 4
+      },
+      {
+        "topic_code": "16.5",
+        "name": "Sex hormones in humans",
+        "sequence": 5
+      },
+      {
+        "topic_code": "16.6",
+        "name": "Sexually transmitted infections",
+        "sequence": 6
+      }
     ]
   },
   {
@@ -172,48 +331,124 @@
     "name": "Inheritance",
     "sequence": 17,
     "subtopics": [
-      { "topic_code": "17.1", "name": "Chromosomes, Genes and Alleles", "sequence": 1 },
-      { "topic_code": "17.2", "name": "Genetic Diagrams and Punnett Squares", "sequence": 2 },
-      { "topic_code": "17.3", "name": "Sex Determination", "sequence": 3 },
-      { "topic_code": "17.4", "name": "Protein Synthesis", "sequence": 4 }
+      {
+        "topic_code": "17.1",
+        "name": "Chromosomes, genes and proteins",
+        "sequence": 1
+      },
+      {
+        "topic_code": "17.2",
+        "name": "Mitosis",
+        "sequence": 2
+      },
+      {
+        "topic_code": "17.3",
+        "name": "Meiosis",
+        "sequence": 3
+      },
+      {
+        "topic_code": "17.4",
+        "name": "Monohybrid inheritance",
+        "sequence": 4
+      }
     ]
   },
   {
     "topic_code": "18",
-    "name": "Variation and Selection",
+    "name": "Variation and selection",
     "sequence": 18,
     "subtopics": [
-      { "topic_code": "18.1", "name": "Variation", "sequence": 1 },
-      { "topic_code": "18.2", "name": "Adaptation and Natural Selection", "sequence": 2 },
-      { "topic_code": "18.3", "name": "Selective Breeding", "sequence": 3 }
+      {
+        "topic_code": "18.1",
+        "name": "Variation",
+        "sequence": 1
+      },
+      {
+        "topic_code": "18.2",
+        "name": "Adaptive features",
+        "sequence": 2
+      },
+      {
+        "topic_code": "18.3",
+        "name": "Selection",
+        "sequence": 3
+      }
     ]
   },
   {
     "topic_code": "19",
-    "name": "Organisms and their Environment",
+    "name": "Organisms and their environment",
     "sequence": 19,
     "subtopics": [
-      { "topic_code": "19.1", "name": "Energy Flow and Food Chains", "sequence": 1 },
-      { "topic_code": "19.2", "name": "Nutrient Cycles", "sequence": 2 },
-      { "topic_code": "19.3", "name": "Populations and Sampling", "sequence": 3 }
+      {
+        "topic_code": "19.1",
+        "name": "Energy flow",
+        "sequence": 1
+      },
+      {
+        "topic_code": "19.2",
+        "name": "Food chains and food webs",
+        "sequence": 2
+      },
+      {
+        "topic_code": "19.3",
+        "name": "Nutrient cycles",
+        "sequence": 3
+      },
+      {
+        "topic_code": "19.4",
+        "name": "Populations",
+        "sequence": 4
+      }
     ]
   },
   {
     "topic_code": "20",
-    "name": "Human Influences on Ecosystems",
+    "name": "Human influences on ecosystems",
     "sequence": 20,
     "subtopics": [
-      { "topic_code": "20.1", "name": "Food Supply and Farming", "sequence": 1 },
-      { "topic_code": "20.2", "name": "Pollution and Conservation", "sequence": 2 }
+      {
+        "topic_code": "20.1",
+        "name": "Food supply",
+        "sequence": 1
+      },
+      {
+        "topic_code": "20.2",
+        "name": "Habitat destruction",
+        "sequence": 2
+      },
+      {
+        "topic_code": "20.3",
+        "name": "Pollution",
+        "sequence": 3
+      },
+      {
+        "topic_code": "20.4",
+        "name": "Conservation",
+        "sequence": 4
+      }
     ]
   },
   {
     "topic_code": "21",
-    "name": "Biotechnology and Genetic Modification",
+    "name": "Biotechnology and genetic modification",
     "sequence": 21,
     "subtopics": [
-      { "topic_code": "21.1", "name": "Genetic Modification", "sequence": 1 },
-      { "topic_code": "21.2", "name": "Biotechnology Applications", "sequence": 2 }
+      {
+        "topic_code": "21.1",
+        "name": "Biotechnology and genetic modification",
+        "sequence": 1
+      },
+      {
+        "topic_code": "21.2",
+        "name": "Biotechnology",
+        "sequence": 2
+      },
+      {
+        "topic_code": "21.3",
+        "name": "Genetic modification",
+        "sequence": 3
+      }
     ]
   }
 ]

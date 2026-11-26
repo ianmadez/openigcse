@@ -53,7 +53,13 @@ test("reads both card formats and the tier of each paper", () => {
   const { components } = parseComponents(items);
   const byCode = Object.fromEntries(components.map((c) => [c.component_code, c]));
   assert.deepEqual(
-    [byCode["1"]!.name, byCode["1"]!.duration_minutes, byCode["1"]!.marks, byCode["1"]!.weighting_percent, byCode["1"]!.tier],
+    [
+      byCode["1"]!.name,
+      byCode["1"]!.duration_minutes,
+      byCode["1"]!.marks,
+      byCode["1"]!.weighting_percent,
+      byCode["1"]!.tier,
+    ],
     ["Paper 1: Multiple Choice (Core)", 45, 40, 30, "Core"],
   );
   assert.equal(byCode["3"]!.duration_minutes, 75);
@@ -68,7 +74,12 @@ test("reads both card formats and the tier of each paper", () => {
   );
 });
 
-function paper(code: string, tier: ParsedComponent["tier"], weight: number | null, extra: Partial<ParsedComponent> = {}): ParsedComponent {
+function paper(
+  code: string,
+  tier: ParsedComponent["tier"],
+  weight: number | null,
+  extra: Partial<ParsedComponent> = {},
+): ParsedComponent {
   return {
     component_code: code,
     name: `Paper ${code}`,
@@ -115,7 +126,10 @@ test("leaves out coursework and optional endorsed components, and refuses routes
     ],
     ["Untiered"],
   );
-  assert.deepEqual(routes.map((route) => route.component_codes), [["1", "2"]]);
+  assert.deepEqual(
+    routes.map((route) => route.component_codes),
+    [["1", "2"]],
+  );
   assert.deepEqual(buildEntryRoutes([paper("1", "Both", 60)], ["Untiered"]), []);
 });
 
@@ -176,7 +190,12 @@ const EXPECTED: Record<string, { papers: string; routes: string; aos: number; wo
   "0478": { papers: "1:105:75:50 2:105:75:50", routes: "PRIVATE=1,2", aos: 3, words: 13 },
   "0500": { papers: "1:120:80:50 2:120:80:50 3:-:80:50 4:12:40:-", routes: "PRIVATE=1,2", aos: 3, words: 11 },
   "0530": { papers: "1:50:40:25 2:60:40:25 3:10:40:25 4:60:40:25", routes: "PRIVATE=1,2,3,4", aos: 4, words: 0 },
-  "0580": { papers: "1:90:80:50 2:120:100:50 3:90:80:50 4:120:100:50", routes: "PRIVATE-CORE=1,3 PRIVATE=2,4", aos: 2, words: 13 },
+  "0580": {
+    papers: "1:90:80:50 2:120:100:50 3:90:80:50 4:120:100:50",
+    routes: "PRIVATE-CORE=1,3 PRIVATE=2,4",
+    aos: 2,
+    words: 13,
+  },
   "0610": {
     papers: "1:45:40:30 2:45:40:30 3:75:80:50 4:75:80:50 5:75:40:20 6:60:40:20",
     routes: "PRIVATE-CORE=1,3,6 PRIVATE=2,4,6",
@@ -201,21 +220,27 @@ for (const [code, expected] of Object.entries(EXPECTED)) {
   const subject = getSubject(code)!;
   const file = path.join(process.cwd(), "raw-syllabuses", subject.pdf_hint);
 
-  test(`${code} ${subject.name}: papers, routes, AOs and command words`, { skip: !existsSync(file) && "PDF not present" }, async () => {
-    const items = await extractItems(readFileSync(file));
-    const { components, warnings } = parseComponents(items);
-    assert.deepEqual(warnings, []);
-    const papers = [...components]
-      .sort((a, b) => Number(a.component_code) - Number(b.component_code))
-      .map((c) => `${c.component_code}:${c.duration_minutes ?? "-"}:${c.marks}:${c.weighting_percent ?? "-"}`)
-      .join(" ");
-    assert.equal(papers, expected.papers);
-    const tiers = components.some((c) => c.tier === "Core") ? (["Core", "Extended"] as const) : (["Untiered"] as const);
-    const routes = buildEntryRoutes(components, [...tiers])
-      .map((route) => `${route.route_code}=${[...route.component_codes].sort().join(",")}`)
-      .join(" ");
-    assert.equal(routes, expected.routes);
-    assert.equal(parseAssessmentObjectives(items).length, expected.aos);
-    assert.equal(parseCommandWords(items).length, expected.words);
-  });
+  test(
+    `${code} ${subject.name}: papers, routes, AOs and command words`,
+    { skip: !existsSync(file) && "PDF not present" },
+    async () => {
+      const items = await extractItems(readFileSync(file));
+      const { components, warnings } = parseComponents(items);
+      assert.deepEqual(warnings, []);
+      const papers = [...components]
+        .sort((a, b) => Number(a.component_code) - Number(b.component_code))
+        .map((c) => `${c.component_code}:${c.duration_minutes ?? "-"}:${c.marks}:${c.weighting_percent ?? "-"}`)
+        .join(" ");
+      assert.equal(papers, expected.papers);
+      const tiers = components.some((c) => c.tier === "Core")
+        ? (["Core", "Extended"] as const)
+        : (["Untiered"] as const);
+      const routes = buildEntryRoutes(components, [...tiers])
+        .map((route) => `${route.route_code}=${[...route.component_codes].sort().join(",")}`)
+        .join(" ");
+      assert.equal(routes, expected.routes);
+      assert.equal(parseAssessmentObjectives(items).length, expected.aos);
+      assert.equal(parseCommandWords(items).length, expected.words);
+    },
+  );
 }

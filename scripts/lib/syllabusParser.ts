@@ -34,6 +34,8 @@ export type ParsedObjective = {
   text: string;
   tier: "Core" | "Extended" | "Both" | "Untiered";
   sequence: number;
+  /** PDF page the objective starts on, for side-by-side review. */
+  page: number;
 };
 
 export type ParsedSubtopic = {
@@ -68,50 +70,7 @@ export type ParseResult = {
   warnings: string[];
 };
 
-export const COMMAND_WORDS = [
-  "Analyse",
-  "Annotate",
-  "Apply",
-  "Calculate",
-  "Compare",
-  "Complete",
-  "Construct",
-  "Convert",
-  "Define",
-  "Derive",
-  "Describe",
-  "Design",
-  "Determine",
-  "Discuss",
-  "Draw",
-  "Estimate",
-  "Evaluate",
-  "Explain",
-  "Give",
-  "Identify",
-  "Interpret",
-  "Justify",
-  "Label",
-  "Measure",
-  "Name",
-  "Outline",
-  "Plot",
-  "Predict",
-  "Recognise",
-  "Relate",
-  "Simplify",
-  "Sketch",
-  "Solve",
-  "State",
-  "Structure",
-  "Suggest",
-  "Summarise",
-  "Understand",
-  "Use",
-  "Vary",
-  "Write",
-  "Organise",
-] as const;
+export { COMMAND_WORDS, commandWordOf } from "../../src/lib/curriculum/schemas";
 
 /** Bullet glyphs Cambridge uses in content tables, written as escapes. */
 const BULLET = /^[•●○▪▫–—-]\s*/;
@@ -124,12 +83,6 @@ const FOOTER_Y = 30;
 /** Left column starts near x=62, right column near x=309 on every two-column page. */
 const COLUMN_SPLIT = 300;
 const TWO_COLUMN: ReadonlySet<ContentLayout> = new Set(["science", "maths", "cs"]);
-
-export function commandWordOf(text: string): string {
-  const first = text.trim().split(/[\s,.:;]/)[0] ?? "";
-  const match = COMMAND_WORDS.find((word) => word.toLowerCase() === first.toLowerCase());
-  return match ?? "";
-}
 
 /**
  * Joins items that sit on one visual row. When a column split is supplied,
@@ -212,6 +165,7 @@ class Builder {
   warnings: string[] = [];
   topic: ParsedTopic | null = null;
   subtopic: ParsedSubtopic | null = null;
+  page = 0;
 
   openTopic(code: string, name: string) {
     const existing = this.topics.find((topic) => topic.topic_code === code);
@@ -248,7 +202,13 @@ class Builder {
       this.warnings.push(`Objective ${localCode} appeared twice; the second copy was skipped.`);
       return null;
     }
-    const objective = { local_code: localCode, text: clean(text), tier, sequence: this.subtopic.objectives.length + 1 };
+    const objective = {
+      local_code: localCode,
+      text: clean(text),
+      tier,
+      sequence: this.subtopic.objectives.length + 1,
+      page: this.page,
+    };
     this.subtopic.objectives.push(objective);
     return objective;
   }
@@ -284,6 +244,7 @@ function parseDecimal(lines: TextLine[], b: Builder) {
   let bullets = 0;
   for (const line of lines) {
     const text = line.text;
+    b.page = line.page;
     const topic = isHeading(line) ? text.match(/^(\d{1,2})\s+(.+)$/) : null;
     if (topic) {
       b.openTopic(topic[1]!, topic[2]!.replace(CONTINUED, ""));
@@ -335,6 +296,7 @@ function parseColumns(
 
   for (const line of lines) {
     const text = line.text;
+    b.page = line.page;
     if (options.onHeading?.(line)) {
       current[0] = current[1] = null;
       continue;
@@ -365,7 +327,13 @@ function parseColumns(
     const side = line.side;
     const base = side === 0 ? 62 : 309;
     const statement = text.match(/^(\d{1,2})\s+(\S.*)$/);
-    if (roles[side] === "objective" && statement && line.x < base + 8 && b.topic && !b.topic.subtopics.includes(b.subtopic!)) {
+    if (
+      roles[side] === "objective" &&
+      statement &&
+      line.x < base + 8 &&
+      b.topic &&
+      !b.topic.subtopics.includes(b.subtopic!)
+    ) {
       // Some topics print statements with no subtopic level; they get an implicit "N.0" subtopic.
       b.openSubtopic(`${b.topic.topic_code}.0`, b.topic.name);
       current[0] = current[1] = null;
@@ -428,10 +396,11 @@ function parseHistory(lines: TextLine[], b: Builder) {
   let mode: "focus" | "content" | null = null;
   let objective: ParsedObjective | null = null;
   let pendingName: string | null = null;
-  const focus = new Map<ParsedSubtopic, string[]>();
+  const focus = new Map<ParsedSubtopic, Array<{ text: string; page: number }>>();
 
   for (const line of lines) {
     const text = line.text;
+    b.page = line.page;
     const option = text.match(/^Core content: Option ([A-Z])$/);
     if (option && isHeading(line)) {
       topicCode = option[1]!;
@@ -470,13 +439,14 @@ function parseHistory(lines: TextLine[], b: Builder) {
     }
     if (mode === "focus" && b.subtopic && BULLET.test(text)) {
       const list = focus.get(b.subtopic) ?? [];
-      list.push(text.replace(BULLET, ""));
+      list.push({ text: text.replace(BULLET, ""), page: line.page });
       focus.set(b.subtopic, list);
       continue;
     }
     if (mode === "focus" && b.subtopic && line.x > 70) {
       const list = focus.get(b.subtopic);
-      if (list?.length) list[list.length - 1] = `${list[list.length - 1]} ${text}`;
+      const last = list?.[list.length - 1];
+      if (last) last.text = `${last.text} ${text}`;
       continue;
     }
     if (mode !== "content" || !b.subtopic) continue;
@@ -498,9 +468,10 @@ function parseHistory(lines: TextLine[], b: Builder) {
     for (const point of points) {
       subtopic.objectives.push({
         local_code: `${subtopic.topic_code}.${subtopic.objectives.length + 1}`,
-        text: clean(point),
+        text: clean(point.text),
         tier: "Untiered",
         sequence: subtopic.objectives.length + 1,
+        page: point.page,
       });
     }
   }
@@ -510,6 +481,7 @@ function parseSkills(lines: TextLine[], b: Builder) {
   let objective: ParsedObjective | null = null;
   for (const [index, line] of lines.entries()) {
     const text = line.text;
+    b.page = line.page;
     const next = lines[index + 1];
     const headingLike =
       isHeading(line) || (next !== undefined && BULLET.test(next.text) && text.length <= 40 && !/[.:,;]$/.test(text));
@@ -551,7 +523,10 @@ export function parseSyllabus(items: TextItem[], layout: ContentLayout): ParseRe
 
   for (const topic of b.topics) {
     topic.subtopics = topic.subtopics
-      .filter((sub) => sub.objectives.length > 0 || !topic.subtopics.some((o) => o.topic_code.startsWith(`${sub.topic_code}.`)))
+      .filter(
+        (sub) =>
+          sub.objectives.length > 0 || !topic.subtopics.some((o) => o.topic_code.startsWith(`${sub.topic_code}.`)),
+      )
       .filter((sub) => sub.objectives.length > 0 || sub.name !== sub.topic_code)
       .map((sub, index) => ({ ...sub, sequence: index + 1 }));
   }

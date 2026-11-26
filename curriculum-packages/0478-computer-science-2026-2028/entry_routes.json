@@ -1,0 +1,12 @@
+[
+  {
+    "route_code": "PRIVATE",
+    "name": "Private candidate route",
+    "tier": "Untiered",
+    "private_candidate_eligible": true,
+    "component_codes": [
+      "2",
+      "1"
+    ]
+  }
+]

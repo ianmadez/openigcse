@@ -1,99 +1,753 @@
 [
   {
-    "topic_code": "1",
+    "topic_code": "C1",
     "name": "Number",
     "sequence": 1,
     "subtopics": [
-      { "topic_code": "1.1", "name": "Types of Number and Number Operations", "sequence": 1 },
-      { "topic_code": "1.2", "name": "Fractions, Decimals and Percentages", "sequence": 2 },
-      { "topic_code": "1.3", "name": "Ratio, Proportion and Rates", "sequence": 3 },
-      { "topic_code": "1.4", "name": "Indices and Standard Form", "sequence": 4 },
-      { "topic_code": "1.5", "name": "Estimation, Rounding and Limits of Accuracy", "sequence": 5 }
+      {
+        "topic_code": "C1.1",
+        "name": "Types of number",
+        "sequence": 1
+      },
+      {
+        "topic_code": "C1.2",
+        "name": "Sets",
+        "sequence": 2
+      },
+      {
+        "topic_code": "C1.3",
+        "name": "Powers and roots",
+        "sequence": 3
+      },
+      {
+        "topic_code": "C1.4",
+        "name": "Fractions, decimals and percentages",
+        "sequence": 4
+      },
+      {
+        "topic_code": "C1.5",
+        "name": "Ordering",
+        "sequence": 5
+      },
+      {
+        "topic_code": "C1.6",
+        "name": "The four operations",
+        "sequence": 6
+      },
+      {
+        "topic_code": "C1.7",
+        "name": "Indices I",
+        "sequence": 7
+      },
+      {
+        "topic_code": "C1.8",
+        "name": "Standard form",
+        "sequence": 8
+      },
+      {
+        "topic_code": "C1.9",
+        "name": "Estimation",
+        "sequence": 9
+      },
+      {
+        "topic_code": "C1.10",
+        "name": "Limits of accuracy",
+        "sequence": 10
+      },
+      {
+        "topic_code": "C1.11",
+        "name": "Ratio and proportion",
+        "sequence": 11
+      },
+      {
+        "topic_code": "C1.12",
+        "name": "Rates",
+        "sequence": 12
+      },
+      {
+        "topic_code": "C1.13",
+        "name": "Percentages",
+        "sequence": 13
+      },
+      {
+        "topic_code": "C1.14",
+        "name": "Using a calculator",
+        "sequence": 14
+      },
+      {
+        "topic_code": "C1.15",
+        "name": "Time",
+        "sequence": 15
+      },
+      {
+        "topic_code": "C1.16",
+        "name": "Money",
+        "sequence": 16
+      }
     ]
   },
   {
-    "topic_code": "2",
-    "name": "Algebra and Graphs",
+    "topic_code": "C2",
+    "name": "Algebra and graphs",
     "sequence": 2,
     "subtopics": [
-      { "topic_code": "2.1", "name": "Algebraic Manipulation", "sequence": 1 },
-      { "topic_code": "2.2", "name": "Linear Equations and Inequalities", "sequence": 2 },
-      { "topic_code": "2.3", "name": "Simultaneous Equations", "sequence": 3 },
-      { "topic_code": "2.4", "name": "Quadratic Equations and Factorising", "sequence": 4 },
-      { "topic_code": "2.5", "name": "Sequences and Functions", "sequence": 5 }
+      {
+        "topic_code": "C2.1",
+        "name": "Introduction to algebra",
+        "sequence": 1
+      },
+      {
+        "topic_code": "C2.2",
+        "name": "Algebraic manipulation",
+        "sequence": 2
+      },
+      {
+        "topic_code": "C2.4",
+        "name": "Indices II",
+        "sequence": 3
+      },
+      {
+        "topic_code": "C2.5",
+        "name": "Equations",
+        "sequence": 4
+      },
+      {
+        "topic_code": "C2.6",
+        "name": "Inequalities",
+        "sequence": 5
+      },
+      {
+        "topic_code": "C2.7",
+        "name": "Sequences",
+        "sequence": 6
+      },
+      {
+        "topic_code": "C2.9",
+        "name": "Graphs in practical situations",
+        "sequence": 7
+      },
+      {
+        "topic_code": "C2.10",
+        "name": "Graphs of functions",
+        "sequence": 8
+      },
+      {
+        "topic_code": "C2.11",
+        "name": "Sketching curves",
+        "sequence": 9
+      }
     ]
   },
   {
-    "topic_code": "3",
-    "name": "Coordinate Geometry",
+    "topic_code": "C3",
+    "name": "Coordinate geometry",
     "sequence": 3,
     "subtopics": [
-      { "topic_code": "3.1", "name": "Coordinates and Straight-Line Graphs", "sequence": 1 },
-      { "topic_code": "3.2", "name": "Gradient and Intercepts", "sequence": 2 },
-      { "topic_code": "3.3", "name": "Midpoint and Length of a Line Segment", "sequence": 3 },
-      { "topic_code": "3.4", "name": "Graphs of Quadratic and Other Functions", "sequence": 4 },
-      { "topic_code": "3.5", "name": "Parallel and Perpendicular Lines", "sequence": 5 }
+      {
+        "topic_code": "C3.1",
+        "name": "Coordinates",
+        "sequence": 1
+      },
+      {
+        "topic_code": "C3.2",
+        "name": "Drawing linear graphs",
+        "sequence": 2
+      },
+      {
+        "topic_code": "C3.3",
+        "name": "Gradient of linear graphs",
+        "sequence": 3
+      },
+      {
+        "topic_code": "C3.5",
+        "name": "Equations of linear graphs",
+        "sequence": 4
+      },
+      {
+        "topic_code": "C3.6",
+        "name": "Parallel lines",
+        "sequence": 5
+      }
     ]
   },
   {
-    "topic_code": "4",
+    "topic_code": "C4",
     "name": "Geometry",
     "sequence": 4,
     "subtopics": [
-      { "topic_code": "4.1", "name": "Angle Properties of Lines and Polygons", "sequence": 1 },
-      { "topic_code": "4.2", "name": "Circles and Circle Theorems", "sequence": 2 },
-      { "topic_code": "4.3", "name": "Similarity and Congruence", "sequence": 3 },
-      { "topic_code": "4.4", "name": "Transformations", "sequence": 4 },
-      { "topic_code": "4.5", "name": "Constructions and Loci", "sequence": 5 }
+      {
+        "topic_code": "C4.1",
+        "name": "Geometrical terms",
+        "sequence": 1
+      },
+      {
+        "topic_code": "C4.2",
+        "name": "Geometrical constructions",
+        "sequence": 2
+      },
+      {
+        "topic_code": "C4.3",
+        "name": "Scale drawings",
+        "sequence": 3
+      },
+      {
+        "topic_code": "C4.4",
+        "name": "Similarity",
+        "sequence": 4
+      },
+      {
+        "topic_code": "C4.5",
+        "name": "Symmetry",
+        "sequence": 5
+      },
+      {
+        "topic_code": "C4.6",
+        "name": "Angles",
+        "sequence": 6
+      },
+      {
+        "topic_code": "C4.7",
+        "name": "Circle theorems",
+        "sequence": 7
+      }
     ]
   },
   {
-    "topic_code": "5",
+    "topic_code": "C5",
     "name": "Mensuration",
     "sequence": 5,
     "subtopics": [
-      { "topic_code": "5.1", "name": "Perimeter and Area", "sequence": 1 },
-      { "topic_code": "5.2", "name": "Surface Area and Volume", "sequence": 2 },
-      { "topic_code": "5.3", "name": "Arc Length and Sector Area", "sequence": 3 }
+      {
+        "topic_code": "C5.1",
+        "name": "Units of measure",
+        "sequence": 1
+      },
+      {
+        "topic_code": "C5.2",
+        "name": "Area and perimeter",
+        "sequence": 2
+      },
+      {
+        "topic_code": "C5.3",
+        "name": "Circles, arcs and sectors",
+        "sequence": 3
+      },
+      {
+        "topic_code": "C5.4",
+        "name": "Surface area and volume",
+        "sequence": 4
+      },
+      {
+        "topic_code": "C5.5",
+        "name": "Compound shapes and parts of shapes",
+        "sequence": 5
+      }
     ]
   },
   {
-    "topic_code": "6",
+    "topic_code": "C6",
     "name": "Trigonometry",
     "sequence": 6,
     "subtopics": [
-      { "topic_code": "6.1", "name": "Pythagoras' Theorem", "sequence": 1 },
-      { "topic_code": "6.2", "name": "Right-Angled Trigonometry", "sequence": 2 },
-      { "topic_code": "6.3", "name": "Sine and Cosine Rules", "sequence": 3 },
-      { "topic_code": "6.4", "name": "Bearings and Three-Dimensional Problems", "sequence": 4 }
+      {
+        "topic_code": "C6.1",
+        "name": "Pythagoras’ theorem",
+        "sequence": 1
+      },
+      {
+        "topic_code": "C6.2",
+        "name": "Right-angled triangles",
+        "sequence": 2
+      }
     ]
   },
   {
-    "topic_code": "7",
-    "name": "Vectors and Transformations",
+    "topic_code": "C7",
+    "name": "Transformations and vectors",
     "sequence": 7,
     "subtopics": [
-      { "topic_code": "7.1", "name": "Vector Notation and Arithmetic", "sequence": 1 },
-      { "topic_code": "7.2", "name": "Magnitude and Direction of Vectors", "sequence": 2 }
+      {
+        "topic_code": "C7.1",
+        "name": "Transformations",
+        "sequence": 1
+      }
     ]
   },
   {
-    "topic_code": "8",
+    "topic_code": "C8",
     "name": "Probability",
     "sequence": 8,
     "subtopics": [
-      { "topic_code": "8.1", "name": "Probability Scale and Events", "sequence": 1 },
-      { "topic_code": "8.2", "name": "Tree Diagrams and Combined Events", "sequence": 2 }
+      {
+        "topic_code": "C8.1",
+        "name": "Introduction to probability",
+        "sequence": 1
+      },
+      {
+        "topic_code": "C8.2",
+        "name": "Relative and expected frequencies",
+        "sequence": 2
+      },
+      {
+        "topic_code": "C8.3",
+        "name": "Probability of combined events",
+        "sequence": 3
+      }
     ]
   },
   {
-    "topic_code": "9",
+    "topic_code": "C9",
     "name": "Statistics",
     "sequence": 9,
     "subtopics": [
-      { "topic_code": "9.1", "name": "Data Collection and Display", "sequence": 1 },
-      { "topic_code": "9.2", "name": "Averages and Spread", "sequence": 2 },
-      { "topic_code": "9.3", "name": "Cumulative Frequency and Box Plots", "sequence": 3 }
+      {
+        "topic_code": "C9.1",
+        "name": "Classifying statistical data",
+        "sequence": 1
+      },
+      {
+        "topic_code": "C9.2",
+        "name": "Interpreting statistical data",
+        "sequence": 2
+      },
+      {
+        "topic_code": "C9.3",
+        "name": "Averages and range",
+        "sequence": 3
+      },
+      {
+        "topic_code": "C9.4",
+        "name": "Statistical charts and diagrams",
+        "sequence": 4
+      },
+      {
+        "topic_code": "C9.5",
+        "name": "Scatter diagrams",
+        "sequence": 5
+      }
+    ]
+  },
+  {
+    "topic_code": "E1",
+    "name": "Number",
+    "sequence": 10,
+    "subtopics": [
+      {
+        "topic_code": "E1.1",
+        "name": "Types of number",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E1.2",
+        "name": "Sets",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E1.3",
+        "name": "Powers and roots",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E1.4",
+        "name": "Fractions, decimals and percentages",
+        "sequence": 4
+      },
+      {
+        "topic_code": "E1.5",
+        "name": "Ordering",
+        "sequence": 5
+      },
+      {
+        "topic_code": "E1.6",
+        "name": "The four operations",
+        "sequence": 6
+      },
+      {
+        "topic_code": "E1.7",
+        "name": "Indices I",
+        "sequence": 7
+      },
+      {
+        "topic_code": "E1.8",
+        "name": "Standard form",
+        "sequence": 8
+      },
+      {
+        "topic_code": "E1.9",
+        "name": "Estimation",
+        "sequence": 9
+      },
+      {
+        "topic_code": "E1.10",
+        "name": "Limits of accuracy",
+        "sequence": 10
+      },
+      {
+        "topic_code": "E1.11",
+        "name": "Ratio and proportion",
+        "sequence": 11
+      },
+      {
+        "topic_code": "E1.12",
+        "name": "Rates",
+        "sequence": 12
+      },
+      {
+        "topic_code": "E1.13",
+        "name": "Percentages",
+        "sequence": 13
+      },
+      {
+        "topic_code": "E1.14",
+        "name": "Using a calculator",
+        "sequence": 14
+      },
+      {
+        "topic_code": "E1.15",
+        "name": "Time",
+        "sequence": 15
+      },
+      {
+        "topic_code": "E1.16",
+        "name": "Money",
+        "sequence": 16
+      },
+      {
+        "topic_code": "E1.17",
+        "name": "Exponential growth and decay",
+        "sequence": 17
+      },
+      {
+        "topic_code": "E1.18",
+        "name": "Surds",
+        "sequence": 18
+      }
+    ]
+  },
+  {
+    "topic_code": "E2",
+    "name": "Algebra and graphs",
+    "sequence": 11,
+    "subtopics": [
+      {
+        "topic_code": "E2.1",
+        "name": "Introduction to algebra",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E2.2",
+        "name": "Algebraic manipulation",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E2.3",
+        "name": "Algebraic fractions",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E2.4",
+        "name": "Indices II",
+        "sequence": 4
+      },
+      {
+        "topic_code": "E2.5",
+        "name": "Equations",
+        "sequence": 5
+      },
+      {
+        "topic_code": "E2.6",
+        "name": "Inequalities",
+        "sequence": 6
+      },
+      {
+        "topic_code": "E2.7",
+        "name": "Sequences",
+        "sequence": 7
+      },
+      {
+        "topic_code": "E2.8",
+        "name": "Proportion",
+        "sequence": 8
+      },
+      {
+        "topic_code": "E2.9",
+        "name": "Graphs in practical situations",
+        "sequence": 9
+      },
+      {
+        "topic_code": "E2.10",
+        "name": "Graphs of functions",
+        "sequence": 10
+      },
+      {
+        "topic_code": "E2.11",
+        "name": "Sketching curves",
+        "sequence": 11
+      },
+      {
+        "topic_code": "E2.12",
+        "name": "Differentiation",
+        "sequence": 12
+      },
+      {
+        "topic_code": "E2.13",
+        "name": "Functions",
+        "sequence": 13
+      }
+    ]
+  },
+  {
+    "topic_code": "E3",
+    "name": "Coordinate geometry",
+    "sequence": 12,
+    "subtopics": [
+      {
+        "topic_code": "E3.1",
+        "name": "Coordinates",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E3.2",
+        "name": "Drawing linear graphs",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E3.3",
+        "name": "Gradient of linear graphs",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E3.4",
+        "name": "Length and midpoint",
+        "sequence": 4
+      },
+      {
+        "topic_code": "E3.5",
+        "name": "Equations of linear graphs",
+        "sequence": 5
+      },
+      {
+        "topic_code": "E3.6",
+        "name": "Parallel lines",
+        "sequence": 6
+      },
+      {
+        "topic_code": "E3.7",
+        "name": "Perpendicular lines",
+        "sequence": 7
+      }
+    ]
+  },
+  {
+    "topic_code": "E4",
+    "name": "Geometry",
+    "sequence": 13,
+    "subtopics": [
+      {
+        "topic_code": "E4.1",
+        "name": "Geometrical terms",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E4.2",
+        "name": "Geometrical constructions",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E4.3",
+        "name": "Scale drawings",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E4.4",
+        "name": "Similarity",
+        "sequence": 4
+      },
+      {
+        "topic_code": "E4.5",
+        "name": "Symmetry",
+        "sequence": 5
+      },
+      {
+        "topic_code": "E4.6",
+        "name": "Angles",
+        "sequence": 6
+      },
+      {
+        "topic_code": "E4.7",
+        "name": "Circle theorems I",
+        "sequence": 7
+      },
+      {
+        "topic_code": "E4.8",
+        "name": "Circle theorems II",
+        "sequence": 8
+      }
+    ]
+  },
+  {
+    "topic_code": "E5",
+    "name": "Mensuration",
+    "sequence": 14,
+    "subtopics": [
+      {
+        "topic_code": "E5.1",
+        "name": "Units of measure",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E5.2",
+        "name": "Area and perimeter",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E5.3",
+        "name": "Circles, arcs and sectors",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E5.4",
+        "name": "Surface area and volume",
+        "sequence": 4
+      },
+      {
+        "topic_code": "E5.5",
+        "name": "Compound shapes and parts of shapes",
+        "sequence": 5
+      }
+    ]
+  },
+  {
+    "topic_code": "E6",
+    "name": "Trigonometry",
+    "sequence": 15,
+    "subtopics": [
+      {
+        "topic_code": "E6.1",
+        "name": "Pythagoras’ theorem",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E6.2",
+        "name": "Right-angled triangles",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E6.3",
+        "name": "Exact trigonometric values",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E6.4",
+        "name": "Trigonometric functions",
+        "sequence": 4
+      },
+      {
+        "topic_code": "E6.5",
+        "name": "Non-right-angled triangles",
+        "sequence": 5
+      },
+      {
+        "topic_code": "E6.6",
+        "name": "Pythagoras’ theorem and trigonometry",
+        "sequence": 6
+      }
+    ]
+  },
+  {
+    "topic_code": "E7",
+    "name": "Transformations and vectors",
+    "sequence": 16,
+    "subtopics": [
+      {
+        "topic_code": "E7.1",
+        "name": "Transformations",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E7.2",
+        "name": "Vectors in two dimensions",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E7.3",
+        "name": "Magnitude of a vector",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E7.4",
+        "name": "Vector geometry",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "E8",
+    "name": "Probability",
+    "sequence": 17,
+    "subtopics": [
+      {
+        "topic_code": "E8.1",
+        "name": "Introduction to probability",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E8.2",
+        "name": "Relative and expected frequencies",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E8.3",
+        "name": "Probability of combined events",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E8.4",
+        "name": "Conditional probability",
+        "sequence": 4
+      }
+    ]
+  },
+  {
+    "topic_code": "E9",
+    "name": "Statistics",
+    "sequence": 18,
+    "subtopics": [
+      {
+        "topic_code": "E9.1",
+        "name": "Classifying statistical data",
+        "sequence": 1
+      },
+      {
+        "topic_code": "E9.2",
+        "name": "Interpreting statistical data",
+        "sequence": 2
+      },
+      {
+        "topic_code": "E9.3",
+        "name": "Averages and measures of spread",
+        "sequence": 3
+      },
+      {
+        "topic_code": "E9.4",
+        "name": "Statistical charts and diagrams",
+        "sequence": 4
+      },
+      {
+        "topic_code": "E9.5",
+        "name": "Scatter diagrams",
+        "sequence": 5
+      },
+      {
+        "topic_code": "E9.6",
+        "name": "Cumulative frequency diagrams",
+        "sequence": 6
+      },
+      {
+        "topic_code": "E9.7",
+        "name": "Histograms",
+        "sequence": 7
+      }
     ]
   }
 ]

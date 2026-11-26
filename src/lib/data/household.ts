@@ -1,5 +1,6 @@
 import { getAuthContext } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createServerClientInstance } from "@/lib/supabase/server";
 
 export type ActiveHousehold = {  householdId: string;
   /** The caller's own profile, when the device has an authenticated session. */
@@ -198,4 +199,12 @@ export async function getHouseholdSettings(): Promise<HouseholdSettings | null> 
     })),
     focusPolicy: policy ? { isLocked: policy.is_locked, allowedRoutes: policy.allowed_routes } : null,
   };
+}
+
+/** The display name of one profile in the signed-in household, for review stamps. */
+export async function getProfileDisplayName(profileId: string | null): Promise<string | null> {
+  if (!profileId) return null;
+  const supabase = await createServerClientInstance();
+  const { data } = await supabase.from("profiles").select("display_name").eq("id", profileId).maybeSingle();
+  return (data as { display_name?: string } | null)?.display_name ?? null;
 }
