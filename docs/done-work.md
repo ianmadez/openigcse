@@ -78,7 +78,7 @@ Summary: [phases/phase-3.md](phases/phase-3.md).
 | Phase | Goal                                    | State            |
 | ----- | --------------------------------------- | ---------------- |
 | 6     | Curriculum extraction, ten packages     | Done, gate observed 2026-11-26 |
-| 7     | Mobile pass and installable app         | Built 2026-11-27; gate needs a real phone and Lighthouse ([phase-7](phases/phase-7.md)) |
+| 7     | Mobile pass and installable app         | Merged 2026-11-27 on Ian's ruling; Lighthouse a11y 100 on both screens, phone run of the Phase 5 test still open ([phase-7](phases/phase-7.md)) |
 | 8     | Hardening and staging                   | Not started      |
 | 9     | Device lockdown app                     | Not started      |
 

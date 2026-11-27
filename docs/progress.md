@@ -18,7 +18,7 @@ Last checked: 2026-11-27 (Phase 7).
 | 4     | The student learning loop                  | Done (exit gate observed 2026-11-25)                 |
 | 5     | Messaging, requests and remote monitoring  | Done (exit gate observed 2026-11-25)                 |
 | 6     | Curriculum extraction for ten packages     | Done (exit gate observed 2026-11-26)                 |
-| 7     | Mobile pass and installable app            | Built; exit gate needs a real phone and Lighthouse   |
+| 7     | Mobile pass and installable app            | Merged 2026-11-27; Lighthouse passed, phone test open |
 | 8     | Hardening and staging                      | Not started                                          |
 | 9     | Device lockdown app                        | Not started                                          |
 

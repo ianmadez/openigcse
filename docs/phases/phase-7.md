@@ -37,7 +37,12 @@ survived it (now the page tells the worker); the offline fallback served `/today
 offline page); a write queued during a replay waited for the next trigger (now drained straight after);
 `.touch-target` lost to a component's own `min-h-10` (now an `!important` utility on touch screens only).
 
-## Not observed (exit gate)
+## Exit gate
+
+Lighthouse (mobile) on `/today` and `/parent/live`: accessibility 100, best practices 100. Merged 2026-11-27 on Ian's
+ruling before the phone half was run; it stays open below.
+
+## Not observed
 
 - A parent completing the Phase 5 exit test entirely on a phone, and the timetable editor and learner strip on a real
   Android phone and iPhone.
