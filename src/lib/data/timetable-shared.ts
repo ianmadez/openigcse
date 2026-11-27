@@ -101,3 +101,31 @@ export function dayOfWeekFor(date: string) {
   const value = new Date(`${date}T00:00:00Z`).getUTCDay();
   return value === 0 ? 7 : value;
 }
+
+/** "HH:MM" from a time input, as minutes after midnight; null when it cannot be read. */
+function clockMinutes(value: string): number | null {
+  const match = /^(\d{2}):(\d{2})(?::\d{2})?$/.exec(value.trim());
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const mins = Number(match[2]);
+  return hours < 24 && mins < 60 ? hours * 60 + mins : null;
+}
+
+type PhoneSlotResult = { ok: true; startMinutes: number; endMinutes: number } | { ok: false; error: string };
+
+/**
+ * The phone timetable editor (Step 7.2) takes typed start and end times instead of a drag. Both
+ * snap to the same 15-minute grid as the desktop editor and must sit inside the school day.
+ */
+export function phoneSlotTimes(start: string, end: string, day: { schoolStart: number; schoolEnd: number }): PhoneSlotResult {
+  const from = clockMinutes(start);
+  const to = clockMinutes(end);
+  if (from === null || to === null) return { ok: false, error: "Enter a start and an end time." };
+  const startMinutes = Math.round(from / 15) * 15;
+  const endMinutes = Math.round(to / 15) * 15;
+  if (endMinutes <= startMinutes) return { ok: false, error: "The end has to come after the start." };
+  if (startMinutes < day.schoolStart || endMinutes > day.schoolEnd) {
+    return { ok: false, error: `Keep the block between ${toTimeString(day.schoolStart)} and ${toTimeString(day.schoolEnd)}.` };
+  }
+  return { ok: true, startMinutes, endMinutes };
+}

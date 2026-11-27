@@ -27,7 +27,7 @@ export default async function TodayPage() {
   if (state.status !== "configured" && !demo) {
     return (
       <>
-        <PageHeading eyebrow={dateFormat.format(new Date())} title="Today">
+        <PageHeading eyebrow={<time dateTime={new Date().toISOString().slice(0, 10)}>{dateFormat.format(new Date())}</time>} title="Today">
           The day is built from the learner's timetable, enrolments and learning events.
         </PageHeading>
         {state.status === "signed-out" ? <NeedsSignIn audience="learner" /> : <NeedsSignIn />}
@@ -71,7 +71,7 @@ export default async function TodayPage() {
 
   return (
     <>
-      <PageHeading eyebrow={dateFormat.format(new Date())} title={`Morning, ${workspace.learner.displayName}`}>
+      <PageHeading eyebrow={<time dateTime={new Date().toISOString().slice(0, 10)}>{dateFormat.format(new Date())}</time>} title={`Morning, ${workspace.learner.displayName}`}>
         {academicPeriods.length > 0
           ? `${academicPeriods.length} ${academicPeriods.length === 1 ? "period" : "periods"} today, ${plannedToday} minutes planned.`
           : workspace.planned.length > 0
