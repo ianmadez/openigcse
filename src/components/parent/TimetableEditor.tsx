@@ -471,7 +471,8 @@ export function TimetableEditor({
           : "Pick something to add, or drag a block to move it. Arrow keys move a focused block; Shift+arrows resize it; Delete removes it."}
       </p>
 
-      <div className="hidden md:block">
+      {/* The drag grid needs a fine pointer or a wide screen; tablets in portrait get the day list. */}
+      <div className="hidden lg:block">
         <div ref={gridRef} className="surface overflow-hidden">
           <div className="flex border-b border-subtle bg-sunken" style={{ paddingLeft: 44 }}>
             {DAYS.map((day) => (
@@ -564,7 +565,7 @@ export function TimetableEditor({
         </div>
       </div>
 
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <div role="tablist" aria-label="Day" className="mb-3 flex gap-1 overflow-x-auto rounded-lg bg-sunken p-1">
           {DAYS.map((day) => (
             <button

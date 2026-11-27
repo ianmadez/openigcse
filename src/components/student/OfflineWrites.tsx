@@ -74,6 +74,7 @@ export function OfflineWritesProvider({ children }: { children: ReactNode }) {
   const [online, setOnline] = useState(true);
   const [storageBroken, setStorageBroken] = useState(false);
   const draining = useRef(false);
+  const flushRef = useRef<() => Promise<void>>(async () => {});
 
   const persist = useCallback((next: QueuedWrite[]) => {
     setQueue(next);
@@ -100,10 +101,14 @@ export function OfflineWritesProvider({ children }: { children: ReactNode }) {
         setRefused((current) => [...current, ...result.refused.map((r) => `${LABEL[r.write.kind]}: ${r.error}`)]);
       }
       if (result.sent || result.refused.length) router.refresh();
+      // Writes queued during this drain go next, unless the network failed again.
+      if (added.length && !result.remaining.length) queueMicrotask(() => void flushRef.current());
     } finally {
       draining.current = false;
     }
   }, [persist, router]);
+
+  flushRef.current = flush;
 
   useEffect(() => {
     setQueue(load());
@@ -161,7 +166,7 @@ export function OfflineWritesProvider({ children }: { children: ReactNode }) {
               {queue.map((write) => LABEL[write.kind]).join(", ")}.
               {storageBroken && " This browser is not keeping them, so they will be lost if you close the page."}
               {online && (
-                <button type="button" onClick={() => void flush()} className="btn-ghost min-h-0 px-2 py-1">
+                <button type="button" onClick={() => void flush()} className="btn-ghost touch-target min-h-0 px-2 py-1">
                   <RefreshCw aria-hidden="true" className="size-3.5" strokeWidth={2} />
                   Send now
                 </button>
@@ -174,7 +179,7 @@ export function OfflineWritesProvider({ children }: { children: ReactNode }) {
             </p>
           ))}
           {refused.length > 0 && (
-            <button type="button" className="btn-ghost min-h-0 px-2 py-1" onClick={() => setRefused([])}>
+            <button type="button" className="btn-ghost touch-target min-h-0 px-2 py-1" onClick={() => setRefused([])}>
               Dismiss
             </button>
           )}

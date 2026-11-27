@@ -26,7 +26,8 @@ pnpm typecheck                     # tsc --noEmit
 pnpm test:parser                   # syllabus parser unit tests
 pnpm validate                      # zod + integrity check on every curriculum package
 pnpm check:contrast                # every declared colour pair, both appearances
-pnpm build                         # production build (last, not first)
+pnpm build                         # production build (last, not first); runs check:contrast first
+pnpm test:visual                   # screenshots of the eight busiest screens; needs `pnpm start` running
 pnpm test:rls                      # policy probes against the linked Supabase project
 pnpm verify:phase5                 # Phase 5 DB probes (requests, messages, push, live)
 pnpm verify:push                   # Web Push end to end against a local HTTPS endpoint

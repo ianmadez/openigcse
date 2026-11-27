@@ -63,7 +63,7 @@ export function FocusControls() {
               type="time"
               value={value.startTime}
               onChange={(event) => draft.setValue({ ...value, startTime: event.target.value })}
-              className="mt-1 w-full rounded-lg border border-strong bg-card px-2.5 py-2 text-base text-primary focus:border-accent focus:outline-none sm:text-sm"
+              className="touch-target mt-1 w-full rounded-lg border border-strong bg-card px-2.5 py-2 text-base text-primary focus:border-accent focus:outline-none sm:text-sm"
             />
           </label>
           <label className="block">
@@ -72,7 +72,7 @@ export function FocusControls() {
               type="time"
               value={value.endTime}
               onChange={(event) => draft.setValue({ ...value, endTime: event.target.value })}
-              className="mt-1 w-full rounded-lg border border-strong bg-card px-2.5 py-2 text-base text-primary focus:border-accent focus:outline-none sm:text-sm"
+              className="touch-target mt-1 w-full rounded-lg border border-strong bg-card px-2.5 py-2 text-base text-primary focus:border-accent focus:outline-none sm:text-sm"
             />
           </label>
           <label className="block">

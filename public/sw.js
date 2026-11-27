@@ -65,7 +65,8 @@ async function navigate(request, url) {
     return response;
   } catch {
     const cache = await caches.open(PAGES);
-    return (await cache.match(url.pathname)) || (await cache.match("/today")) || offlinePage();
+    // Only the page that was asked for: another page's HTML under this URL would confuse the router.
+    return (await cache.match(url.pathname)) || offlinePage();
   }
 }
 
@@ -85,6 +86,10 @@ self.addEventListener("fetch", (event) => {
 // visit is enough for /today to open offline.
 self.addEventListener("message", (event) => {
   const data = event.data || {};
+  if (data.type === "signed-out") {
+    event.waitUntil(caches.delete(PAGES));
+    return;
+  }
   if (data.type === "warm" && Array.isArray(data.assets)) {
     event.waitUntil(
       (async () => {

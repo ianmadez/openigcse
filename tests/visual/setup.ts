@@ -23,10 +23,17 @@ export default async function setup(config: FullConfig) {
     await page.locator("#panel-password button[type=submit]").click();
     await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 60_000 });
     if (role === "guardian") {
-      await page.goto(`${base}/parent`);
-      await page.locator("input[name=pin]").fill(state.pin);
-      await page.locator("input[name=pin]").press("Enter");
-      await page.locator("input[name=pin]").waitFor({ state: "detached", timeout: 60_000 });
+      // Wait for hydration: an Enter pressed before it is lost. One retry covers a slow first load.
+      const pin = page.locator("input[name=pin]");
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        await page.goto(`${base}/parent`, { waitUntil: "networkidle" });
+        if (!(await pin.count())) break;
+        await pin.fill(state.pin);
+        await pin.press("Enter");
+        const unlocked = await pin.waitFor({ state: "detached", timeout: 30_000 }).then(() => true, () => false);
+        if (unlocked) break;
+        if (attempt === 1) throw new Error("The PIN gate did not unlock for the visual household.");
+      }
     }
     await context.storageState({ path: storage(role) });
     await context.close();

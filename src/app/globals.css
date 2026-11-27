@@ -352,9 +352,8 @@
     .field {
       min-height: 2.75rem;
     }
-    /* Segmented tabs, and any compact control marked .touch-target. */
-    .tab-btn,
-    .touch-target {
+    /* Segmented tabs. */
+    .tab-btn {
       min-height: 2.75rem;
     }
     /* min-* so a compact size utility (size-7) cannot undercut it. */
@@ -379,6 +378,13 @@
 }
 
 @layer utilities {
+  /* Step 7.1: an explicit opt-in, so it outranks a component's own min-h-* utility. */
+  @media (pointer: coarse) {
+    .touch-target {
+      min-height: 2.75rem !important;
+    }
+  }
+
   .tabular {
     font-variant-numeric: tabular-nums;
   }

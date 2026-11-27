@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
+const SIGNED_OUT = ["/login", "/pair"];
+
 /**
  * Registers /sw.js on every page (Step 7.3) so the app is installable and /today opens offline.
  * Development skips it: a caching worker fights hot reload. After registering, the page tells the
@@ -19,6 +21,12 @@ export function ServiceWorkerRegister() {
       .then(() => navigator.serviceWorker.ready)
       .then((registration) => {
         if (cancelled) return;
+        // Sign-out reaches /login through the client router, which the worker never sees as a
+        // navigation; tell it directly so the saved plan does not outlive the session.
+        if (SIGNED_OUT.includes(pathname)) {
+          registration.active?.postMessage({ type: "signed-out" });
+          return;
+        }
         const assets = performance
           .getEntriesByType("resource")
           .map((entry) => entry.name)
