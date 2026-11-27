@@ -2,6 +2,7 @@ import { cache } from "react";
 
 import { pickActiveTerm, toTermSummary, type TermSummary } from "@/lib/data/terms";
 import { createServerClientInstance } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/auth/session";
 
 /**
  * Who is looking, and what they are allowed to see.
@@ -48,9 +49,8 @@ export const getSetupState = cache(async (): Promise<SetupState> => {
 
   try {
     const supabase = await createServerClientInstance();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    // Shared with getAuthContext(): one Supabase Auth round trip per request.
+    const user = await getAuthUser();
 
     if (!user) return { status: "signed-out", reason: "no-session" };
 
@@ -68,7 +68,8 @@ export const getSetupState = cache(async (): Promise<SetupState> => {
       return profile ? { status: "unconfigured", reason: "no-household" } : { status: "signed-out", reason: "session-invalid" };
     }
 
-    const [{ data: household }, { data: learner }] = await Promise.all([
+    // Household, learner and terms need only the household id, so they share one round trip.
+    const [{ data: household }, { data: learner }, { data: terms }] = await Promise.all([
       supabase
         .from("households")
         .select("id, name, onboarding_completed, timezone")
@@ -87,16 +88,15 @@ export const getSetupState = cache(async (): Promise<SetupState> => {
           year_group: string | null;
           target_exam_series: string | null;
         }>(),
+      supabase
+        .from("academic_terms")
+        .select("id, name, status, start_date, end_date, midterm_exam_start, final_exam_start, daily_minutes_cap")
+        .eq("household_id", profile.household_id)
+        .order("start_date", { ascending: true }),
     ]);
 
     if (!household) return { status: "unconfigured", reason: "no-household" };
     if (!learner) return { status: "unconfigured", reason: "no-learner", householdName: household.name };
-
-    const { data: terms } = await supabase
-      .from("academic_terms")
-      .select("id, name, status, start_date, end_date, midterm_exam_start, final_exam_start, daily_minutes_cap")
-      .eq("household_id", household.id)
-      .order("start_date", { ascending: true });
 
     const term = pickActiveTerm((terms ?? []).map((row, index) => toTermSummary(row, index)));
 

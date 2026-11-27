@@ -17,10 +17,14 @@ export default async function StudentLayout({ children }: { children: ReactNode 
   if (state.status === "signed-out" && !demoMode()) redirect("/pair");
   if (state.status === "unconfigured" && !onboardingBypass() && !demoMode()) redirect("/parent/onboarding");
 
-  const curriculum =
-    state.status === "configured" && state.activeTermId
-      ? await getEnrolledCurriculum(state.learnerId, state.activeTermId)
-      : [];
+  // The sidebar's curriculum and the dock's counts are independent, so they load together.
+  const isLearnerDevice = state.status === "configured" && state.role === "student";
+  const [curriculum, dockData] = await Promise.all([
+    state.status === "configured" && state.activeTermId ? getEnrolledCurriculum(state.learnerId, state.activeTermId) : [],
+    isLearnerDevice
+      ? Promise.all([unreadMessageCount(state.householdId, state.learnerId), getLearnerRequestState(state.learnerId)])
+      : null,
+  ]);
 
   const subjects: NavSubject[] = curriculum.map((subject) => ({
     code: subject.subjectCode,
@@ -33,22 +37,14 @@ export default async function StudentLayout({ children }: { children: ReactNode 
 
   // The dock is for the learner's own device; a guardian previewing the student view gets none.
   const dock =
-    state.status === "configured" && state.role === "student"
-      ? await (async () => {
-          const [unread, requests] = await Promise.all([
-            unreadMessageCount(state.householdId, state.learnerId),
-            getLearnerRequestState(state.learnerId),
-          ]);
-          return (
-            <StudentDock
-              learnerId={state.learnerId}
-              householdId={state.householdId}
-              unreadMessages={unread}
-              breakSecondsLeft={requests.breakSecondsLeft}
-            />
-          );
-        })()
-      : null;
+    state.status === "configured" && dockData ? (
+      <StudentDock
+        learnerId={state.learnerId}
+        householdId={state.householdId}
+        unreadMessages={dockData[0]}
+        breakSecondsLeft={dockData[1].breakSecondsLeft}
+      />
+    ) : null;
 
   return (
     <AppShell variant="student" learnerName={learnerName} subjects={subjects} headerSlot={dock}>
