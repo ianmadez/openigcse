@@ -337,6 +337,33 @@
     opacity: 0.6;
   }
 
+  /* Shown only where a camera input makes sense (phones and tablets). */
+  .touch-only {
+    display: none !important;
+  }
+
+  /* Step 7.1: on touch screens every shared control is at least 44 px tall. */
+  @media (pointer: coarse) {
+    .touch-only {
+      display: inline-flex !important;
+    }
+    .btn,
+    .nav-link,
+    .field {
+      min-height: 2.75rem;
+    }
+    /* Segmented tabs, and any compact control marked .touch-target. */
+    .tab-btn,
+    .touch-target {
+      min-height: 2.75rem;
+    }
+    /* min-* so a compact size utility (size-7) cannot undercut it. */
+    .icon-btn {
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+    }
+  }
+
   /* Segmented control used for sign-in methods and wizard steps. */
   .tab-btn {
     @apply flex flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-md px-1.5 py-1.5 text-[0.6875rem] font-medium text-muted;

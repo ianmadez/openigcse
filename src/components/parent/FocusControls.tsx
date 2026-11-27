@@ -41,7 +41,7 @@ export function FocusControls() {
             onClick={() => draft.setValue({ ...value, locked: !value.locked })}
             aria-pressed={value.locked}
             className={cn(
-              "pressable inline-flex min-h-10 items-center gap-2 rounded-lg border px-3 text-[0.875rem] font-medium",
+              "pressable touch-target inline-flex min-h-10 items-center gap-2 rounded-lg border px-3 text-[0.875rem] font-medium",
               value.locked
                 ? "border-success/40 bg-success-soft text-success-text"
                 : "border-subtle bg-card text-secondary",
@@ -78,13 +78,13 @@ export function FocusControls() {
           <label className="block">
             <span className="block text-caption text-muted">Session cap</span>
             <input
-              type="number"
+              type="number" inputMode="numeric"
               min={15}
               max={120}
               step={5}
               value={value.sessionCapMinutes}
               onChange={(event) => draft.setValue({ ...value, sessionCapMinutes: Number(event.target.value) })}
-              className="mt-1 w-full rounded-lg border border-strong bg-card px-2.5 py-2 text-base text-primary tabular focus:border-accent focus:outline-none sm:text-sm"
+              className="touch-target mt-1 w-full rounded-lg border border-strong bg-card px-2.5 py-2 text-base text-primary tabular focus:border-accent focus:outline-none sm:text-sm"
             />
           </label>
         </div>

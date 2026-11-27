@@ -87,7 +87,7 @@ export function OnboardingWizard({ coreSubjects, electives, bypass }: Onboarding
               onClick={() => setStep(index)}
               aria-current={index === step ? "step" : undefined}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-caption font-medium",
+                "touch-target inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-caption font-medium",
                 index === step
                   ? "border-accent-line bg-accent-soft text-accent-text"
                   : index < step
@@ -323,7 +323,7 @@ export function OnboardingWizard({ coreSubjects, electives, bypass }: Onboarding
           <label className="block max-w-48">
             <span className="label">Daily study cap (minutes)</span>
             <input
-              type="number"
+              type="number" inputMode="numeric"
               name="dailyMinutesCap"
               min={30}
               max={480}

@@ -398,7 +398,7 @@ export function QuestionEditor({ initial, tree, assessmentObjectives }: Props) {
                     className="field"
                   />
                   <input
-                    type="number"
+                    type="number" inputMode="numeric"
                     min={1}
                     max={20}
                     value={part.marks}
@@ -443,7 +443,7 @@ export function QuestionEditor({ initial, tree, assessmentObjectives }: Props) {
           <label className="block w-32">
             <span className="label">Marks</span>
             <input
-              type="number"
+              type="number" inputMode="numeric"
               min={1}
               max={50}
               value={question.marks}

@@ -231,7 +231,7 @@ export function TermPlanner({ terms, termId, options, enrollments, seriesOptions
                 href={`/parent/term-planner?term=${term.id}`}
                 aria-current={term.id === termId ? "page" : undefined}
                 className={cn(
-                  "rounded-lg border px-2.5 py-1.5 text-caption",
+                  "touch-target inline-flex items-center rounded-lg border px-2.5 py-1.5 text-caption",
                   term.id === termId ? "border-accent bg-accent-soft text-accent-text" : "border-subtle bg-card text-secondary",
                 )}
               >

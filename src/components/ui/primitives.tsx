@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils/cn";
 
-export function PageHeading({ eyebrow, title, children }: { eyebrow?: string; title: string; children?: ReactNode }) {
+export function PageHeading({ eyebrow, title, children }: { eyebrow?: ReactNode; title: string; children?: ReactNode }) {
   return (
     <div className="mb-6">
       {eyebrow && <p className="label mb-1.5">{eyebrow}</p>}
@@ -69,11 +69,12 @@ export function Status({ tone, children }: { tone: Tone; children: ReactNode }) 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-caption font-medium",
+        // Short labels sit on one line; a long one wraps instead of pushing a phone page sideways.
+        "inline-flex max-w-full items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-caption font-medium",
         toneClasses[tone],
       )}
     >
-      {Icon && <Icon aria-hidden="true" className="size-3.5" strokeWidth={2.2} />}
+      {Icon && <Icon aria-hidden="true" className="size-3.5 shrink-0" strokeWidth={2.2} />}
       {children}
     </span>
   );
