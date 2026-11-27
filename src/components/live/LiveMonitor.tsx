@@ -103,9 +103,11 @@ export function LiveMonitor({ view }: { view: LiveView }) {
             <MonitorSmartphone aria-hidden="true" className="size-5 text-secondary" strokeWidth={2} />
             {view.learnerName}&apos;s device
           </h2>
-          <Status tone={online ? "success" : "neutral"}>{online ? "Online" : "Offline"}</Status>
+          <span data-volatile>
+            <Status tone={online ? "success" : "neutral"}>{online ? "Online" : "Offline"}</Status>
+          </span>
         </div>
-        <p className="mt-1 text-caption text-muted">
+        <p className="mt-1 text-caption text-muted" data-volatile>
           {session?.lastHeartbeatAt ? `Last seen ${timeFormat.format(new Date(session.lastHeartbeatAt))}` : "No heartbeat today yet. The device reports every 30 seconds while the app is open."}
           {session?.currentRoute ? ` on ${session.currentRoute}` : ""}
         </p>

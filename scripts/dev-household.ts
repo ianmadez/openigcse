@@ -15,7 +15,8 @@ import { loadEnv } from "./lib/env";
 
 loadEnv();
 
-const STATE = ".superpowers/dev-household.json";
+// DEV_HOUSEHOLD_STATE lets the screenshot suite keep its own household beside a manual one.
+const STATE = process.env.DEV_HOUSEHOLD_STATE ?? ".superpowers/dev-household.json";
 const PIN = "246810";
 
 const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {

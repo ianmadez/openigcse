@@ -10,6 +10,7 @@ import {
   skipPlanItemAction,
   startPlanItemAction,
 } from "@/app/(student)/learning-actions";
+import { useOfflineWrites } from "@/components/student/OfflineWrites";
 import { Status } from "@/components/ui/primitives";
 import type { DayPlanItem } from "@/lib/data/timetable-shared";
 import type { LessonResource } from "@/lib/data/workspace";
@@ -32,6 +33,7 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
   const [plan, setPlan] = useState(items);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const offline = useOfflineWrites();
 
   useEffect(() => setPlan(items), [items]);
 
@@ -53,24 +55,28 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
     });
   };
 
+  // Start, Finish and Skip survive a dropped connection (Step 7.3): the banner above the plan
+  // says they are held on this device until they reach Postgres.
   const start = (item: DayPlanItem) =>
     run(async () => {
-      const result = await startPlanItemAction(item.id);
-      if (result.ok) patch(item.id, { status: "in_progress", startedAt: result.startedAt });
+      const result = await offline.run("start", { id: item.id }, () => startPlanItemAction(item.id));
+      if (!result.ok) return result;
+      const startedAt = "startedAt" in result && typeof result.startedAt === "string" ? result.startedAt : new Date().toISOString();
+      patch(item.id, { status: "in_progress", startedAt });
       return result;
     });
 
   const finish = (item: DayPlanItem) =>
     run(async () => {
       const minutes = elapsedMinutes(item.startedAt, new Date());
-      const result = await finishPlanItemAction({ id: item.id, minutes });
+      const result = await offline.run("finish", { id: item.id, minutes }, () => finishPlanItemAction({ id: item.id, minutes }));
       if (result.ok) patch(item.id, { status: "done", actualMinutes: minutes });
       return result;
     });
 
   const skip = (item: DayPlanItem, reason: string) =>
     run(async () => {
-      const result = await skipPlanItemAction({ id: item.id, reason });
+      const result = await offline.run("skip", { id: item.id, reason }, () => skipPlanItemAction({ id: item.id, reason }));
       if (result.ok) patch(item.id, { status: "skipped", skipReason: reason });
       return result;
     });

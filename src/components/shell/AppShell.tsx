@@ -16,6 +16,7 @@ import {
   MapPin,
   Menu,
   MessageCircle,
+  MoreHorizontal,
   Paperclip,
   Radio,
   Settings,
@@ -31,6 +32,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { ThemeToggle } from "@/components/shell/ThemeToggle";
 import { SoundProvider } from "@/components/sound/SoundProvider";
 import { SoundToggle } from "@/components/sound/SoundToggle";
+import { activeTab, tabsFor, type TabKey } from "@/lib/shell/tabs";
 import { cn } from "@/lib/utils/cn";
 
 type NavItem = { label: string; href: string; icon: typeof Home };
@@ -190,7 +192,7 @@ export function AppShell({ variant, description, learnerName, streakDays, subjec
                                 type="button"
                                 onClick={() => setExpandedSubject(expanded ? null : subject.code)}
                                 aria-expanded={expanded}
-                                className="row-hover flex w-full items-center gap-2 rounded-panel px-2 py-1.5 text-left text-[0.8125rem] text-secondary"
+                                className="row-hover touch-target flex w-full items-center gap-2 rounded-panel px-2 py-1.5 text-left text-[0.8125rem] text-secondary"
                               >
                                 <span
                                   aria-hidden="true"
@@ -211,7 +213,7 @@ export function AppShell({ variant, description, learnerName, streakDays, subjec
                                     <li key={topic.code}>
                                       <Link
                                         href={`/subjects/${subject.slug}`}
-                                        className="row-hover block truncate rounded px-2 py-1 text-[0.75rem] text-muted"
+                                        className="row-hover touch-target flex items-center truncate rounded px-2 py-1 text-[0.75rem] text-muted"
                                       >
                                         <span className="mr-1.5 tabular opacity-70">{topic.code}</span>
                                         {topic.name}
@@ -222,7 +224,7 @@ export function AppShell({ variant, description, learnerName, streakDays, subjec
                                     <li>
                                       <Link
                                         href={`/subjects/${subject.slug}`}
-                                        className="block px-2 py-1 text-[0.75rem] font-medium text-accent-text"
+                                        className="touch-target flex items-center px-2 py-1 text-[0.75rem] font-medium text-accent-text"
                                       >
                                         All {subject.topics.length} topics
                                       </Link>
@@ -236,7 +238,7 @@ export function AppShell({ variant, description, learnerName, streakDays, subjec
 
                         <Link
                           href="/subjects"
-                          className="block px-2 py-1.5 text-[0.75rem] font-medium text-accent-text"
+                          className="touch-target flex items-center px-2 py-1.5 text-[0.75rem] font-medium text-accent-text"
                         >
                           All subjects and electives
                         </Link>
@@ -293,7 +295,7 @@ export function AppShell({ variant, description, learnerName, streakDays, subjec
               <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="icon-btn lg:hidden"
+                className="icon-btn hidden sm:inline-flex lg:hidden"
                 aria-label="Open navigation"
                 aria-controls="app-sidebar"
                 aria-expanded={open}
@@ -311,15 +313,85 @@ export function AppShell({ variant, description, learnerName, streakDays, subjec
             </div>
           </header>
 
-          <main key={pathname} className="page-enter mx-auto max-w-5xl px-4 pb-16 pt-6 sm:px-6">
+          <main key={pathname} className="page-enter mx-auto max-w-5xl px-4 pb-28 pt-6 sm:px-6 sm:pb-16">
             {description && (
               <p className="mb-6 max-w-[62ch] text-[0.9375rem] leading-relaxed text-secondary">{description}</p>
             )}
             {children}
           </main>
         </div>
+
+        <PhoneTabBar variant={variant} pathname={pathname} moreOpen={open} onMore={() => setOpen(true)} />
       </div>
     </SoundProvider>
+  );
+}
+
+const tabIcons: Record<TabKey, typeof Home> = {
+  today: Home,
+  timetable: CalendarRange,
+  review: Target,
+  inbox: MessageCircle,
+  live: Radio,
+  marking: ClipboardCheck,
+  more: MoreHorizontal,
+};
+
+/** Phones (below 640 px) navigate by five tabs; More opens the full drawer. */
+function PhoneTabBar({
+  variant,
+  pathname,
+  moreOpen,
+  onMore,
+}: {
+  variant: "student" | "parent";
+  pathname: string;
+  moreOpen: boolean;
+  onMore: () => void;
+}) {
+  const lit = activeTab(variant, pathname);
+  return (
+    <nav
+      aria-label="Main tabs"
+      className="fixed inset-x-0 bottom-0 z-20 border-t border-subtle bg-card pb-[env(safe-area-inset-bottom)] sm:hidden"
+    >
+      <ul className="grid grid-cols-5">
+        {tabsFor(variant).map((tab) => {
+          const Icon = tabIcons[tab.key];
+          const active = lit === tab.key;
+          const body = (
+            <>
+              <Icon aria-hidden="true" className="size-5" strokeWidth={active ? 2.25 : 2} />
+              <span className="text-[0.6875rem] leading-none">{tab.label}</span>
+            </>
+          );
+          const cls = cn(
+            "flex min-h-14 w-full flex-col items-center justify-center gap-1 font-medium",
+            active ? "text-accent-text" : "text-muted",
+          );
+          return (
+            <li key={tab.key}>
+              {tab.href ? (
+                <Link href={tab.href} className={cls} aria-current={active ? "page" : undefined}>
+                  {body}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onMore}
+                  className={cls}
+                  aria-controls="app-sidebar"
+                  aria-expanded={moreOpen}
+                  aria-current={active ? "page" : undefined}
+                >
+                  {body}
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }
 

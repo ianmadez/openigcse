@@ -7,7 +7,7 @@ A phase is **Done** only when its roadmap exit gate has actually been observed. 
 reads or writes Postgres, but the two-device exit gate has not been re-run for this document. **Partial** means only
 part of the steps in that phase exist.
 
-Last checked: 2026-11-25 (Phase 5).
+Last checked: 2026-11-27 (Phase 7).
 
 | Phase | Roadmap goal                               | State                                                |
 | ----- | ------------------------------------------ | ---------------------------------------------------- |
@@ -17,8 +17,8 @@ Last checked: 2026-11-25 (Phase 5).
 | 3     | Parent authoring and the marking desk      | Done (exit gate observed 2026-11-17)                 |
 | 4     | The student learning loop                  | Done (exit gate observed 2026-11-25)                 |
 | 5     | Messaging, requests and remote monitoring  | Done (exit gate observed 2026-11-25)                 |
-| 6     | Curriculum extraction for ten packages     | Partial: five drafts, three have no route            |
-| 7     | Mobile pass and installable app            | Not started                                          |
+| 6     | Curriculum extraction for ten packages     | Done (exit gate observed 2026-11-26)                 |
+| 7     | Mobile pass and installable app            | Merged 2026-11-27; Lighthouse passed, phone test open |
 | 8     | Hardening and staging                      | Not started                                          |
 | 9     | Device lockdown app                        | Not started                                          |
 
@@ -86,6 +86,13 @@ per-household quiet hours. Step 5.4 adds the 30-second heartbeat (`record_heartb
 parent's remote actions (`parent_live_action()`): end break, message to the screen, unlock for N minutes, lock now,
 end the school day; the digest goes once per day.
 
+**Phase 7 - mobile pass and installable app (built).** Phones get a five-tab bar per role, touch screens get 44 px
+controls, integer fields get the number pad and evidence can be photographed. All routes pass a 360/768/1280,
+light/dark sweep with no sideways scroll; `pnpm test:visual` screenshots the eight busiest screens; `check:contrast`
+runs before every build. The app installs from a manifest and service worker: `/today` opens offline, its writes are
+held and replayed, and sign-out clears the saved plan. Not yet observed: the Phase 5 exit test on a real phone and a
+Lighthouse accessibility run. Summary: [phases/phase-7.md](phases/phase-7.md).
+
 ## What still looks finished but is not
 
 - **Forms that lose input on error (Phase 0-2).** Onboarding, pairing, settings, PIN gate and overrides use
@@ -105,8 +112,19 @@ end the school day; the digest goes once per day.
 1. `useLocalDraft` survives only on `/parent/focus`, where the controls are not written to Postgres at all. It should
    go when the focus policy gains a real form.
 2. `ARCHITECTURE_MAP.txt` predates Phases 0-2 and still describes bundled JSON curriculum and a demo seam.
-3. No service worker, manifest or offline queue yet, so `/today` needs a connection and failed event posts are only
-   reported to the learner, not retried.
+3. Phase 7 holds `/today`'s Start, Finish, Skip and study time offline and replays them; checkpoint answers and
+   "I'm stuck" still need a connection, and Phase 8 owns a visible retry for every other write.
+
+## Queued for Phase 8 (Ian, 2026-11-27)
+
+Added alongside the roadmap's hardening steps, after Ian checked Phase 7 on a phone:
+
+1. **Loading states.** Every route that reads Postgres gets a skeleton that matches its layout (`loading.tsx` per
+   segment), so a slow read shows the shape of the page instead of a blank or the previous screen.
+2. **Button pass.** Every button and form shows that it is working: disabled while pending, a spinner or pending
+   label, and the result or a visible retry afterwards. One shared pattern (`ActionButton`), checked button by button.
+3. **Snappiness.** Measure first (route timings, bundle sizes, repeated Supabase reads per request), then cut: parallel
+   reads, fewer round trips, prefetching the tab-bar routes, optimistic updates where a refusal is still shown.
 
 ## Verification
 

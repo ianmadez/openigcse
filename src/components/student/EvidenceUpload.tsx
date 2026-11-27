@@ -1,12 +1,15 @@
 "use client";
 
-import { Paperclip, Send } from "lucide-react";
-import { startTransition, useActionState, useEffect, useRef } from "react";
+import { Camera, Paperclip, Send } from "lucide-react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 
 import { submitEvidenceAction } from "@/app/(student)/evidence/actions";
 import { ActionButton } from "@/components/ui/Button";
 import { FormMessage } from "@/components/ui/FormMessage";
 import { ACCEPT } from "@/lib/storage/rules";
+
+// The camera only offers formats the server stores, so an iPhone hands over a JPEG, not HEIC.
+const CAMERA_ACCEPT = ACCEPT.split(",").filter((type) => type.startsWith("image/")).join(",");
 
 type Option = { id: string; label: string };
 
@@ -19,9 +22,13 @@ export function EvidenceUpload({
 }) {
   const form = useRef<HTMLFormElement>(null);
   const [result, action, pending] = useActionState(submitEvidenceAction, null);
+  const [cameraName, setCameraName] = useState<string | null>(null);
 
   useEffect(() => {
-    if (result?.ok) form.current?.reset();
+    if (result?.ok) {
+      form.current?.reset();
+      setCameraName(null);
+    }
   }, [result]);
 
   return (
@@ -32,6 +39,10 @@ export function EvidenceUpload({
       onSubmit={(event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        // A photo taken with the camera (Step 7.1) wins over a chosen file.
+        const photo = data.get("cameraPhoto");
+        if (photo instanceof File && photo.size > 0) data.set("file", photo);
+        data.delete("cameraPhoto");
         startTransition(() => action(data));
       }}
       className="space-y-3"
@@ -58,8 +69,21 @@ export function EvidenceUpload({
         <span className="label">Photo or PDF (up to 15 MB)</span>
         <span className="mt-1.5 flex items-center gap-2">
           <Paperclip aria-hidden="true" className="size-4 text-muted" strokeWidth={2} />
-          <input name="file" type="file" accept={ACCEPT} className="min-w-0 flex-1 text-caption text-secondary file:mr-2 file:rounded-lg file:border file:border-subtle file:bg-card file:px-2.5 file:py-1.5 file:text-primary" />
+          <input name="file" type="file" accept={ACCEPT} className="touch-target min-w-0 flex-1 text-caption text-secondary file:mr-2 file:rounded-lg file:border file:border-subtle file:bg-card file:px-2.5 file:py-1.5 file:text-primary" />
         </span>
+      </label>
+
+      <label className="touch-only btn-secondary pressable w-fit cursor-pointer">
+        <Camera aria-hidden="true" className="size-4" strokeWidth={2} />
+        {cameraName ? `Photo ready: ${cameraName}` : "Take a photo"}
+        <input
+          name="cameraPhoto"
+          type="file"
+          accept={CAMERA_ACCEPT}
+          capture="environment"
+          className="sr-only"
+          onChange={(event) => setCameraName(event.target.files?.[0]?.name ?? null)}
+        />
       </label>
 
       <label className="block">

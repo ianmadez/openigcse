@@ -225,7 +225,7 @@ export function AssessmentBuilder({ existing, subjects, bank, tree, zone, today 
                   className="field w-20"
                 />
                 <input
-                  type="number"
+                  type="number" inputMode="numeric"
                   min={0}
                   max={100}
                   aria-label={`Minimum percent for ${row.grade || "grade"}`}
@@ -306,7 +306,7 @@ export function AssessmentBuilder({ existing, subjects, bank, tree, zone, today 
                 {paperRows.map((row, index) => (
                   <div key={index} className="grid grid-cols-[4rem_4.5rem_minmax(0,1fr)_auto] items-center gap-2">
                     <input aria-label="Question number" value={row.number} maxLength={10} onChange={(event) => setPaperRows((rows) => rows.map((item, at) => (at === index ? { ...item, number: event.target.value } : item)))} className="field" />
-                    <input aria-label="Marks" type="number" min={1} max={50} value={row.marks} onChange={(event) => setPaperRows((rows) => rows.map((item, at) => (at === index ? { ...item, marks: Number(event.target.value) || 1 } : item)))} className="field tabular" />
+                    <input aria-label="Marks" type="number" inputMode="numeric" min={1} max={50} value={row.marks} onChange={(event) => setPaperRows((rows) => rows.map((item, at) => (at === index ? { ...item, marks: Number(event.target.value) || 1 } : item)))} className="field tabular" />
                     <select aria-label="Objective" value={row.objectiveId} onChange={(event) => setPaperRows((rows) => rows.map((item, at) => (at === index ? { ...item, objectiveId: event.target.value } : item)))} className="field">
                       <option value="">Objective</option>
                       {subjectObjectives.map((objective) => (

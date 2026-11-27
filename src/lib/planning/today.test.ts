@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { SKIP_REASONS, elapsedMinutes, groupByPeriod, reorderWithin } from "./today";
+import { SKIP_REASONS, elapsedMinutes, groupByPeriod, reorderWithin, startTimeFor } from "./today";
 
 const item = (id: string, slotId: string | null, sequence: number) => ({ id, slotId, sequence });
 
@@ -44,4 +44,13 @@ test("elapsedMinutes rounds and never records less than one minute", () => {
   assert.equal(elapsedMinutes(start, new Date("2026-11-24T09:24:40.000Z")), 25);
   assert.equal(elapsedMinutes(null, new Date()), 1);
   assert.equal(elapsedMinutes(start, new Date("2026-11-24T20:00:00.000Z")), 600);
+});
+
+test("a replayed start keeps the learner's time only when it is plausible", () => {
+  const now = new Date("2026-11-27T10:00:00.000Z");
+  assert.equal(startTimeFor("2026-11-27T09:40:00.000Z", now), "2026-11-27T09:40:00.000Z");
+  assert.equal(startTimeFor(undefined, now), now.toISOString());
+  assert.equal(startTimeFor("not a date", now), now.toISOString());
+  assert.equal(startTimeFor("2026-11-27T10:05:00.000Z", now), now.toISOString());
+  assert.equal(startTimeFor("2026-11-26T21:00:00.000Z", now), now.toISOString());
 });

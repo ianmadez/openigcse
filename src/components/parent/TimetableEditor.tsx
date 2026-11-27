@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarPlus, Copy, Loader2, Plus, Trash2 } from "lucide-react";
+import { CalendarPlus, Copy, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 
 import {
@@ -12,7 +12,7 @@ import {
 } from "@/app/(parent)/parent/(gated)/timetable/actions";
 import { ActionButton } from "@/components/ui/Button";
 import { EmptyState, Panel, Status } from "@/components/ui/primitives";
-import { toTimeString, type SlotType, type TimetableSlot } from "@/lib/data/timetable-shared";
+import { phoneSlotTimes, toTimeString, type SlotType, type TimetableSlot } from "@/lib/data/timetable-shared";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -167,10 +167,44 @@ export function TimetableEditor({
     [],
   );
 
+  /* Phone mode (Step 7.2): a block opens an editor on tap or press-and-hold. */
+  const [phoneEdit, setPhoneEdit] = useState<{
+    id: string;
+    day: number;
+    start: string;
+    end: string;
+    error: string | null;
+  } | null>(null);
+  const [phoneAddAt, setPhoneAddAt] = useState("09:00");
+  const holdTimer = useRef<number | null>(null);
+
+  const openPhoneEdit = (slot: TimetableSlot) =>
+    setPhoneEdit({ id: slot.id, day: slot.dayOfWeek, start: slot.startTime, end: slot.endTime, error: null });
+  const cancelHold = () => {
+    if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
+    holdTimer.current = null;
+  };
+  const holdToEdit = (slot: TimetableSlot) => {
+    cancelHold();
+    holdTimer.current = window.setTimeout(() => openPhoneEdit(slot), 500);
+  };
+  const savePhoneEdit = (slot: TimetableSlot) => {
+    if (!phoneEdit) return;
+    const times = phoneSlotTimes(phoneEdit.start, phoneEdit.end, { schoolStart, schoolEnd });
+    if (!times.ok) {
+      setPhoneEdit({ ...phoneEdit, error: times.error });
+      return;
+    }
+    setPhoneEdit(null);
+    const moved =
+      times.startMinutes !== slot.startMinutes || times.endMinutes !== slot.endMinutes || phoneEdit.day !== slot.dayOfWeek;
+    if (moved) commit(slot, times.startMinutes, times.endMinutes, phoneEdit.day);
+  };
+
   const addSlot = (dayOfWeek: number, minute: number) => {
     if (!armed) return;
 
-    const startMinutes = snap(Math.min(minute, schoolEnd - SNAP * 2));
+    const startMinutes = snap(clamp(minute, schoolStart, schoolEnd - SNAP * 2));
     const endMinutes = Math.min(startMinutes + SNAP * 2, schoolEnd);
 
     setError(null);
@@ -401,7 +435,7 @@ export function TimetableEditor({
             }
             aria-pressed={armed?.subjectId === subject.subjectId}
             className={cn(
-              "pressable rounded-full border px-2.5 py-1 text-caption font-medium",
+              "pressable touch-target rounded-full border px-2.5 py-1 text-caption font-medium",
               armed?.subjectId === subject.subjectId
                 ? "border-accent-line bg-accent-soft text-accent-text"
                 : "border-subtle bg-card text-secondary",
@@ -420,7 +454,7 @@ export function TimetableEditor({
             }
             aria-pressed={armed?.slotType === type && !armed.subjectId}
             className={cn(
-              "pressable rounded-full border px-2.5 py-1 text-caption font-medium",
+              "pressable touch-target rounded-full border px-2.5 py-1 text-caption font-medium",
               armed?.slotType === type && !armed.subjectId
                 ? "border-accent-line bg-accent-soft text-accent-text"
                 : "border-subtle bg-card text-secondary",
@@ -437,7 +471,8 @@ export function TimetableEditor({
           : "Pick something to add, or drag a block to move it. Arrow keys move a focused block; Shift+arrows resize it; Delete removes it."}
       </p>
 
-      <div className="hidden md:block">
+      {/* The drag grid needs a fine pointer or a wide screen; tablets in portrait get the day list. */}
+      <div className="hidden lg:block">
         <div ref={gridRef} className="surface overflow-hidden">
           <div className="flex border-b border-subtle bg-sunken" style={{ paddingLeft: 44 }}>
             {DAYS.map((day) => (
@@ -530,7 +565,7 @@ export function TimetableEditor({
         </div>
       </div>
 
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <div role="tablist" aria-label="Day" className="mb-3 flex gap-1 overflow-x-auto rounded-lg bg-sunken p-1">
           {DAYS.map((day) => (
             <button
@@ -554,37 +589,117 @@ export function TimetableEditor({
           <ul className="space-y-2">
             {slots
               .filter((slot) => slot.dayOfWeek === mobileDay)
-              .map((slot) => (
-                <li key={slot.id} className="surface flex items-center gap-3 p-3">
-                  <span aria-hidden="true" className="size-2 shrink-0 rounded-full" style={colourStyle(slot)} />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[0.875rem] text-primary">{slotLabel(slot)}</span>
-                    <span className="block text-caption text-muted tabular">
-                      {slot.startTime}–{slot.endTime}
-                    </span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => removeSlot(slot)}
-                    className="icon-btn"
-                    aria-label={`Remove ${slotLabel(slot)}`}
-                  >
-                    <Trash2 aria-hidden="true" className="size-4" strokeWidth={2} />
-                  </button>
-                </li>
-              ))}
+              .map((slot) =>
+                phoneEdit?.id === slot.id ? (
+                  <li key={slot.id} className="surface space-y-3 p-3">
+                    <p className="text-[0.875rem] font-medium text-primary">{slotLabel(slot)}</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <label className="block">
+                        <span className="label">Day</span>
+                        <select
+                          value={phoneEdit.day}
+                          onChange={(event) => setPhoneEdit({ ...phoneEdit, day: Number(event.target.value) })}
+                          className="field mt-1"
+                        >
+                          {DAYS.map((day) => (
+                            <option key={day.value} value={day.value}>
+                              {day.short}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="block">
+                        <span className="label">Start</span>
+                        <input
+                          type="time"
+                          step={900}
+                          value={phoneEdit.start}
+                          onChange={(event) => setPhoneEdit({ ...phoneEdit, start: event.target.value })}
+                          className="field mt-1 tabular"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="label">End</span>
+                        <input
+                          type="time"
+                          step={900}
+                          value={phoneEdit.end}
+                          onChange={(event) => setPhoneEdit({ ...phoneEdit, end: event.target.value })}
+                          className="field mt-1 tabular"
+                        />
+                      </label>
+                    </div>
+                    {phoneEdit.error && (
+                      <p role="alert" className="text-caption text-danger-text">
+                        {phoneEdit.error}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-2">
+                      <button type="button" className="btn-primary pressable" onClick={() => savePhoneEdit(slot)}>
+                        Save
+                      </button>
+                      <button type="button" className="btn-ghost pressable" onClick={() => setPhoneEdit(null)}>
+                        Cancel
+                      </button>
+                    </div>
+                  </li>
+                ) : (
+                  <li key={slot.id} className="surface flex items-center gap-3 p-3">
+                    <span aria-hidden="true" className="size-2 shrink-0 rounded-full" style={colourStyle(slot)} />
+                    {/* Tap, or press and hold, to change the day and times. */}
+                    <button
+                      type="button"
+                      onClick={() => openPhoneEdit(slot)}
+                      onPointerDown={() => holdToEdit(slot)}
+                      onPointerUp={cancelHold}
+                      onPointerLeave={cancelHold}
+                      onContextMenu={(event) => event.preventDefault()}
+                      className="touch-target min-w-0 flex-1 text-left"
+                      aria-label={`Change ${slotLabel(slot)}, ${slot.startTime} to ${slot.endTime}`}
+                    >
+                      <span className="block text-[0.875rem] text-primary">{slotLabel(slot)}</span>
+                      <span className="flex items-center gap-1 text-caption text-muted tabular">
+                        {slot.startTime}–{slot.endTime}
+                        <Pencil aria-hidden="true" className="size-3" strokeWidth={2} />
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeSlot(slot)}
+                      className="icon-btn"
+                      aria-label={`Remove ${slotLabel(slot)}`}
+                    >
+                      <Trash2 aria-hidden="true" className="size-4" strokeWidth={2} />
+                    </button>
+                  </li>
+                ),
+              )}
           </ul>
         )}
 
         {armed && (
-          <div className="mt-3">
+          <div className="mt-3 flex flex-wrap items-end gap-2">
+            <label className="block">
+              <span className="label">Start</span>
+              <input
+                type="time"
+                step={900}
+                value={phoneAddAt}
+                onChange={(event) => setPhoneAddAt(event.target.value)}
+                className="field mt-1 tabular"
+              />
+            </label>
             <ActionButton
               type="button"
               pending={pending}
-              onClick={() => addSlot(mobileDay, 9 * 60)}
+              onClick={() => {
+                const [hours, minutes] = phoneAddAt.split(":").map(Number);
+                const at = Number.isFinite(hours) && Number.isFinite(minutes) ? hours! * 60 + minutes! : schoolStart;
+                addSlot(mobileDay, at);
+              }}
               icon={<Plus aria-hidden="true" className="size-4" strokeWidth={2} />}
             >
-              Add {armed.label} at 09:00
+              Add {armed.label} at {phoneAddAt || "the start"}
             </ActionButton>
           </div>
         )}

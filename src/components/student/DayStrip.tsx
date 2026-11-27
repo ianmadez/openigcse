@@ -23,6 +23,7 @@ export function DayStrip({ items }: { items: DayPlanItem[] }) {
   const [now, setNow] = useState<number | null>(null);
   const [banner, setBanner] = useState<DayPlanItem | null>(null);
   const lastPeriod = useRef<string | null>(null);
+  const scroller = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const tick = () => {
@@ -59,13 +60,17 @@ export function DayStrip({ items }: { items: DayPlanItem[] }) {
       .catch(() => undefined);
   }, [current, now]);
 
+  // Keep the current period in view when the strip scrolls.
+  useEffect(() => {
+    const strip = scroller.current;
+    const block = strip?.querySelector<HTMLElement>("[data-active]");
+    if (!strip || !block) return;
+    strip.scrollLeft = block.offsetLeft - strip.clientWidth / 2 + block.clientWidth / 2;
+  }, [current]);
+
   if (timed.length === 0) {
     return null;
   }
-
-  const start = Math.min(...timed.map((item) => item.startMinutes!));
-  const end = Math.max(...timed.map((item) => item.endMinutes!));
-  const span = Math.max(60, end - start);
 
   return (
     <section aria-labelledby="day-strip-heading" className="surface mb-5 overflow-hidden">
@@ -104,19 +109,22 @@ export function DayStrip({ items }: { items: DayPlanItem[] }) {
         </div>
       )}
 
-      <div className="relative px-4 py-3">
+      {/* Blocks grow with their length but never shrink below their text; a long day scrolls
+          sideways inside the card instead of cutting "09:00-09:45" to "09:0...". */}
+      <div ref={scroller} className="scroll-contain overflow-x-auto px-4 py-3">
         <div className="flex gap-1.5">
           {timed.map((item) => {
             const active = current?.id === item.id;
             const done = item.status === "done";
-            const width = ((item.endMinutes! - item.startMinutes!) / span) * 100;
+            const minutes = item.endMinutes! - item.startMinutes!;
 
             return (
               <div
                 key={item.id}
-                style={{ width: `${Math.max(8, width)}%` }}
+                data-active={active || undefined}
+                style={{ flexGrow: minutes, flexBasis: 0 }}
                 className={cn(
-                  "min-w-0 rounded-panel border px-2 py-1.5",
+                  "relative min-w-[5.75rem] shrink-0 rounded-panel border px-2 py-1.5",
                   active
                     ? "border-accent-line bg-accent-soft"
                     : done
@@ -124,24 +132,23 @@ export function DayStrip({ items }: { items: DayPlanItem[] }) {
                       : "border-subtle bg-sunken",
                 )}
               >
-                <p className="truncate text-[0.6875rem] font-semibold text-primary">
+                <p className="text-[0.6875rem] font-semibold leading-snug text-primary [overflow-wrap:anywhere]">
                   {item.subjectCode ?? item.title}
                 </p>
-                <p className="truncate text-[0.625rem] text-muted tabular">
+                <p className="whitespace-nowrap text-[0.625rem] text-muted tabular">
                   {item.startTime}–{item.endTime}
                 </p>
+                {active && now !== null && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-y-0 w-px bg-accent"
+                    style={{ left: `${((now - item.startMinutes!) / minutes) * 100}%` }}
+                  />
+                )}
               </div>
             );
           })}
         </div>
-
-        {now !== null && now >= start && now <= end && (
-          <span
-            aria-hidden="true"
-            className="absolute top-0 bottom-0 w-px bg-accent"
-            style={{ left: `calc(1rem + ${((now - start) / span) * 100}% - 1rem)` }}
-          />
-        )}
       </div>
     </section>
   );

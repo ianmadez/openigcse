@@ -113,12 +113,12 @@ export async function addTriviaMistakeAction(input: { questionId: string; option
 
 const itemId = z.string().uuid("That is not a plan item.");
 
-export async function startPlanItemAction(id: string) {
+export async function startPlanItemAction(id: string, startedAt?: string) {
   const guard = await requireLearnerSession();
   if (!guard.ok) return guard;
   const parsed = itemId.safeParse(id);
   if (!parsed.success) return { ok: false as const, error: "That is not a plan item." };
-  const result = await startPlanItem(parsed.data);
+  const result = await startPlanItem(parsed.data, typeof startedAt === "string" ? startedAt : undefined);
   if (result.ok) revalidatePath("/today");
   return result;
 }

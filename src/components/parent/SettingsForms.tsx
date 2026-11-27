@@ -24,7 +24,7 @@ import {
 const series = examSeriesMonths.flatMap((month) => examSeriesYears.map((year) => `${month} ${year}`));
 
 const inputClass =
-  "mt-1.5 w-full rounded-lg border border-strong bg-card px-3 py-2 text-[0.9375rem] text-primary focus:border-accent focus:outline-none";
+  "touch-target mt-1.5 w-full rounded-lg border border-strong bg-card px-3 py-2 text-[0.9375rem] text-primary focus:border-accent focus:outline-none";
 
 function Feedback({ state }: { state: SettingsState }) {
   const message = state?.error ?? state?.message;

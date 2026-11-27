@@ -1,4 +1,5 @@
 import { unique } from "@/lib/data/query";
+import { startTimeFor } from "@/lib/planning/today";
 import {
   dayOfWeekFor,
   SUBJECT_COLOUR,
@@ -334,11 +335,12 @@ export async function skipPlanItem(id: string, reason: string) {
   return data?.length ? { ok: true as const } : { ok: false as const, error: "That item is not on your plan." };
 }
 
-export async function startPlanItem(id: string) {
+/** `startedAt` comes from an offline replay (Step 7.3); `startTimeFor` keeps it honest. */
+export async function startPlanItem(id: string, startedAt?: string) {
   const supabase = await createServerClientInstance();
   const { data, error } = await supabase
     .from("day_plan_items")
-    .update({ status: "in_progress", started_at: new Date().toISOString() })
+    .update({ status: "in_progress", started_at: startTimeFor(startedAt, new Date()) })
     .eq("id", id)
     .in("status", ["planned", "deferred"])
     .select("started_at");
@@ -370,3 +372,4 @@ export async function reorderPeriod(learnerId: string, moves: Array<{ id: string
   }
   return { ok: true as const };
 }
+

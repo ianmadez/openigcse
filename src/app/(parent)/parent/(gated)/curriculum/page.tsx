@@ -63,7 +63,7 @@ export default async function CurriculumPackagesPage() {
                       <div className="min-w-0">
                         <Link
                           href={`/parent/curriculum/${pkg.packageId}`}
-                          className="font-medium text-primary underline-offset-2 hover:underline"
+                          className="touch-target inline-flex items-center font-medium text-primary underline-offset-2 hover:underline"
                         >
                           {pkg.code} {pkg.name}
                         </Link>

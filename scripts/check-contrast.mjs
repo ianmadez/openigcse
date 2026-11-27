@@ -153,6 +153,8 @@ const pairs = [
   ["danger-text", "danger-surface", BODY, "error message"],
   ["warning-text", "warning-surface", BODY, "warning message"],
   ["info-text", "info-surface", BODY, "info message"],
+  ["danger-text", "warning-surface", BODY, "refused offline write in the offline banner"],
+  ["text-muted", "surface-page", BODY, "inactive tab label on the phone tab bar"],
   ["accent-solid", "surface-card", UI, "focus ring and accent border"],
   ["border-strong", "surface-page", UI, "input border"],
   ["border-strong", "surface-muted", UI, "input border on a muted panel"],
