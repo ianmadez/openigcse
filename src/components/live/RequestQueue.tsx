@@ -10,6 +10,7 @@ import { applyRequestChange, type RequestRow, type StudyRequest } from "@/lib/re
 import { decisionLabel, REQUESTS } from "@/lib/requests/catalog";
 import { useRealtime } from "@/lib/live/useRealtime";
 import { cn } from "@/lib/utils/cn";
+import { ActionButton } from "@/components/ui/Button";
 
 const timeFormat = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit" });
 
@@ -109,15 +110,18 @@ function PendingRequest({ request }: { request: StudyRequest }) {
       />
       <div className="mt-2 flex flex-wrap gap-2">
         {spec.decisions.map((decision) => (
-          <button
+          <ActionButton
             key={decision.value}
             type="button"
+            variant={decision.approves ? "primary" : "secondary"}
+            pending={pending && chosen === decision.value}
             disabled={pending}
+            pendingLabel="Sending"
             onClick={() => answer(decision.value)}
-            className={cn(decision.approves ? "btn-primary" : "btn-secondary", "pressable px-3 py-1.5 text-[0.875rem]", pending && chosen === decision.value && "opacity-70")}
+            className="px-3 py-1.5 text-[0.875rem]"
           >
-            {pending && chosen === decision.value ? "Sending" : decision.label}
-          </button>
+            {decision.label}
+          </ActionButton>
         ))}
       </div>
       {error && (

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
 import { liveAction } from "@/app/shell-actions";
+import { ActionButton } from "@/components/ui/Button";
 import { Status } from "@/components/ui/primitives";
 import type { LiveSession } from "@/lib/data/live";
 import { formatCountdown, idleMinutes, isOnline, lockStateOf } from "@/lib/live/presence";
@@ -83,8 +84,12 @@ export function LiveMonitor({ view }: { view: LiveView }) {
   const lock = view.focus ? lockStateOf(view.focus.isLocked, view.focus.lockEndsAt, clock) : null;
   const breakLeft = breakEnd ? Math.max(0, Math.ceil((breakEnd - now) / 1000)) : 0;
 
-  const act = (action: string, extra: { minutes?: number; message?: string } = {}) => {
+  // The key of the button that was pressed, so only that one spins.
+  const [running, setRunning] = useState<string | null>(null);
+
+  const act = (action: string, extra: { minutes?: number; message?: string } = {}, key: string = action) => {
     setResult(null);
+    setRunning(key);
     startTransition(async () => {
       const outcome = await liveAction({ action, ...extra }).catch(() => ({ ok: false as const, error: "The server could not be reached." }));
       if (outcome.ok) {
@@ -92,6 +97,7 @@ export function LiveMonitor({ view }: { view: LiveView }) {
         if (action === "message") setMessage("");
         router.refresh();
       } else setResult({ ok: false, text: outcome.error });
+      setRunning(null);
     });
   };
 
@@ -136,32 +142,62 @@ export function LiveMonitor({ view }: { view: LiveView }) {
 
         <div className="mt-3 flex flex-wrap gap-2">
           {breakLeft > 0 && (
-            <button type="button" disabled={pending} onClick={() => act("end_break")} className="btn-secondary pressable">
-              <Coffee aria-hidden="true" className="size-4" strokeWidth={2} />
+            <ActionButton
+              type="button"
+              variant="secondary"
+              onClick={() => act("end_break")}
+              pending={running === "end_break"}
+              disabled={pending}
+              pendingLabel="Ending"
+              icon={<Coffee aria-hidden="true" className="size-4" strokeWidth={2} />}
+            >
               End break
-            </button>
+            </ActionButton>
           )}
-          <button type="button" disabled={pending} onClick={() => act("unlock", { minutes: 15 })} className="btn-secondary pressable">
-            <LockOpen aria-hidden="true" className="size-4" strokeWidth={2} />
-            Unlock 15 min
-          </button>
-          <button type="button" disabled={pending} onClick={() => act("unlock", { minutes: 30 })} className="btn-secondary pressable">
-            <LockOpen aria-hidden="true" className="size-4" strokeWidth={2} />
-            Unlock 30 min
-          </button>
-          <button type="button" disabled={pending} onClick={() => act("lock")} className="btn-secondary pressable">
-            <Lock aria-hidden="true" className="size-4" strokeWidth={2} />
-            Lock now
-          </button>
-          <button
+          <ActionButton
             type="button"
+            variant="secondary"
+            onClick={() => act("unlock", { minutes: 15 }, "unlock15")}
+            pending={running === "unlock15"}
             disabled={pending}
-            onClick={() => window.confirm("End the school day? Unfinished items move to the next school day.") && act("end_day")}
-            className="btn-danger pressable"
+            pendingLabel="Unlocking"
+            icon={<LockOpen aria-hidden="true" className="size-4" strokeWidth={2} />}
           >
-            <Moon aria-hidden="true" className="size-4" strokeWidth={2} />
+            Unlock 15 min
+          </ActionButton>
+          <ActionButton
+            type="button"
+            variant="secondary"
+            onClick={() => act("unlock", { minutes: 30 }, "unlock30")}
+            pending={running === "unlock30"}
+            disabled={pending}
+            pendingLabel="Unlocking"
+            icon={<LockOpen aria-hidden="true" className="size-4" strokeWidth={2} />}
+          >
+            Unlock 30 min
+          </ActionButton>
+          <ActionButton
+            type="button"
+            variant="secondary"
+            onClick={() => act("lock")}
+            pending={running === "lock"}
+            disabled={pending}
+            pendingLabel="Locking"
+            icon={<Lock aria-hidden="true" className="size-4" strokeWidth={2} />}
+          >
+            Lock now
+          </ActionButton>
+          <ActionButton
+            type="button"
+            variant="danger"
+            onClick={() => window.confirm("End the school day? Unfinished items move to the next school day.") && act("end_day")}
+            pending={running === "end_day"}
+            disabled={pending}
+            pendingLabel="Ending the day"
+            icon={<Moon aria-hidden="true" className="size-4" strokeWidth={2} />}
+          >
             End the school day
-          </button>
+          </ActionButton>
         </div>
 
         <form
@@ -178,10 +214,14 @@ export function LiveMonitor({ view }: { view: LiveView }) {
             aria-label="Message for the study screen"
             className="field flex-1"
           />
-          <button type="submit" disabled={pending || !message.trim()} className="btn-primary pressable">
-            <Megaphone aria-hidden="true" className="size-4" strokeWidth={2} />
+          <ActionButton
+            pending={running === "message"}
+            disabled={pending || !message.trim()}
+            pendingLabel="Sending"
+            icon={<Megaphone aria-hidden="true" className="size-4" strokeWidth={2} />}
+          >
             Send to screen
-          </button>
+          </ActionButton>
         </form>
 
         {result && (

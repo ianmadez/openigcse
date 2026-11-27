@@ -72,8 +72,11 @@ export function SubmitButton({ variant = "primary", icon, pendingLabel, classNam
 
 type ActionButtonProps = ButtonProps & {
   pending: boolean;
+  /** Not ready yet (nothing chosen); separate from pending so the spinner only shows for real work. */
+  disabled?: boolean;
   onClick?: () => void;
   type?: "button" | "submit";
+  "aria-label"?: string;
 };
 
 /** For client components that already track their own pending state. */
@@ -85,13 +88,16 @@ export function ActionButton({
   className,
   children,
   onClick,
+  disabled = false,
   type = "submit",
+  "aria-label": ariaLabel,
 }: ActionButtonProps) {
   return (
     <button
       type={type}
       onClick={onClick}
-      disabled={pending}
+      disabled={pending || disabled}
+      aria-label={ariaLabel}
       aria-busy={pending}
       className={cn(VARIANT[variant], "pressable", className)}
     >

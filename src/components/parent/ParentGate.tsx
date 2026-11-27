@@ -6,6 +6,7 @@ import { useActionState } from "react";
 
 import { unlockParent, type UnlockState } from "@/app/(parent)/parent/actions";
 import { ActionButton } from "@/components/ui/Button";
+import { keepInput } from "@/lib/utils/keepInput";
 
 export function ParentGate({ hint, needsSetup }: { hint: string | null; needsSetup?: boolean }) {
   const [state, formAction, pending] = useActionState<UnlockState, FormData>(unlockParent, null);
@@ -25,7 +26,7 @@ export function ParentGate({ hint, needsSetup }: { hint: string | null; needsSet
           This side holds marking, term dates and focus controls. Enter the guardian PIN to continue.
         </p>
 
-        <form action={formAction} className="mt-5">
+        <form onSubmit={keepInput(formAction)} className="mt-5">
           <label htmlFor="pin" className="label">
             Guardian PIN
           </label>

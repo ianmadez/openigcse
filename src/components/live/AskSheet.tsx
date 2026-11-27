@@ -6,6 +6,7 @@ import { useEffect, useState, useTransition } from "react";
 import { raiseRequestAction, todayPeriodsAction } from "@/app/(student)/request-actions";
 import { REQUESTS, REQUEST_TYPES, type RequestType } from "@/lib/requests/catalog";
 import { cn } from "@/lib/utils/cn";
+import { ActionButton } from "@/components/ui/Button";
 
 /**
  * The learner's typed asks (Step 5.1). One tap picks the type, an optional note says why, and
@@ -139,15 +140,17 @@ export function AskSheet({ onClose, initial }: { onClose: () => void; initial?: 
                 Not sent: {error}
               </p>
             )}
-            <button
+            <ActionButton
               type="button"
               onClick={send}
-              disabled={pending || (type === "swap" && (!first || !second))}
-              className={cn("btn-primary pressable w-full", pending && "opacity-70")}
+              pending={pending}
+              disabled={type === "swap" && (!first || !second)}
+              pendingLabel="Sending"
+              className="w-full"
+              icon={<Send aria-hidden="true" className="size-4" strokeWidth={2} />}
             >
-              <Send aria-hidden="true" className="size-4" strokeWidth={2} />
-              {pending ? "Sending" : "Send"}
-            </button>
+              Send
+            </ActionButton>
           </div>
         )}
       </div>

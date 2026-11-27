@@ -4,6 +4,7 @@ import { Moon } from "lucide-react";
 import { useState, useTransition } from "react";
 
 import { saveQuietHoursAction } from "@/app/shell-actions";
+import { ActionButton } from "@/components/ui/Button";
 
 /** Quiet hours (Step 5.3): pushes are held in this window; the in-app centre still lists them. */
 export function QuietHoursForm({ start, end }: { start: string | null; end: string | null }) {
@@ -42,10 +43,16 @@ export function QuietHoursForm({ start, end }: { start: string | null; end: stri
         </label>
       </div>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => save()} disabled={pending || !from || !to} className="btn-primary pressable">
-          <Moon aria-hidden="true" className="size-4" strokeWidth={2} />
-          {pending ? "Saving" : "Save quiet hours"}
-        </button>
+        <ActionButton
+          type="button"
+          onClick={() => save()}
+          pending={pending}
+          disabled={!from || !to}
+          pendingLabel="Saving"
+          icon={<Moon aria-hidden="true" className="size-4" strokeWidth={2} />}
+        >
+          Save quiet hours
+        </ActionButton>
         {(start || end) && (
           <button type="button" onClick={() => save(true)} disabled={pending} className="btn-secondary pressable">
             Clear

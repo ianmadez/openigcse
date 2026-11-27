@@ -1,12 +1,13 @@
 "use client";
 
-import { Check, CheckCheck, ImagePlus, Mic, Send, Square, X } from "lucide-react";
+import { Check, CheckCheck, ImagePlus, Mic, Send, Square, X, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 
 import { markThreadReadAction, sendMessageAction, threadAction } from "@/app/shell-actions";
 import type { ThreadMessage } from "@/lib/data/messages";
 import { browserClient, useRealtime } from "@/lib/live/useRealtime";
 import { cn } from "@/lib/utils/cn";
+import { ActionButton } from "@/components/ui/Button";
 
 const timeFormat = new Intl.DateTimeFormat("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit" });
 const TYPING_MS = 4000;
@@ -257,9 +258,14 @@ export function MessageThread({
             onClick={send}
             disabled={pending || recording || (!body.trim() && !file && !voice)}
             className="btn-primary pressable shrink-0 px-3"
-            aria-label="Send"
+            aria-label={pending ? "Sending" : "Send"}
+            aria-busy={pending}
           >
-            <Send aria-hidden="true" className="size-4" strokeWidth={2} />
+            {pending ? (
+              <Loader2 aria-hidden="true" className="size-4 animate-spin" strokeWidth={2.2} />
+            ) : (
+              <Send aria-hidden="true" className="size-4" strokeWidth={2} />
+            )}
           </button>
         </div>
       </div>

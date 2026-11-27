@@ -12,6 +12,7 @@ import {
   type SettingsState,
 } from "@/app/(parent)/parent/(gated)/settings/actions";
 import { ActionButton } from "@/components/ui/Button";
+import { keepInput, useResetOnSuccess } from "@/lib/utils/keepInput";
 import {
   candidateTypes,
   examSeriesMonths,
@@ -52,7 +53,7 @@ export function LearnerProfileForm({
   const currentStage = yearGroup ?? stages[0];
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form onSubmit={keepInput(formAction)} className="space-y-3">
       <div>
         <label htmlFor="learner-name" className="label">
           Display name
@@ -140,7 +141,7 @@ export function HouseholdRegionForm({
   const timezones = Array.from(new Set([timezone, ...fallbackTimezones])).sort();
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form onSubmit={keepInput(formAction)} className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label htmlFor="region-country" className="label">
@@ -201,9 +202,10 @@ export function HouseholdRegionForm({
 
 export function PinRotationForm({ hasPin }: { hasPin: boolean }) {
   const [state, formAction, pending] = useActionState<SettingsState, FormData>(rotateGuardianPinAction, null);
+  const form = useResetOnSuccess(state, Boolean(state?.message && !state.error));
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form ref={form} onSubmit={keepInput(formAction)} className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label htmlFor="pin-current" className="label">
@@ -271,7 +273,7 @@ export function PairingCodePanel() {
 
   return (
     <div className="space-y-4">
-      <form action={formAction} className="space-y-3">
+      <form onSubmit={keepInput(formAction)} className="space-y-3">
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="device-name" className="label">

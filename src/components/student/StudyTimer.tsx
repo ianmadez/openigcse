@@ -7,6 +7,7 @@ import { logLessonTimeAction } from "@/app/(student)/learning-actions";
 import { useOfflineWrites } from "@/components/student/OfflineWrites";
 import { reportStudyState } from "@/lib/live/studyState";
 import { cn } from "@/lib/utils/cn";
+import { ActionButton } from "@/components/ui/Button";
 
 type StudyTimerProps = {
   objectiveCode: string;
@@ -28,6 +29,7 @@ function format(totalSeconds: number) {
 export function StudyTimer({ objectiveCode, plannedMinutes, onRecorded }: StudyTimerProps) {
   const [running, setRunning] = useState(false);
   const offline = useOfflineWrites();
+  const [saving, setSaving] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [saved, setSaved] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -51,12 +53,16 @@ export function StudyTimer({ objectiveCode, plannedMinutes, onRecorded }: StudyT
   };
 
   const finish = async () => {
+    if (saving) return;
+    setSaving(true);
     setRunning(false);
     const minutes = Math.max(1, Math.round(seconds / 60));
 
     // A refused save keeps the time on the clock so the learner can try again; nothing is
     // claimed as saved unless Postgres accepted it.
-    const result = await offline.run("logTime", { objectiveCode, minutes }, () => logLessonTimeAction({ objectiveCode, minutes }));
+    const result = await offline
+      .run("logTime", { objectiveCode, minutes }, () => logLessonTimeAction({ objectiveCode, minutes }))
+      .finally(() => setSaving(false));
     if (!result.ok) {
       setMessage(`Not saved: ${result.error} Press Finish again to retry.`);
       return;
@@ -91,15 +97,16 @@ export function StudyTimer({ objectiveCode, plannedMinutes, onRecorded }: StudyT
               Pause
             </button>
           )}
-          <button
+          <ActionButton
             type="button"
             onClick={finish}
+            pending={saving}
             disabled={seconds === 0}
-            className="btn-primary pressable disabled:cursor-not-allowed disabled:opacity-40"
+            pendingLabel="Saving"
+            icon={<Square aria-hidden="true" className="size-3.5" strokeWidth={2.4} />}
           >
-            <Square aria-hidden="true" className="size-3.5" strokeWidth={2.4} />
             Finish
-          </button>
+          </ActionButton>
         </div>
       </div>
 

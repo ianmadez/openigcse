@@ -13,6 +13,7 @@ import type { Checkpoint, LessonResource } from "@/lib/data/workspace";
 import { checkpointKind, checkpointMessage } from "@/lib/learning/resolve";
 import type { PlannedTask } from "@/lib/planning/nextBestActivity";
 import { cn } from "@/lib/utils/cn";
+import { ActionButton } from "@/components/ui/Button";
 
 type StudyBlockProps = {
   tasks: PlannedTask[];
@@ -231,6 +232,7 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
                       type="button"
                       role="radio"
                       aria-checked={chosen}
+                      disabled={checking}
                       onClick={() => {
                         setSelected(option.letter);
                         setResult(null);
@@ -253,14 +255,16 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
 
               {result === null || !result.ok ? (
                 <>
-                  <button
+                  <ActionButton
                     type="button"
                     onClick={() => check(checkpoint.id, checkpointKind(active.action))}
-                    disabled={!selected || checking}
-                    className="btn-primary pressable mt-2.5 w-full disabled:cursor-not-allowed disabled:opacity-40"
+                    pending={checking}
+                    disabled={!selected}
+                    pendingLabel="Checking"
+                    className="mt-2.5 w-full"
                   >
-                    {checking ? "Checking" : "Check answer"}
-                  </button>
+                    Check answer
+                  </ActionButton>
                   {result && !result.ok && (
                     <p role="alert" className="mt-2 text-caption text-danger-text">
                       Not checked: {result.error}

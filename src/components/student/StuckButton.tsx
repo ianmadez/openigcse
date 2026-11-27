@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { flagStuckAction } from "@/app/(student)/learning-actions";
 import { raiseRequestAction } from "@/app/(student)/request-actions";
+import { ActionButton } from "@/components/ui/Button";
 
 /** Raises a flag for the parent without touching the streak. */
 export function StuckButton({ objectiveCode, objectiveText, itemId }: { objectiveCode: string; objectiveText?: string; itemId?: string | null }) {
@@ -41,10 +42,16 @@ export function StuckButton({ objectiveCode, objectiveText, itemId }: { objectiv
 
   return (
     <>
-    <button type="button" onClick={ask} disabled={state === "sending"} className="btn-secondary pressable">
-      <LifeBuoy aria-hidden="true" className="size-4" strokeWidth={2} />
-      {state === "sending" ? "Sending" : "I am stuck"}
-    </button>
+    <ActionButton
+      type="button"
+      variant="secondary"
+      onClick={ask}
+      pending={state === "sending"}
+      pendingLabel="Sending"
+      icon={<LifeBuoy aria-hidden="true" className="size-4" strokeWidth={2} />}
+    >
+      I am stuck
+    </ActionButton>
     {error && (
       <p role="alert" className="text-caption text-danger-text">
         {error}

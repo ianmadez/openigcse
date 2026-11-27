@@ -8,6 +8,7 @@ import { AddToNotebook } from "@/components/student/AddToNotebook";
 import { Status } from "@/components/ui/primitives";
 import type { TriviaModule } from "@/lib/data/trivia";
 import { cn } from "@/lib/utils/cn";
+import { ActionButton } from "@/components/ui/Button";
 
 type Result = { ok: true; correct: boolean; correctOption: string | null; explanation: string } | { ok: false; error: string };
 
@@ -128,14 +129,16 @@ export function TriviaPlayer({ module }: { module: TriviaModule }) {
                   </div>
 
                   {!answered && (
-                    <button
+                    <ActionButton
                       type="button"
                       onClick={() => check(index, question.id)}
-                      disabled={!chosen || pending}
-                      className="btn-primary pressable mt-2.5 w-full disabled:cursor-not-allowed disabled:opacity-40"
+                      pending={pending}
+                      disabled={!chosen}
+                      pendingLabel="Checking"
+                      className="mt-2.5 w-full"
                     >
-                      {pending ? "Checking" : "Check answer"}
-                    </button>
+                      Check answer
+                    </ActionButton>
                   )}
 
                   {result && !result.ok && (

@@ -1,5 +1,8 @@
 import { Filter, Plus } from "lucide-react";
+import Form from "next/form";
 import Link from "next/link";
+
+import { SubmitButton } from "@/components/ui/Button";
 
 import { NeedsSignIn } from "@/components/auth/NeedsSignIn";
 import { EmptyState, PageHeading, Status } from "@/components/ui/primitives";
@@ -61,7 +64,8 @@ export default async function QuestionBankPage({ searchParams }: { searchParams:
         </Link>
       </div>
 
-      <form method="get" className="surface mb-4 grid gap-3 p-4 sm:grid-cols-3 lg:grid-cols-6">
+      {/* next/form: filtering is a client navigation, so the shell stays and the list skeleton shows. */}
+      <Form action="/parent/questions" className="surface mb-4 grid gap-3 p-4 sm:grid-cols-3 lg:grid-cols-6">
         <label className="block">
           <span className="label">Subject</span>
           <select name="subject" defaultValue={filters.subject ?? ""} className="field mt-1.5">
@@ -129,17 +133,16 @@ export default async function QuestionBankPage({ searchParams }: { searchParams:
           </select>
         </label>
         <div className="flex flex-wrap items-center gap-2 sm:col-span-3 lg:col-span-6">
-          <button type="submit" className="btn-secondary pressable">
-            <Filter aria-hidden="true" className="size-4" strokeWidth={2} />
+          <SubmitButton variant="secondary" pendingLabel="Filtering" icon={<Filter aria-hidden="true" className="size-4" strokeWidth={2} />}>
             Filter
-          </button>
+          </SubmitButton>
           {filtered && (
             <Link href="/parent/questions" className="btn-ghost pressable">
               Clear
             </Link>
           )}
         </div>
-      </form>
+      </Form>
 
       {questions.length === 0 ? (
         <EmptyState title={filtered ? "No questions match" : "The bank is empty"}>

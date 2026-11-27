@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { signOutAction } from "@/app/login/actions";
 import { demoMode, getSetupState, onboardingBypass } from "@/lib/data/session";
+import { SubmitButton } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -64,9 +65,9 @@ export default async function MenuPage() {
           <h1 className="text-title font-semibold text-primary">{name}</h1>
         </div>
         <form action={signOutAction}>
-          <button type="submit" className="pressable rounded-lg border border-strong px-3 py-2 text-caption font-medium text-primary">
+          <SubmitButton variant="secondary" pendingLabel="Signing out">
             Sign out
-          </button>
+          </SubmitButton>
         </form>
       </div>
 

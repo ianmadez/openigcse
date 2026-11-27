@@ -7,6 +7,7 @@ import { sendMagicLinkAction, signInWithPasswordAction, type AuthState } from "@
 import { PairDeviceForm } from "@/components/auth/PairDeviceForm";
 import { ActionButton } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
+import { keepInput } from "@/lib/utils/keepInput";
 
 type Mode = "password" | "magic-link" | "pair";
 
@@ -48,7 +49,7 @@ export function AuthPanel({ initialMode = "password" }: { initialMode?: Mode }) 
 
       {mode === "password" && (
         <section id="panel-password" role="tabpanel" aria-label="Email and password">
-          <form action={signInAction} className="space-y-3">
+          <form onSubmit={keepInput(signInAction)} className="space-y-3">
             <div>
               <label htmlFor="signin-email" className="label">
                 Email
@@ -98,7 +99,7 @@ export function AuthPanel({ initialMode = "password" }: { initialMode?: Mode }) 
 
       {mode === "magic-link" && (
         <section id="panel-magic-link" role="tabpanel" aria-label="Email magic link">
-          <form action={linkAction} className="space-y-3">
+          <form onSubmit={keepInput(linkAction)} className="space-y-3">
             <div>
               <label htmlFor="magic-email" className="label">
                 Email

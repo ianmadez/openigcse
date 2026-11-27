@@ -12,6 +12,7 @@ import type { DueReview } from "@/lib/data/retention";
 import { checkpointMessage } from "@/lib/learning/resolve";
 import { dueLabel } from "@/lib/retention/fsrs";
 import { cn } from "@/lib/utils/cn";
+import { ActionButton } from "@/components/ui/Button";
 
 export type DueReviewRow = DueReview & { checkpoint: Checkpoint | null };
 
@@ -136,14 +137,16 @@ function DueCard({ item, nowIso }: { item: DueReviewRow; nowIso: string }) {
             })}
           </div>
 
-          <button
+          <ActionButton
             type="button"
             onClick={check}
-            disabled={!selected || checking}
-            className="btn-primary pressable mt-2.5 w-full disabled:cursor-not-allowed disabled:opacity-40"
+            pending={checking}
+            disabled={!selected}
+            pendingLabel="Checking"
+            className="mt-2.5 w-full"
           >
-            {checking ? "Checking" : "Check answer"}
-          </button>
+            Check answer
+          </ActionButton>
 
           {result && !result.ok && (
             <p role="alert" className="mt-2 text-caption text-danger-text">

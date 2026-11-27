@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 
 import { raiseRequestAction } from "@/app/(student)/request-actions";
 import { useRealtime } from "@/lib/live/useRealtime";
+import { ActionButton } from "@/components/ui/Button";
 
 /**
  * "Need 20 more minutes on this test" (Step 5.1). When the parent approves, the sitting's extra
@@ -42,10 +43,18 @@ export function MoreTimeButton({ learnerId, assessmentId, extraMinutes }: { lear
 
   return (
     <span className="flex flex-col items-start">
-      <button type="button" onClick={ask} disabled={pending || extraMinutes >= 120} className="btn-ghost pressable px-2 py-1 text-caption">
-        <Hourglass aria-hidden="true" className="size-3.5" strokeWidth={2} />
-        {pending ? "Asking" : "Ask for more time"}
-      </button>
+      <ActionButton
+        type="button"
+        variant="ghost"
+        onClick={ask}
+        pending={pending}
+        disabled={extraMinutes >= 120}
+        pendingLabel="Asking"
+        className="px-2 py-1 text-caption"
+        icon={<Hourglass aria-hidden="true" className="size-3.5" strokeWidth={2} />}
+      >
+        Ask for more time
+      </ActionButton>
       {error && (
         <span role="alert" className="text-caption text-danger-text">
           {error}
