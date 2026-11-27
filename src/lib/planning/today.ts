@@ -50,3 +50,10 @@ export function elapsedMinutes(startedAt: string | null, now: Date) {
   const minutes = Math.round((now.getTime() - new Date(startedAt).getTime()) / 60000);
   return Math.min(600, Math.max(1, minutes));
 }
+
+/** A replayed start keeps the learner's time if it is within the last 12 hours and not ahead of now. */
+export function startTimeFor(claimed: string | undefined, now: Date) {
+  const at = claimed ? Date.parse(claimed) : Number.NaN;
+  if (Number.isNaN(at) || at > now.getTime() || now.getTime() - at > 12 * 3_600_000) return now.toISOString();
+  return new Date(at).toISOString();
+}

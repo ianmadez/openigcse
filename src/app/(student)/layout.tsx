@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { AppShell, type NavSubject } from "@/components/shell/AppShell";
 import { StudentDock } from "@/components/live/StudentDock";
+import { OfflineWritesProvider } from "@/components/student/OfflineWrites";
 import { getEnrolledCurriculum } from "@/lib/data/curriculum";
 import { unreadMessageCount } from "@/lib/data/messages";
 import { getLearnerRequestState } from "@/lib/data/requests";
@@ -51,7 +52,7 @@ export default async function StudentLayout({ children }: { children: ReactNode 
 
   return (
     <AppShell variant="student" learnerName={learnerName} subjects={subjects} headerSlot={dock}>
-      {children}
+      <OfflineWritesProvider>{children}</OfflineWritesProvider>
     </AppShell>
   );
 }

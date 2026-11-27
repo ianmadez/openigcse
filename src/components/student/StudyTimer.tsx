@@ -4,6 +4,7 @@ import { Pause, Play, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { logLessonTimeAction } from "@/app/(student)/learning-actions";
+import { useOfflineWrites } from "@/components/student/OfflineWrites";
 import { reportStudyState } from "@/lib/live/studyState";
 import { cn } from "@/lib/utils/cn";
 
@@ -26,6 +27,7 @@ function format(totalSeconds: number) {
  */
 export function StudyTimer({ objectiveCode, plannedMinutes, onRecorded }: StudyTimerProps) {
   const [running, setRunning] = useState(false);
+  const offline = useOfflineWrites();
   const [seconds, setSeconds] = useState(0);
   const [saved, setSaved] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -54,16 +56,13 @@ export function StudyTimer({ objectiveCode, plannedMinutes, onRecorded }: StudyT
 
     // A refused save keeps the time on the clock so the learner can try again; nothing is
     // claimed as saved unless Postgres accepted it.
-    const result = await logLessonTimeAction({ objectiveCode, minutes }).catch(() => ({
-      ok: false as const,
-      error: "The server could not be reached.",
-    }));
+    const result = await offline.run("logTime", { objectiveCode, minutes }, () => logLessonTimeAction({ objectiveCode, minutes }));
     if (!result.ok) {
       setMessage(`Not saved: ${result.error} Press Finish again to retry.`);
       return;
     }
 
-    setMessage("Saved to your learning record.");
+    setMessage(result.queued ? "Held on this device; it is saved when the connection returns." : "Saved to your learning record.");
     setSaved(minutes);
     setSeconds(0);
     startedAt.current = null;
