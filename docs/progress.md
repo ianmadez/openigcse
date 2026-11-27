@@ -115,6 +115,17 @@ Lighthouse accessibility run. Summary: [phases/phase-7.md](phases/phase-7.md).
 3. Phase 7 holds `/today`'s Start, Finish, Skip and study time offline and replays them; checkpoint answers and
    "I'm stuck" still need a connection, and Phase 8 owns a visible retry for every other write.
 
+## Queued for Phase 8 (Ian, 2026-11-27)
+
+Added alongside the roadmap's hardening steps, after Ian checked Phase 7 on a phone:
+
+1. **Loading states.** Every route that reads Postgres gets a skeleton that matches its layout (`loading.tsx` per
+   segment), so a slow read shows the shape of the page instead of a blank or the previous screen.
+2. **Button pass.** Every button and form shows that it is working: disabled while pending, a spinner or pending
+   label, and the result or a visible retry afterwards. One shared pattern (`ActionButton`), checked button by button.
+3. **Snappiness.** Measure first (route timings, bundle sizes, repeated Supabase reads per request), then cut: parallel
+   reads, fewer round trips, prefetching the tab-bar routes, optimistic updates where a refusal is still shown.
+
 ## Verification
 
 Every command below passed on 2026-11-25 at the current tree:
