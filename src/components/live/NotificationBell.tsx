@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, BellOff, BellRing } from "lucide-react";
+import { Bell, BellOff, BellRing, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -201,9 +201,14 @@ function PushToggle() {
         type="button"
         onClick={state === "on" ? disable : enable}
         disabled={state === "busy"}
+        aria-busy={state === "busy"}
         className="btn-ghost pressable px-2 py-1 text-caption"
       >
-        <BellRing aria-hidden="true" className="size-3.5" strokeWidth={2} />
+        {state === "busy" ? (
+          <Loader2 aria-hidden="true" className="size-3.5 animate-spin" strokeWidth={2.2} />
+        ) : (
+          <BellRing aria-hidden="true" className="size-3.5" strokeWidth={2} />
+        )}
         {state === "on" ? "Push on" : state === "busy" ? "Working" : "Turn on push"}
       </button>
       {error && (

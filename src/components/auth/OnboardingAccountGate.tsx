@@ -6,6 +6,7 @@ import { useActionState, useState } from "react";
 import { startGuardianSessionAction, type AccountState } from "@/app/(parent)/parent/onboarding/actions";
 import { ActionButton } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
+import { keepInput } from "@/lib/utils/keepInput";
 
 /**
  * Step 0 of onboarding: the household needs a real guardian account before the
@@ -43,7 +44,7 @@ export function OnboardingAccountGate() {
         })}
       </div>
 
-      <form action={formAction} className="space-y-3">
+      <form onSubmit={keepInput(formAction)} className="space-y-3">
         <input type="hidden" name="mode" value={mode} />
 
         <div>

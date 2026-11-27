@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowUp, Check, Play, PlayCircle, SkipForward } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, Loader2, Play, PlayCircle, SkipForward } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 
 import { reportStudyState } from "@/lib/live/studyState";
@@ -11,11 +11,14 @@ import {
   startPlanItemAction,
 } from "@/app/(student)/learning-actions";
 import { useOfflineWrites } from "@/components/student/OfflineWrites";
+import { ActionButton } from "@/components/ui/Button";
 import { Status } from "@/components/ui/primitives";
 import type { DayPlanItem } from "@/lib/data/timetable-shared";
 import type { LessonResource } from "@/lib/data/workspace";
 import { SKIP_REASONS, elapsedMinutes, groupByPeriod, reorderWithin } from "@/lib/planning/today";
 import { cn } from "@/lib/utils/cn";
+
+type Busy = "start" | "finish" | "skip" | "move";
 
 const STATUS_LABEL: Record<DayPlanItem["status"], string> = {
   planned: "Planned",
@@ -31,7 +34,9 @@ const STATUS_LABEL: Record<DayPlanItem["status"], string> = {
  */
 export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resources: LessonResource[] }) {
   const [plan, setPlan] = useState(items);
-  const [error, setError] = useState<string | null>(null);
+  // Which item, doing what: only that button spins, and a refusal shows on that item's card.
+  const [busy, setBusy] = useState<{ id: string; action: Busy } | null>(null);
+  const [error, setError] = useState<{ id: string; message: string } | null>(null);
   const [pending, startTransition] = useTransition();
   const offline = useOfflineWrites();
 
@@ -47,18 +52,20 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
   const patch = (id: string, change: Partial<DayPlanItem>) =>
     setPlan((current) => current.map((entry) => (entry.id === id ? { ...entry, ...change } : entry)));
 
-  const run = (work: () => Promise<{ ok: boolean; error?: string }>) => {
+  const run = (id: string, action: Busy, work: () => Promise<{ ok: boolean; error?: string }>) => {
     setError(null);
+    setBusy({ id, action });
     startTransition(async () => {
       const result = await work().catch(() => ({ ok: false, error: "The server could not be reached." }));
-      if (!result.ok) setError(result.error ?? "That could not be saved.");
+      if (!result.ok) setError({ id, message: result.error ?? "That could not be saved." });
+      setBusy(null);
     });
   };
 
   // Start, Finish and Skip survive a dropped connection (Step 7.3): the banner above the plan
   // says they are held on this device until they reach Postgres.
   const start = (item: DayPlanItem) =>
-    run(async () => {
+    run(item.id, "start", async () => {
       const result = await offline.run("start", { id: item.id }, () => startPlanItemAction(item.id));
       if (!result.ok) return result;
       const startedAt = "startedAt" in result && typeof result.startedAt === "string" ? result.startedAt : new Date().toISOString();
@@ -67,7 +74,7 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
     });
 
   const finish = (item: DayPlanItem) =>
-    run(async () => {
+    run(item.id, "finish", async () => {
       const minutes = elapsedMinutes(item.startedAt, new Date());
       const result = await offline.run("finish", { id: item.id, minutes }, () => finishPlanItemAction({ id: item.id, minutes }));
       if (result.ok) patch(item.id, { status: "done", actualMinutes: minutes });
@@ -75,7 +82,7 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
     });
 
   const skip = (item: DayPlanItem, reason: string) =>
-    run(async () => {
+    run(item.id, "skip", async () => {
       const result = await offline.run("skip", { id: item.id, reason }, () => skipPlanItemAction({ id: item.id, reason }));
       if (result.ok) patch(item.id, { status: "skipped", skipReason: reason });
       return result;
@@ -84,7 +91,7 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
   const move = (period: DayPlanItem[], item: DayPlanItem, direction: -1 | 1) => {
     const moves = reorderWithin(period, item.id, direction);
     if (!moves) return;
-    run(async () => {
+    run(item.id, "move", async () => {
       const result = await reorderPeriodAction(moves);
       if (result.ok) {
         const sequenceById = new Map(moves.map((entry) => [entry.id, entry.sequence]));
@@ -116,6 +123,8 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
                     item={item}
                     resource={resources.find((entry) => entry.objectiveCode === item.objectiveCode) ?? null}
                     pending={pending}
+                    busy={busy?.id === item.id ? busy.action : null}
+                    error={error?.id === item.id ? error.message : null}
                     canMoveUp={index > 0 && item.status !== "done"}
                     canMoveDown={index < period.items.length - 1 && item.status !== "done"}
                     onStart={() => start(item)}
@@ -129,11 +138,6 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
           );
         })}
       </ol>
-      {error && (
-        <p role="alert" className="mt-2 text-caption text-danger-text">
-          Not saved: {error}
-        </p>
-      )}
     </>
   );
 }
@@ -142,6 +146,8 @@ function TaskCard({
   item,
   resource,
   pending,
+  busy,
+  error,
   canMoveUp,
   canMoveDown,
   onStart,
@@ -152,6 +158,8 @@ function TaskCard({
   item: DayPlanItem;
   resource: LessonResource | null;
   pending: boolean;
+  busy: Busy | null;
+  error: string | null;
   canMoveUp: boolean;
   canMoveDown: boolean;
   onStart: () => void;
@@ -216,21 +224,38 @@ function TaskCard({
               <span className="text-caption text-secondary tabular" aria-live="off">
                 {now ? `${elapsedMinutes(item.startedAt, now)} min so far` : "Started"}
               </span>
-              <button type="button" disabled={pending} onClick={onFinish} className="btn-primary pressable">
-                <Check aria-hidden="true" className="size-4" strokeWidth={2.4} />
+              <ActionButton
+                type="button"
+                onClick={onFinish}
+                pending={busy === "finish"}
+                disabled={pending}
+                pendingLabel="Saving"
+                icon={<Check aria-hidden="true" className="size-4" strokeWidth={2.4} />}
+              >
                 Finish
-              </button>
+              </ActionButton>
             </>
           ) : (
-            <button type="button" disabled={pending} onClick={onStart} className="btn-primary pressable">
-              <Play aria-hidden="true" className="size-4" strokeWidth={2.2} />
+            <ActionButton
+              type="button"
+              onClick={onStart}
+              pending={busy === "start"}
+              disabled={pending}
+              pendingLabel="Starting"
+              icon={<Play aria-hidden="true" className="size-4" strokeWidth={2.2} />}
+            >
               Start
-            </button>
+            </ActionButton>
           )}
-          <button type="button" disabled={pending} onClick={() => setAsking((value) => !value)} className="btn-secondary pressable" aria-expanded={asking}>
-            <SkipForward aria-hidden="true" className="size-4" strokeWidth={2} />
-            Skip
+          <button type="button" disabled={pending} onClick={() => setAsking((value) => !value)} className="btn-secondary pressable" aria-expanded={asking} aria-busy={busy === "skip"}>
+            {busy === "skip" ? (
+              <Loader2 aria-hidden="true" className="size-4 animate-spin" strokeWidth={2.2} />
+            ) : (
+              <SkipForward aria-hidden="true" className="size-4" strokeWidth={2} />
+            )}
+            {busy === "skip" ? "Skipping" : "Skip"}
           </button>
+          {busy === "move" && <Loader2 aria-label="Saving the new order" className="size-4 animate-spin text-muted" strokeWidth={2.2} />}
           {canMoveUp && (
             <button type="button" disabled={pending} onClick={() => onMove(-1)} className="btn-secondary pressable" aria-label={`Move ${item.title} earlier`}>
               <ArrowUp aria-hidden="true" className="size-4" strokeWidth={2} />
@@ -242,6 +267,12 @@ function TaskCard({
             </button>
           )}
         </div>
+      )}
+
+      {error && (
+        <p role="alert" className="mt-2 text-caption text-danger-text">
+          Not saved: {error}
+        </p>
       )}
 
       {asking && open && (

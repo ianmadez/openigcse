@@ -1,4 +1,6 @@
-import { collect, slugify, unique } from "@/lib/data/query";
+import { cache } from "react";
+
+import { collect, slugify } from "@/lib/data/query";
 import { createServerClientInstance } from "@/lib/supabase/server";
 
 /** A subject the learner is entered for this term, resolved to its route. */
@@ -36,46 +38,29 @@ type EnrollmentRow = {
  * Enrolments for one learner and term. The route is what ties an enrolment to a
  * syllabus version, and the version is what ties it to a subject, so the three
  * tables are joined here rather than in a nested PostgREST select.
+ *
+ * Routes, versions and subjects are a small shared catalogue (tens of rows), so all four reads
+ * go out together: one round trip instead of four in a row. `cache` lets the layout and the
+ * page share one read per request.
  */
-export async function getEnrollments(learnerId: string, termId: string): Promise<EnrolledSubject[]> {
+export const getEnrollments = cache(async (learnerId: string, termId: string): Promise<EnrolledSubject[]> => {
   if (!learnerId || !termId) return [];
 
   const supabase = await createServerClientInstance();
 
-  const { data: enrollments } = await supabase
-    .from("learner_term_enrollments")
-    .select("id, entry_route_id, is_elective, weekly_allocated_minutes, target_grade, target_exam_series")
-    .eq("student_id", learnerId)
-    .eq("academic_term_id", termId);
+  const [{ data: enrollments }, { data: routes }, { data: versions }, { data: subjects }] = await Promise.all([
+    supabase
+      .from("learner_term_enrollments")
+      .select("id, entry_route_id, is_elective, weekly_allocated_minutes, target_grade, target_exam_series")
+      .eq("student_id", learnerId)
+      .eq("academic_term_id", termId),
+    supabase.from("entry_routes").select("id, route_code, name, tier, syllabus_version_id"),
+    supabase.from("syllabus_versions").select("id, version_label, status, subject_id"),
+    supabase.from("subjects").select("id, subject_code, subject_name, category, mastery_mode"),
+  ]);
 
   const rows = (enrollments ?? []) as EnrollmentRow[];
-  const routeIds = unique(rows.map((row) => row.entry_route_id).filter((id): id is string => Boolean(id)));
-  if (routeIds.length === 0) return [];
-
-  const { data: routes } = await supabase
-    .from("entry_routes")
-    .select("id, route_code, name, tier, syllabus_version_id")
-    .in("id", routeIds);
-
-  const versionIds = unique(
-    (routes ?? []).map((route) => route.syllabus_version_id).filter((id): id is string => Boolean(id)),
-  );
-  if (versionIds.length === 0) return [];
-
-  const { data: versions } = await supabase
-    .from("syllabus_versions")
-    .select("id, version_label, status, subject_id")
-    .in("id", versionIds);
-
-  const subjectIds = unique(
-    (versions ?? []).map((version) => version.subject_id).filter((id): id is string => Boolean(id)),
-  );
-  if (subjectIds.length === 0) return [];
-
-  const { data: subjects } = await supabase
-    .from("subjects")
-    .select("id, subject_code, subject_name, category, mastery_mode")
-    .in("id", subjectIds);
+  if (rows.length === 0) return [];
 
   const routeById = new Map((routes ?? []).map((route) => [route.id, route]));
   const versionById = new Map((versions ?? []).map((version) => [version.id, version]));
@@ -112,7 +97,7 @@ export async function getEnrollments(learnerId: string, termId: string): Promise
   }
 
   return resolved.sort((a, b) => a.subjectCode.localeCompare(b.subjectCode));
-}
+});
 
 export type RouteOption = {
   subjectId: string;

@@ -233,6 +233,125 @@ export function SkeletonFormPage() {
   );
 }
 
+function SkeletonHeading() {
+  return (
+    <div className="space-y-2">
+      <Skeleton className="h-3 w-24" />
+      <Skeleton className="h-8 w-60 max-w-full" />
+      <Skeleton className="h-4 w-80 max-w-full" />
+    </div>
+  );
+}
+
+/** Loading shape for a page of rows: question bank, assessments, curriculum, marking desk. */
+export function SkeletonListPage({ rows = 6, filters = false }: { rows?: number; filters?: boolean }) {
+  return (
+    <div className="space-y-5" role="status" aria-label="Loading">
+      <SkeletonHeading />
+      {filters && (
+        <div className="surface grid gap-3 p-4 sm:grid-cols-3">
+          {[0, 1, 2].map((field) => (
+            <Skeleton key={field} className="h-10 w-full rounded-lg" />
+          ))}
+        </div>
+      )}
+      <div className="surface divide-y divide-subtle">
+        {Array.from({ length: rows }, (_, index) => (
+          <div key={index} className="flex items-center justify-between gap-3 p-4">
+            <div className="min-w-0 flex-1 space-y-2">
+              <Skeleton className="h-4 w-3/5" />
+              <Skeleton className="h-3 w-2/5" />
+            </div>
+            <Skeleton className="h-6 w-20 shrink-0 rounded-full" />
+          </div>
+        ))}
+      </div>
+      <span className="sr-only">Loading this page</span>
+    </div>
+  );
+}
+
+/** Loading shape for a message thread. */
+export function SkeletonChatPage() {
+  return (
+    <div className="space-y-5" role="status" aria-label="Loading">
+      <SkeletonHeading />
+      <div className="surface space-y-3 p-4">
+        {[["w-3/5", ""], ["w-2/5", "ml-auto"], ["w-1/2", ""], ["w-1/3", "ml-auto"], ["w-3/5", ""]].map(([width, side], index) => (
+          <Skeleton key={index} className={cn("h-12 rounded-2xl", width, side)} />
+        ))}
+        <Skeleton className="mt-4 h-11 w-full rounded-lg" />
+      </div>
+      <span className="sr-only">Loading this page</span>
+    </div>
+  );
+}
+
+/** Loading shape for a week timetable: a day strip on phones, a grid from 1024 px. */
+export function SkeletonWeekPage() {
+  return (
+    <div className="space-y-5" role="status" aria-label="Loading">
+      <SkeletonHeading />
+      <div className="flex gap-2">
+        {[0, 1, 2, 3].map((chip) => (
+          <Skeleton key={chip} className="h-8 w-24 rounded-full" />
+        ))}
+      </div>
+      <div className="surface hidden grid-cols-5 gap-2 p-4 lg:grid">
+        {Array.from({ length: 5 }, (_, day) => (
+          <div key={day} className="space-y-2">
+            <Skeleton className="h-4 w-12" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-28 w-full" />
+          </div>
+        ))}
+      </div>
+      <div className="space-y-2 lg:hidden">
+        <Skeleton className="h-11 w-full rounded-lg" />
+        {[0, 1, 2, 3].map((row) => (
+          <div key={row} className="surface flex items-center gap-3 p-3">
+            <Skeleton className="size-2 rounded-full" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-2/5" />
+              <Skeleton className="h-3 w-1/4" />
+            </div>
+          </div>
+        ))}
+      </div>
+      <span className="sr-only">Loading this page</span>
+    </div>
+  );
+}
+
+/** Loading shape for a dashboard of figures and panels: overview, live, progress. */
+export function SkeletonDashboardPage({ tiles = 4 }: { tiles?: number }) {
+  return (
+    <div className="space-y-5" role="status" aria-label="Loading">
+      <SkeletonHeading />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {Array.from({ length: tiles }, (_, tile) => (
+          <div key={tile} className="surface space-y-2 p-4">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-7 w-20" />
+          </div>
+        ))}
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {[0, 1].map((panel) => (
+          <div key={panel} className="surface space-y-3 p-5">
+            <Skeleton className="h-5 w-40" />
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-4/5" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        ))}
+      </div>
+      <span className="sr-only">Loading this page</span>
+    </div>
+  );
+}
+
 export function EmptyState({ title, children }: { title: string; children?: ReactNode }) {
   return (
     <div className="rounded-panel border border-dashed border-strong/50 px-4 py-8 text-center">

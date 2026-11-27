@@ -9,14 +9,14 @@ import { getSetupState } from "@/lib/data/session";
 export const dynamic = "force-dynamic";
 
 export default async function ParentLayout({ children }: { children: ReactNode }) {
-  const state = await getSetupState();
+  // Both resolve the same cached sign-in, so they run side by side.
+  const [state, context] = await Promise.all([getSetupState(), getAuthContext()]);
 
   const label =
     state.status === "configured"
       ? state.learnerName
       : (state.status === "unconfigured" && state.householdName) || "No household";
 
-  const context = state.status === "configured" ? await getAuthContext() : null;
   const dock =
     state.status === "configured" && context?.profileId && context.role !== "student" ? (
       <ParentDock

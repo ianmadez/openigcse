@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { getEnrollments, type EnrolledSubject } from "@/lib/data/enrollments";
 import { collect, slugify, unique } from "@/lib/data/query";
 import { createServerClientInstance } from "@/lib/supabase/server";
@@ -67,7 +69,7 @@ type ObjectiveRow = {
   command_words: string[] | null;
 };
 
-type ActivityRow = { objective_id: string; resource_id: string | null };
+type ActivityRow = { objective_id: string; resource_id: string | null; resources: ResourceRow | null };
 
 type ResourceRow = {
   id: string;
@@ -89,54 +91,54 @@ async function loadSubjectBodies(
 
   const versionIds = unique(enrollments.map((enrollment) => enrollment.versionId));
 
-  const topics = await collect<TopicRow>(versionIds, async (batch) => {
-    const { data } = await supabase
-      .from("topics")
-      .select("id, syllabus_version_id, parent_topic_id, topic_code, name, sequence")
-      .in("syllabus_version_id", batch)
-      // Retired topics stay in the database for history but are not taught (Step 6.4).
-      .is("retired_at", null)
-      .order("sequence", { ascending: true });
-    return (data ?? []) as TopicRow[];
-  });
+  // Topics and objectives go out together: objectives are filtered by their topic's version
+  // through an inner join, instead of waiting for the topic ids.
+  const [topics, allObjectives] = await Promise.all([
+    collect<TopicRow>(versionIds, async (batch) => {
+      const { data } = await supabase
+        .from("topics")
+        .select("id, syllabus_version_id, parent_topic_id, topic_code, name, sequence")
+        .in("syllabus_version_id", batch)
+        // Retired topics stay in the database for history but are not taught (Step 6.4).
+        .is("retired_at", null)
+        .order("sequence", { ascending: true });
+      return (data ?? []) as TopicRow[];
+    }, 1),
+    collect<ObjectiveRow>(versionIds, async (batch) => {
+      const { data } = await supabase
+        .from("learning_objectives")
+        .select("id, topic_id, objective_code, summary_title, official_description, tier, command_words, topics!inner(syllabus_version_id)")
+        .in("topics.syllabus_version_id", batch)
+        .is("retired_at", null)
+        .order("sequence", { ascending: true });
+      return (data ?? []) as unknown as ObjectiveRow[];
+      // One syllabus per request: the largest has 389 objectives, and PostgREST caps a response
+      // at 1,000 rows, so several syllabuses in one request could silently lose rows.
+    }, 1),
+  ]);
 
-  const topicIds = topics.map((topic) => topic.id);
-  const objectives = await collect<ObjectiveRow>(topicIds, async (batch) => {
-    const { data } = await supabase
-      .from("learning_objectives")
-      .select("id, topic_id, objective_code, summary_title, official_description, tier, command_words")
-      .in("topic_id", batch)
-      .is("retired_at", null)
-      .order("sequence", { ascending: true });
-    return (data ?? []) as ObjectiveRow[];
-  });
+  // An objective under a retired topic is not taught either.
+  const liveTopicIds = new Set(topics.map((topic) => topic.id));
+  const objectives = allObjectives.filter((objective) => liveTopicIds.has(objective.topic_id));
 
+  // Each activity brings its resource with it (one round trip instead of two).
   const activities = await collect<ActivityRow>(
     objectives.map((objective) => objective.id),
     async (batch) => {
       const { data } = await supabase
         .from("activities")
-        .select("objective_id, resource_id")
+        .select(
+          "objective_id, resource_id, resources(id, title, resource_type, external_url, youtube_video_id, start_timestamp_seconds, end_timestamp_seconds)",
+        )
         .in("objective_id", batch)
         .not("resource_id", "is", null);
-      return (data ?? []) as ActivityRow[];
+      return (data ?? []) as unknown as ActivityRow[];
     },
   );
 
-  const resourceRows = await collect<ResourceRow>(
-    activities.map((activity) => activity.resource_id).filter((id): id is string => Boolean(id)),
-    async (batch) => {
-      const { data } = await supabase
-        .from("resources")
-        .select(
-          "id, title, resource_type, external_url, youtube_video_id, start_timestamp_seconds, end_timestamp_seconds",
-        )
-        .in("id", batch);
-      return (data ?? []) as ResourceRow[];
-    },
+  const resourceById = new Map(
+    activities.flatMap((activity) => (activity.resources ? [[activity.resources.id, activity.resources] as const] : [])),
   );
-
-  const resourceById = new Map(resourceRows.map((row) => [row.id, row]));
   const objectiveById = new Map(objectives.map((row) => [row.id, row]));
   const topicById = new Map(topics.map((row) => [row.id, row]));
 
@@ -217,8 +219,8 @@ async function loadSubjectBodies(
   return bodies;
 }
 
-/** Every enrolled subject with its topics, objectives and resources. */
-export async function getEnrolledCurriculum(learnerId: string, termId: string): Promise<SubjectCurriculum[]> {
+/** Every enrolled subject with its topics, objectives and resources; read once per request. */
+export const getEnrolledCurriculum = cache(async (learnerId: string, termId: string): Promise<SubjectCurriculum[]> => {
   const enrollments = await getEnrollments(learnerId, termId);
   const bodies = await loadSubjectBodies(enrollments);
 
@@ -231,7 +233,7 @@ export async function getEnrolledCurriculum(learnerId: string, termId: string): 
       counts: { topics: 0, subtopics: 0, objectives: 0 },
     }),
   }));
-}
+});
 
 export async function getSubjectCurriculum(
   learnerId: string,

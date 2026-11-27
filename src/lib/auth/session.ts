@@ -1,4 +1,5 @@
 import { createHash, randomInt } from "node:crypto";
+import { cache } from "react";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createServerClientInstance } from "@/lib/supabase/server";
@@ -10,22 +11,25 @@ export type AuthContext = {
   role: string | null;
 };
 
-/** The signed-in Supabase user, or null on a device with no session. */
-export async function getAuthUser() {
+/**
+ * The signed-in Supabase user, or null on a device with no session. Asking Supabase Auth is a
+ * network round trip, so it happens once per request however many callers ask.
+ */
+export const getAuthUser = cache(async () => {
   const supabase = await createServerClientInstance();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   return user;
-}
+});
 
 /**
  * Resolves the caller's profile. A profile may be keyed by the auth user id
  * itself (legacy rows) or paired to it through `auth_user_id` (student devices
  * and guardians created since Phase 0).
  */
-export async function getAuthContext(): Promise<AuthContext | null> {
+export const getAuthContext = cache(async (): Promise<AuthContext | null> => {
   const user = await getAuthUser();
   if (!user) return null;
 
@@ -43,7 +47,7 @@ export async function getAuthContext(): Promise<AuthContext | null> {
     householdId: data?.household_id ?? null,
     role: data?.role ?? null,
   };
-}
+});
 
 /** Six digits is short enough to read aloud and still 1-in-a-million to guess. */
 export function generatePairingCode() {

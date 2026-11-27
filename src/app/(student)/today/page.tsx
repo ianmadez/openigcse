@@ -38,6 +38,7 @@ export default async function TodayPage() {
   const today = todayIso(new Date(), state.status === "configured" ? state.timezone : null);
   let periods: Awaited<ReturnType<typeof getDayPlanItems>> = [];
   let generated = 0;
+  let plannedWith: Awaited<ReturnType<typeof getLearnerWorkspace>> | undefined;
 
   // First open of the day builds it: the timetable decides when and which
   // subject, the ranking engine decides what to do inside the period.
@@ -47,7 +48,8 @@ export default async function TodayPage() {
       householdId: state.householdId,
       termId: state.activeTermId,
       date: today,
-    }).catch(() => ({ ok: false, created: 0, carriedOver: 0, skipped: 0 }));
+    }).catch(() => ({ ok: false, created: 0, carriedOver: 0, skipped: 0, workspace: undefined }));
+    plannedWith = generation.workspace;
 
     generated = (generation.created ?? 0) + (generation.skipped ?? 0) + (generation.carriedOver ?? 0);
     periods = await getDayPlanItems(state.learnerId, today);
@@ -61,7 +63,11 @@ export default async function TodayPage() {
     }
   }
 
-  const workspace = await getLearnerWorkspace(state.status === "configured" ? state.learnerId : null);
+  // Reuse the planner's workspace when it wrote nothing; after a write, read it fresh.
+  const workspace =
+    plannedWith && generated === 0
+      ? plannedWith
+      : await getLearnerWorkspace(state.status === "configured" ? state.learnerId : null);
   const planPeriods = periods;
 
   const minutes = totalMinutes(workspace.planned);

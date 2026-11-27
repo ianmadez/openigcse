@@ -9,6 +9,7 @@ import {
 } from "@/app/(parent)/parent/(gated)/timetable/actions";
 import { ActionButton, SubmitButton } from "@/components/ui/Button";
 import { EmptyState, Status } from "@/components/ui/primitives";
+import { keepInput, useResetOnSuccess } from "@/lib/utils/keepInput";
 
 type Override = {
   id: string;
@@ -46,10 +47,11 @@ export function OverridePanel({ overrides, today }: { overrides: Override[]; tod
     },
     null,
   );
+  const form = useResetOnSuccess(state, Boolean(state?.ok));
 
   return (
     <div className="space-y-4">
-      <form action={formAction} className="space-y-3">
+      <form ref={form} onSubmit={keepInput(formAction)} className="space-y-3">
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
             <span className="label">Date</span>

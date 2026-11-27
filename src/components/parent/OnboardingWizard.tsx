@@ -18,6 +18,7 @@ import {
   studyDayOptions,
 } from "@/lib/config/site";
 import { cn } from "@/lib/utils/cn";
+import { keepInput } from "@/lib/utils/keepInput";
 
 type SubjectOption = { code: string; name: string; elective: boolean; papers: number; hasRoute: boolean };
 
@@ -66,11 +67,9 @@ export function OnboardingWizard({ coreSubjects, electives, bypass }: Onboarding
 
   return (
     <form
-      action={formAction}
       className="space-y-5"
-      onSubmit={(event) => {
-        if (step !== STEPS.length - 1) event.preventDefault();
-      }}
+      // Only the last step submits; earlier steps' Enter key does nothing.
+      onSubmit={keepInput(formAction, () => step === STEPS.length - 1)}
     >
       {/* Hidden fields carry the state the wizard collects. */}
       <input type="hidden" name="countryCode" value={country} />

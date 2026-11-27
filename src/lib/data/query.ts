@@ -11,16 +11,17 @@ export function unique<T>(items: T[]): T[] {
   return [...new Set(items)];
 }
 
-/** Reads many rows in batches and concatenates the results. */
+/**
+ * Reads many rows in batches and concatenates the results in batch order. The batches run in
+ * parallel: each is a round trip to Supabase, and running them one after another added up.
+ */
 export async function collect<T>(
   ids: string[],
   read: (batch: string[]) => Promise<T[] | null>,
+  size = 100,
 ): Promise<T[]> {
-  const rows: T[] = [];
-  for (const batch of chunk(unique(ids))) {
-    rows.push(...((await read(batch)) ?? []));
-  }
-  return rows;
+  const results = await Promise.all(chunk(unique(ids), size).map((batch) => read(batch)));
+  return results.flatMap((rows) => rows ?? []);
 }
 
 /** "English - First Language" becomes "english-first-language". */

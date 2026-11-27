@@ -10,3 +10,5 @@ supabase/.temp/
 raw-syllabuses/*.pdf
 # Plan execution scratch
 .superpowers/
+
+.next-prod/

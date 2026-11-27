@@ -5,12 +5,13 @@ import { useActionState } from "react";
 
 import { redeemPairingCodeAction, type AuthState } from "@/app/login/actions";
 import { ActionButton } from "@/components/ui/Button";
+import { keepInput } from "@/lib/utils/keepInput";
 
 export function PairDeviceForm({ revoked = false }: { revoked?: boolean }) {
   const [state, formAction, pending] = useActionState<AuthState, FormData>(redeemPairingCodeAction, null);
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form onSubmit={keepInput(formAction)} className="space-y-4">
       {revoked && (
         <p
           role="status"

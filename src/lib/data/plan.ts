@@ -1,5 +1,5 @@
 import { dayOfWeekFor, getOverrideForDate, getTimetableSlots, type SlotType } from "@/lib/data/timetable";
-import { getLearnerWorkspace, type ActivitySignal } from "@/lib/data/workspace";
+import { getLearnerWorkspace, type ActivitySignal, type Workspace } from "@/lib/data/workspace";
 import { allowanceFor, rankActivities } from "@/lib/planning/nextBestActivity";
 import { createServerClientInstance } from "@/lib/supabase/server";
 
@@ -22,6 +22,8 @@ export type GenerationResult = {
   carriedOver: number;
   skipped?: number;
   reason?: string;
+  /** The workspace read while planning, so /today need not read it again when nothing changed. */
+  workspace?: Workspace;
 };
 
 const ITEM_TYPE: Record<SlotType, "lesson" | "review" | "assessment" | "break"> = {
@@ -47,26 +49,24 @@ export async function generateDayPlan(input: {
     return { ok: false, created: 0, carriedOver: 0, reason: "No term is running, so there is nothing to plan." };
   }
 
-  const override = await getOverrideForDate(householdId, date);
+  // Independent reads go out together; each is a round trip to Supabase.
+  const [override, allSlots] = await Promise.all([getOverrideForDate(householdId, date), getTimetableSlots(termId)]);
 
   if (override && NO_SCHOOL.has(override.type)) {
     return { ok: true, created: 0, carriedOver: 0, reason: `The day is marked as ${override.type}.` };
   }
 
-  const slots = (await getTimetableSlots(termId)).filter((slot) => slot.dayOfWeek === dayOfWeekFor(date));
+  const slots = allSlots.filter((slot) => slot.dayOfWeek === dayOfWeekFor(date));
 
   if (slots.length === 0) {
     return { ok: false, created: 0, carriedOver: 0, reason: "No timetable is set for this weekday yet." };
   }
 
-  const workspace = await getLearnerWorkspace(learnerId);
   const supabase = await createServerClientInstance();
-
-  const { data: existing } = await supabase
-    .from("day_plan_items")
-    .select("id, slot_id, status")
-    .eq("student_id", learnerId)
-    .eq("plan_date", date);
+  const [workspace, { data: existing }] = await Promise.all([
+    getLearnerWorkspace(learnerId),
+    supabase.from("day_plan_items").select("id, slot_id, status").eq("student_id", learnerId).eq("plan_date", date),
+  ]);
 
   const bySlot = new Map((existing ?? []).filter((row) => row.slot_id).map((row) => [row.slot_id as string, row]));
 
@@ -139,14 +139,14 @@ export async function generateDayPlan(input: {
   }
 
   if (failure) {
-    return { ok: false, created, carriedOver, skipped, reason: failure };
+    return { ok: false, created, carriedOver, skipped, reason: failure, workspace };
   }
 
   if (created === 0 && carriedOver === 0) {
-    return { ok: true, created: 0, carriedOver: 0, skipped, reason: "Today's plan is already built." };
+    return { ok: true, created: 0, carriedOver: 0, skipped, reason: "Today's plan is already built.", workspace };
   }
 
-  return { ok: true, created, carriedOver, skipped };
+  return { ok: true, created, carriedOver, skipped, workspace };
 }
 
 function labelFor(slotType: SlotType) {

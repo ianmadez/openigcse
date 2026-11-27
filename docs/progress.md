@@ -95,8 +95,6 @@ Lighthouse accessibility run. Summary: [phases/phase-7.md](phases/phase-7.md).
 
 ## What still looks finished but is not
 
-- **Forms that lose input on error (Phase 0-2).** Onboarding, pairing, settings, PIN gate and overrides use
-  `<form action>`, which React 19 resets even when the server refuses.
 - **Real household terms 2 and 3** carry Term 1's mid-term and final weeks (old onboarding bug, now fixed); the term
   planner flags them and refuses to save until a parent corrects them.
 - **AO tagging** waits for assessment objectives to be imported (none are yet).
@@ -115,16 +113,24 @@ Lighthouse accessibility run. Summary: [phases/phase-7.md](phases/phase-7.md).
 3. Phase 7 holds `/today`'s Start, Finish, Skip and study time offline and replays them; checkpoint answers and
    "I'm stuck" still need a connection, and Phase 8 owns a visible retry for every other write.
 
-## Queued for Phase 8 (Ian, 2026-11-27)
+## Polish pass before Phase 8 (Ian, 2026-11-27, done)
 
-Added alongside the roadmap's hardening steps, after Ian checked Phase 7 on a phone:
+Ian asked for these after checking Phase 7 on a phone; they landed on branch `polish` before Phase 8 started.
 
-1. **Loading states.** Every route that reads Postgres gets a skeleton that matches its layout (`loading.tsx` per
-   segment), so a slow read shows the shape of the page instead of a blank or the previous screen.
-2. **Button pass.** Every button and form shows that it is working: disabled while pending, a spinner or pending
-   label, and the result or a visible retry afterwards. One shared pattern (`ActionButton`), checked button by button.
-3. **Snappiness.** Measure first (route timings, bundle sizes, repeated Supabase reads per request), then cut: parallel
-   reads, fewer round trips, prefetching the tab-bar routes, optimistic updates where a refusal is still shown.
+1. **Loading states.** 26 `loading.tsx` files with list, chat, week, dashboard, form and detail shapes, so a slow
+   read shows the page's own outline while the shell stays put.
+2. **Every button.** Busy buttons go through `ActionButton` (spinner, pending label, disabled, `aria-busy`). On
+   `/today` and `/parent/live` only the pressed button spins and a refusal shows on that item. The study timer's
+   Finish could log twice on a double tap; it now cannot. The seven `<form action>` forms (sign-in, pairing, PIN
+   gate, onboarding, settings, overrides) lost their input when the server refused; `keepInput()` fixes that, and
+   the PIN and override forms clear only after a success. This closes the "forms that lose input" gap below.
+3. **Snappiness.** Measured first: every learner page took about 5 s because about 20 Supabase round trips (about
+   300 ms each to the project's region) ran one after another. Now: sign-in resolved once per request, session reads
+   in parallel, the curriculum read once per request and in two steps instead of seven, batches in parallel, the
+   layout's reads side by side, and `/today` reuses the planner's workspace. Learner pages went from ~5 s to ~2 s,
+   parent pages from 2-4.5 s to 1.5-2.5 s, with the rendered text identical on 20 compared views. What remains is
+   distance: hosting the app in the same region as Supabase (Phase 8) removes most of each round trip.
+   `PERF_LOG=1` prints a request waterfall; `NEXT_DIST_DIR=.next-prod` builds beside `pnpm dev`.
 
 ## Verification
 
