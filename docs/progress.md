@@ -112,7 +112,7 @@ Lighthouse accessibility run. Summary: [phases/phase-7.md](phases/phase-7.md).
 2. `ARCHITECTURE_MAP.txt` predates Phases 0-2 and still describes bundled JSON curriculum and a demo seam.
 3. Phase 7 holds `/today`'s Start, Finish, Skip and study time offline and replays them; checkpoint answers and
    "I'm stuck" still need a connection; every other failed write now says Not saved with a Try again button (Phase 8).
-4. Phase 8's CI, migration and backup jobs need GitHub secrets before they can run (see [phase-8](phases/phase-8.md)).
+4. Phase 8 CI, migrations and nightly backups run on GitHub; the first backup restored cleanly (2026-11-28).
 
 ## Polish pass before Phase 8 (Ian, 2026-11-27, done)
 

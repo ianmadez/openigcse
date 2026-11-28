@@ -52,12 +52,15 @@ slot); the live database was emptied so the family can set it up fresh.
 `pnpm build` clean. **Exit gate:** `pnpm test:e2e --repeat-each=2` passed twice in a row on a production build against
 staging (24.5 s and 24.1 s).
 
+## On GitHub (2026-11-28)
+
+- Secrets set: `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `BACKUP_PASSPHRASE` (Ian keeps the passphrase). The CLI
+  signs in with a temporary login role, so no database password is stored anywhere.
+- CI green on `main`: checks and every probe, the school day twice (16.8 s and 15.4 s), and production migrations.
+- First live backup: dumped, restored into a fresh Postgres, 44 tables matching the dump, encrypted and kept.
+- Uptime check run once by hand: green. Runners are pinned to Ubuntu 24.04 (Playwright 1.60 does not support 26.04).
+
 ## Still open
 
-- GitHub secrets for the migration and backup jobs (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`,
-  `SUPABASE_PROJECT_REF`, `SUPABASE_DB_URL`, `BACKUP_PASSPHRASE`). Until they are set those jobs fail, and the
-  nightly backup has not yet run against live.
-- The CI jobs have not run on GitHub yet; they were written and their steps run locally.
-- Supabase Auth's Site URL and redirect URLs must include `https://openigcse.vercel.app`.
 - `NEXT_PUBLIC_APP_ENV=development`, `ONBOARDING_BYPASS` and the `DEMO_*` variables are still set on Vercel. The code
   ignores them in production; removing them needs Ian's approval in the Vercel CLI.
