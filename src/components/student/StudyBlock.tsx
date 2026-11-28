@@ -3,7 +3,7 @@
 import { ArrowDown, ArrowUp, Check, CircleDot, Clock, Play } from "lucide-react";
 import { useState } from "react";
 
-import { SandboxedVideoPlayer } from "@/components/player/SandboxedVideoPlayer";
+import { SandboxedVideoPlayer, YouTubeNotice } from "@/components/player/SandboxedVideoPlayer";
 import { AddToNotebook } from "@/components/student/AddToNotebook";
 import { StuckButton } from "@/components/student/StuckButton";
 import { StudyTimer } from "@/components/student/StudyTimer";
@@ -199,8 +199,9 @@ export function StudyBlock({ tasks, checkpoints, resources }: StudyBlockProps) {
                 className="aspect-video w-full overflow-hidden rounded-panel border border-subtle bg-black"
               />
               <p className="text-caption text-muted">
-                {lesson.title} - {lesson.provider} - sandboxed player
+                {lesson.title} - {lesson.provider}
               </p>
+              <YouTubeNotice className="text-caption text-muted" />
             </div>
           )}
 

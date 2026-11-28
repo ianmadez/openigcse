@@ -25,7 +25,6 @@ export function SandboxedVideoPlayer({
   const [playing, setPlaying] = useState(false);
 
   const params = new URLSearchParams({
-    modestbranding: "1",
     rel: "0",
     iv_load_policy: "3",
     playsinline: "1",
@@ -60,11 +59,31 @@ export function SandboxedVideoPlayer({
         src={`https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`}
         title={title}
         className="size-full border-0"
-        sandbox="allow-scripts allow-same-origin allow-presentation"
+        sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"
         referrerPolicy="strict-origin-when-cross-origin"
         allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       />
     </div>
+  );
+}
+
+/**
+ * YouTube API Services require apps that embed the player to link YouTube's Terms of Service and
+ * Google's Privacy Policy (Developer Policies III.A, checked 2026-11-28). Shown under every player.
+ */
+export function YouTubeNotice({ className }: { className?: string }) {
+  return (
+    <p className={className ?? "mt-1.5 text-caption text-muted"}>
+      Videos play through YouTube. Watching means agreeing to the{" "}
+      <a href="https://www.youtube.com/t/terms" target="_blank" rel="noreferrer" className="underline">
+        YouTube Terms of Service
+      </a>
+      ; see the{" "}
+      <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="underline">
+        Google Privacy Policy
+      </a>
+      .
+    </p>
   );
 }
