@@ -31,12 +31,16 @@ pnpm test:visual                   # screenshots of the eight busiest screens; n
 pnpm test:rls                      # policy probes against the linked Supabase project
 pnpm verify:phase5                 # Phase 5 DB probes (requests, messages, push, live)
 pnpm verify:push                   # Web Push end to end against a local HTTPS endpoint
+pnpm verify:phase8                 # Phase 8 probes (rate limits, audit log, export, deletion)
+pnpm test:e2e --repeat-each=2      # school-day exit gate; needs `pnpm start` on Docker staging
+npx supabase start                 # local staging Supabase (Docker); .env.local points at it
 pnpm import --subject=0610         # upsert one package into Supabase
 pnpm ingest --subject=0580         # PDF extraction for one syllabus
 ```
 
-Copy `.env.example` to `.env.local` before running. Without Supabase credentials the app still boots and every screen
-shows its sign-in or unconfigured state.
+`.env.local` is the local Docker staging Supabase; the live project's keys live in `.env.production.local`, and
+scripts reach it only with `OPENIGCSE_TARGET=production`. Never run tests against live. Without Supabase credentials
+the app still boots and every screen shows its sign-in or unconfigured state.
 
 ## Where things live
 
@@ -60,8 +64,9 @@ raw-syllabuses/           local Cambridge PDFs (gitignored, copyright)
    in this repo is expressed as a roadmap phase and step (for example "Step 3.5"). Work one step at a time, and update
    [docs/progress.md](docs/progress.md) when a step lands or its state changes.
 2. **Data goes through `src/lib/data/`.** Use the session-bound client so RLS decides what is visible. The service-role
-   client belongs to the importer and admin scripts, not to app reads or writes. One ruled exception:
-   `src/lib/push/notify.ts` reads push subscriptions to deliver Web Push (Phase 5).
+   client belongs to the importer and admin scripts, not to app reads or writes. Ruled exceptions:
+   `src/lib/push/notify.ts` reads push subscriptions to deliver Web Push (Phase 5), and
+   `src/lib/data/account-deletion.ts` removes a household's files and accounts (Phase 8).
 3. **Schema changes are migrations.** Any new household-scoped table gets `household_id` and its RLS policy in the same
    migration, plus the matching repository module.
 4. **No invented syllabus content.** Objectives, components, weightings and durations come from the official PDFs via
