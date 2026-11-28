@@ -2,9 +2,9 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /** Loads `.env.local` then `.env` without overriding variables already set.
- *  With OPENIGCSE_TARGET=staging, `.env.staging.local` (local Docker Supabase) is read first and wins. */
+ *  `.env.local` is the local Docker Supabase; OPENIGCSE_TARGET=production reads `.env.production.local` (the live project) first. */
 export function loadEnv(cwd = process.cwd()) {
-  const files = process.env.OPENIGCSE_TARGET === "staging" ? [".env.staging.local", ".env.local", ".env"] : [".env.local", ".env"];
+  const files = process.env.OPENIGCSE_TARGET === "production" ? [".env.production.local", ".env"] : [".env.local", ".env"];
   for (const name of files) {
     const file = join(cwd, name);
     if (!existsSync(file)) continue;
