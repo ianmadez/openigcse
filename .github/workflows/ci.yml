@@ -1,0 +1,65 @@
+# Phase 8: checks on every push, migrations on main.
+name: CI
+
+on:
+  push:
+    branches: [main, "phase-*"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test:unit
+      - run: pnpm validate
+      - run: pnpm check:contrast
+
+      # Staging: a fresh local Supabase with every migration replayed, then the database probes.
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start -x studio,imgproxy,vector,logflare,edge-runtime
+      - name: Point the probes at the local stack
+        run: |
+          supabase status -o env | sed -n 's/^API_URL=/NEXT_PUBLIC_SUPABASE_URL=/p; s/^ANON_KEY=/NEXT_PUBLIC_SUPABASE_ANON_KEY=/p; s/^SERVICE_ROLE_KEY=/SUPABASE_SERVICE_ROLE_KEY=/p' | tr -d '"' > .env.local
+          echo "PARENT_GATE_SECRET=ci-only-gate-secret" >> .env.local
+      - name: Import curriculum packages
+        run: for p in curriculum-packages/*/; do pnpm run import --package="$(basename "$p")" --allow-draft; done
+      - run: pnpm verify:phase3
+      - run: pnpm verify:phase4
+      - run: pnpm verify:phase5
+      - run: pnpm verify:phase6
+      - run: pnpm verify:phase8
+
+  migrate:
+    # Production migrations run here, only from main, after every check passed.
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - run: supabase db push --password "$SUPABASE_DB_PASSWORD"
