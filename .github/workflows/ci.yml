@@ -63,3 +63,39 @@ jobs:
           version: latest
       - run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
       - run: supabase db push --password "$SUPABASE_DB_PASSWORD"
+
+  school-day:
+    # Phase 8 exit gate: the full school day against a fresh staging Supabase, twice in a row.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start -x studio,imgproxy,vector,logflare,edge-runtime
+      - name: Point the app at the local stack
+        run: |
+          supabase status -o env | sed -n 's/^API_URL=/NEXT_PUBLIC_SUPABASE_URL=/p; s/^ANON_KEY=/NEXT_PUBLIC_SUPABASE_ANON_KEY=/p; s/^SERVICE_ROLE_KEY=/SUPABASE_SERVICE_ROLE_KEY=/p' | tr -d '"' > .env.local
+          echo "PARENT_GATE_SECRET=ci-only-gate-secret" >> .env.local
+      - name: Import curriculum packages
+        run: for p in curriculum-packages/*/; do pnpm run import --package="$(basename "$p")" --allow-draft; done
+      - run: pnpm build
+      - run: pnpm start &
+      - run: npx wait-on --timeout 60000 http://localhost:3000/api/health
+      - run: pnpm test:e2e --repeat-each=2
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: school-day-traces
+          path: .superpowers/e2e-results
+          retention-days: 7
