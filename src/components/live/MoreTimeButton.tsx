@@ -7,6 +7,7 @@ import { useState, useTransition } from "react";
 import { raiseRequestAction } from "@/app/(student)/request-actions";
 import { useRealtime } from "@/lib/live/useRealtime";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 
 /**
  * "Need 20 more minutes on this test" (Step 5.1). When the parent approves, the sitting's extra
@@ -55,11 +56,7 @@ export function MoreTimeButton({ learnerId, assessmentId, extraMinutes }: { lear
       >
         Ask for more time
       </ActionButton>
-      {error && (
-        <span role="alert" className="text-caption text-danger-text">
-          {error}
-        </span>
-      )}
+      <WriteError error={error} onRetry={ask} pending={pending} />
     </span>
   );
 }

@@ -1,3 +1,4 @@
+import { WriteError } from "@/components/ui/WriteError";
 import { cn } from "@/lib/utils/cn";
 
 /**
@@ -9,10 +10,16 @@ import { cn } from "@/lib/utils/cn";
 export function FormMessage({
   result,
   className,
+  onRetry,
+  pending,
 }: {
   result: { ok: true; message?: string } | { ok: false; error: string } | null;
   className?: string;
+  /** Repeats the write that failed; a failure then shows a Try again button (Phase 8). */
+  onRetry?: () => void;
+  pending?: boolean;
 }) {
+  if (result && !result.ok && onRetry) return <WriteError error={result.error} onRetry={onRetry} pending={pending} className={className} />;
   if (result && !result.ok) {
     return (
       <p role="alert" className={cn("text-caption font-medium text-danger-text", className)}>

@@ -8,6 +8,7 @@ import type { ThreadMessage } from "@/lib/data/messages";
 import { browserClient, useRealtime } from "@/lib/live/useRealtime";
 import { cn } from "@/lib/utils/cn";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 
 const timeFormat = new Intl.DateTimeFormat("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit" });
 const TYPING_MS = 4000;
@@ -208,11 +209,7 @@ export function MessageThread({
             </button>
           </div>
         )}
-        {error && (
-          <p role="alert" className="mb-2 text-caption text-danger-text">
-            {error}
-          </p>
-        )}
+        <WriteError error={error} onRetry={send} pending={pending} className="mb-2" />
         <div className="flex items-end gap-2">
           <label className="icon-btn shrink-0 cursor-pointer" aria-label="Attach a photo">
             <ImagePlus aria-hidden="true" className="size-4" strokeWidth={2} />

@@ -7,6 +7,7 @@ import { raiseRequestAction, todayPeriodsAction } from "@/app/(student)/request-
 import { REQUESTS, REQUEST_TYPES, type RequestType } from "@/lib/requests/catalog";
 import { cn } from "@/lib/utils/cn";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 
 /**
  * The learner's typed asks (Step 5.1). One tap picks the type, an optional note says why, and
@@ -135,11 +136,7 @@ export function AskSheet({ onClose, initial }: { onClose: () => void; initial?: 
                 className="field resize-none"
               />
             </label>
-            {error && (
-              <p role="alert" className="text-caption text-danger-text">
-                Not sent: {error}
-              </p>
-            )}
+            <WriteError error={error} onRetry={send} pending={pending} />
             <ActionButton
               type="button"
               onClick={send}

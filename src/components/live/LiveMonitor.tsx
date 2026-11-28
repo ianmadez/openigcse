@@ -2,10 +2,11 @@
 
 import { Coffee, Lock, LockOpen, Megaphone, MonitorSmartphone, Moon, Timer } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { liveAction } from "@/app/shell-actions";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 import { Status } from "@/components/ui/primitives";
 import type { LiveSession } from "@/lib/data/live";
 import { formatCountdown, idleMinutes, isOnline, lockStateOf } from "@/lib/live/presence";
@@ -86,8 +87,10 @@ export function LiveMonitor({ view }: { view: LiveView }) {
 
   // The key of the button that was pressed, so only that one spins.
   const [running, setRunning] = useState<string | null>(null);
+  const lastAct = useRef<(() => void) | null>(null);
 
   const act = (action: string, extra: { minutes?: number; message?: string } = {}, key: string = action) => {
+    lastAct.current = () => act(action, extra, key);
     setResult(null);
     setRunning(key);
     startTransition(async () => {
@@ -224,11 +227,17 @@ export function LiveMonitor({ view }: { view: LiveView }) {
           </ActionButton>
         </form>
 
-        {result && (
-          <p role={result.ok ? "status" : "alert"} className={result.ok ? "mt-2 text-caption text-success-text" : "mt-2 text-caption text-danger-text"}>
-            {result.ok ? result.text : `Not done: ${result.text}`}
+        {result?.ok && (
+          <p role="status" className="mt-2 text-caption text-success-text">
+            {result.text}
           </p>
         )}
+        <WriteError
+          error={result && !result.ok ? result.text : null}
+          onRetry={() => lastAct.current?.()}
+          pending={pending}
+          className="mt-2"
+        />
         <p className="mt-3 flex items-center gap-1.5 text-caption text-muted">
           <Timer aria-hidden="true" className="size-3.5" strokeWidth={2} />
           The lock is honoured by the kiosk app (Phase 9); in a browser it shows as a status only.

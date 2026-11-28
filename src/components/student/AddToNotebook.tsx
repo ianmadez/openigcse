@@ -4,6 +4,7 @@ import { BookPlus, Check, Tag } from "lucide-react";
 import { useState, useTransition } from "react";
 
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 import { ERROR_TAGS } from "@/lib/assessment/marking";
 import type { ErrorTag } from "@/lib/data/mistakes";
 
@@ -67,11 +68,7 @@ export function AddToNotebook({
       >
         Add to my notebook
       </ActionButton>
-      {error && (
-        <p role="alert" className="mt-1.5 text-caption text-danger-text">
-          Not saved: {error}
-        </p>
-      )}
+      <WriteError error={error} onRetry={add} pending={pending} className="mt-1.5" />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { BadgeCheck, ExternalLink, FileText, Link2, RotateCcw, Save, Unlink } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 
 import {
   decideLinkAction,
@@ -37,18 +37,21 @@ export function PackageReview(props: Props) {
   const { packageId, subjectCode, verified, writable, pdfAvailable, topics, objectives, lineage } = props;
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
   const [result, setResult] = useState<Result>(null);
   const [topicCode, setTopicCode] = useState(topics[0]?.topic_code ?? "");
   const [page, setPage] = useState<number | null>(objectives.find((o) => o.source_page)?.source_page ?? null);
   const [confirmed, setConfirmed] = useState(false);
   const locked = verified || !writable;
 
-  const run = (action: () => Promise<Exclude<Result, null>>) =>
+  const run = (action: () => Promise<Exclude<Result, null>>) => {
+    last.current = () => run(action);
     startTransition(async () => {
       const outcome = await action();
       setResult(outcome);
       if (outcome.ok) router.refresh();
     });
+  };
 
   const topic = topics.find((t) => t.topic_code === topicCode) ?? topics[0];
   const bySubtopic = useMemo(() => {
@@ -65,7 +68,7 @@ export function PackageReview(props: Props) {
 
   return (
     <div className="space-y-4">
-      <FormMessage result={result} />
+      <FormMessage result={result} onRetry={() => last.current?.()} pending={pending} />
 
       {!writable && (
         <Callout tone="info" title="Read-only on this server">

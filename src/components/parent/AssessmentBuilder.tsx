@@ -2,7 +2,7 @@
 
 import { ArrowDown, ArrowUp, CalendarCheck, Plus, Save, Sparkles, Trash2, Undo2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 
 import {
   addPastPaperQuestionsAction,
@@ -57,6 +57,7 @@ type Props = {
 export function AssessmentBuilder({ existing, subjects, bank, tree, zone, today }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
   const [message, setMessage] = useState<Message>(null);
   const [examDay, setExamDay] = useState(false);
   const [search, setSearch] = useState("");
@@ -99,6 +100,7 @@ export function AssessmentBuilder({ existing, subjects, bank, tree, zone, today 
   const set = (patch: Partial<Fields>) => setFields((current) => ({ ...current, ...patch }));
 
   const run = (work: () => Promise<Message & object>, after?: (result: NonNullable<Message> & Record<string, unknown>) => void) => {
+    last.current = () => run(work, after);
     setMessage(null);
     startTransition(async () => {
       const result = (await work()) as NonNullable<Message> & Record<string, unknown>;
@@ -417,7 +419,7 @@ export function AssessmentBuilder({ existing, subjects, bank, tree, zone, today 
                 Create and add questions
               </ActionButton>
             )}
-            <FormMessage result={message} />
+            <FormMessage result={message} onRetry={() => last.current?.()} pending={pending} />
           </div>
 
           {existing && (

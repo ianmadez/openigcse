@@ -1,10 +1,11 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { approveCorrectionAction } from "@/app/(parent)/parent/(gated)/correction-actions";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 import { EmptyState } from "@/components/ui/primitives";
 import type { Mistake } from "@/lib/data/mistakes";
 
@@ -13,6 +14,7 @@ export function CorrectionQueue({ items }: { items: Mistake[] }) {
   const [approved, setApproved] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
   const waiting = items.filter((item) => !approved.includes(item.id));
 
   if (waiting.length === 0) {
@@ -20,6 +22,7 @@ export function CorrectionQueue({ items }: { items: Mistake[] }) {
   }
 
   const approve = (id: string) => {
+    last.current = () => approve(id);
     setError(null);
     startTransition(async () => {
       const result = await approveCorrectionAction(id);
@@ -50,9 +53,7 @@ export function CorrectionQueue({ items }: { items: Mistake[] }) {
           </li>
         ))}
       </ul>
-      <p role="alert" className={error ? "mt-3 text-caption text-danger-text" : "sr-only"}>
-        {error ?? ""}
-      </p>
+      <WriteError error={error} onRetry={() => last.current?.()} pending={pending} className="mt-3" />
     </>
   );
 }

@@ -11,6 +11,7 @@ import { decisionLabel, REQUESTS } from "@/lib/requests/catalog";
 import { useRealtime } from "@/lib/live/useRealtime";
 import { cn } from "@/lib/utils/cn";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 
 const timeFormat = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit" });
 
@@ -124,11 +125,7 @@ function PendingRequest({ request }: { request: StudyRequest }) {
           </ActionButton>
         ))}
       </div>
-      {error && (
-        <p role="alert" className="mt-2 text-caption text-danger-text">
-          Not answered: {error}
-        </p>
-      )}
+      <WriteError error={error} onRetry={() => chosen && answer(chosen)} pending={pending} className="mt-2" />
     </article>
   );
 }

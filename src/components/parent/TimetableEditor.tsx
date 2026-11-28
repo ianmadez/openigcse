@@ -11,6 +11,7 @@ import {
   saveSlotAction,
 } from "@/app/(parent)/parent/(gated)/timetable/actions";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 import { EmptyState, Panel, Status } from "@/components/ui/primitives";
 import { phoneSlotTimes, toTimeString, type SlotType, type TimetableSlot } from "@/lib/data/timetable-shared";
 import { cn } from "@/lib/utils/cn";
@@ -81,6 +82,8 @@ export function TimetableEditor({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
+  const commitRef = useRef<(slot: TimetableSlot, startMinutes: number, endMinutes: number, dayOfWeek: number) => void>(() => {});
   const [mobileDay, setMobileDay] = useState(todayDayNumber(today));
   const gridRef = useRef<HTMLDivElement | null>(null);
 
@@ -126,6 +129,7 @@ export function TimetableEditor({
 
   const commit = useCallback(
     (slot: TimetableSlot, startMinutes: number, endMinutes: number, dayOfWeek: number) => {
+      last.current = () => commitRef.current(slot, startMinutes, endMinutes, dayOfWeek);
       const optimistic: TimetableSlot = {
         ...slot,
         startMinutes,
@@ -166,6 +170,7 @@ export function TimetableEditor({
     },
     [],
   );
+  commitRef.current = commit;
 
   /* Phone mode (Step 7.2): a block opens an editor on tap or press-and-hold. */
   const [phoneEdit, setPhoneEdit] = useState<{
@@ -203,6 +208,7 @@ export function TimetableEditor({
 
   const addSlot = (dayOfWeek: number, minute: number) => {
     if (!armed) return;
+    last.current = () => addSlot(dayOfWeek, minute);
 
     const startMinutes = snap(clamp(minute, schoolStart, schoolEnd - SNAP * 2));
     const endMinutes = Math.min(startMinutes + SNAP * 2, schoolEnd);
@@ -249,6 +255,7 @@ export function TimetableEditor({
   };
 
   const removeSlot = (slot: TimetableSlot) => {
+    last.current = () => removeSlot(slot);
     setSlots((current) => current.filter((entry) => entry.id !== slot.id));
     setError(null);
     setNotice(null);
@@ -711,11 +718,12 @@ export function TimetableEditor({
         </p>
       )}
 
-      {error && (
-        <p role="alert" className="rounded-panel border border-danger/40 bg-danger-soft px-3 py-2 text-caption text-danger-text">
-          {error}
-        </p>
-      )}
+      <WriteError
+        error={error}
+        onRetry={() => last.current?.()}
+        pending={pending}
+        className="rounded-panel border border-danger/40 bg-danger-soft px-3 py-2"
+      />
 
       {notice && !error && (
         <p role="status" className="rounded-panel border border-success/40 bg-success-soft px-3 py-2 text-caption text-success-text">
