@@ -1,21 +1,10 @@
 # The OpenIGCSE Handbook
 
-A guide for the family: how every page works, how to use it day to day, and what to do when something looks wrong.
-It describes the app as it stands after Phase 8 (November 2026). For first-time setup, see the
-[Setup Guide](setup-guide.md).
+*A family guide to the study app. It covers every page, everyday use, and fixes for common problems.*
 
-**Contents**
-
-1. How the app is put together
-2. Signing in and devices
-3. The learner's pages
-4. The parent's pages
-5. A normal school day, start to finish
-6. A normal week and term
-7. Fixing problems
-8. Words used in the app
-
----
+This handbook describes the app as it stands after Phase 8 (November 2026). Read Chapters 1 and 2 once. After that,
+use Chapters 3 and 4 to look up a page, Chapters 5 and 6 for the daily and weekly routine, and Chapter 7 when
+something goes wrong. First-time setup is covered in the separate Setup Guide.
 
 # Chapter 1: How the app is put together
 
@@ -47,8 +36,6 @@ Any device that signs in sees the same up-to-date information. If a device break
 1. **It never hides a failed save.** If something could not be saved, you see a red "Not saved" message with a
    **Try again** button. Nothing is silently lost.
 2. **It never makes up syllabus content.** Every objective comes from the official Cambridge syllabus.
-
----
 
 # Chapter 2: Signing in and devices
 
@@ -91,8 +78,6 @@ in N minutes". Wait the stated time. This stops strangers guessing.
 Press the bell, then turn notifications on and allow them when the browser asks. The parent hears about requests and
 messages. If notifications are refused, the bell still lists everything inside the app. **Quiet hours** (Settings)
 keep the parent's phone silent at night; the bell still collects everything.
-
----
 
 # Chapter 3: The learner's pages
 
@@ -181,8 +166,6 @@ it. The parent approves it or asks for a correction.
 ## 3.9 Trivia
 
 Documentaries with questions, just for fun. Not counted towards progress.
-
----
 
 # Chapter 4: The parent's pages
 
@@ -273,7 +256,7 @@ a guide, not an official prediction.
 
 The imported Cambridge syllabuses. You use it when the learner moves to a new syllabus edition: confirm the links
 between old and new objectives, then press **Move progress** so earlier work carries over. See
-[syllabus-pdfs.md](syllabus-pdfs.md).
+syllabus-pdfs.md (docs/syllabus-pdfs.md).
 
 ## 4.11 Focus
 
@@ -300,9 +283,9 @@ Add documentaries (a YouTube video) and their questions.
 
 **Student view** in the parent menu opens the learner's pages, to see what they see.
 
----
-
 # Chapter 5: A normal school day
+
+Who does what, and when, on an ordinary day.
 
 | When | Learner | Parent |
 | --- | --- | --- |
@@ -319,9 +302,7 @@ Add documentaries (a YouTube video) and their questions.
   stays accurate. Glance at **Progress**.
 - **When a day is different:** add a calendar exception (4.6). Don't redraw the week.
 - **Each term:** check the term's dates and topics in the **Term planner**.
-- **Each year:** when the learner moves up, follow [syllabus-pdfs.md](syllabus-pdfs.md) and **Curriculum** (4.10).
-
----
+- **Each year:** when the learner moves up, follow syllabus-pdfs.md (docs/syllabus-pdfs.md) and **Curriculum** (4.10).
 
 # Chapter 7: Fixing problems
 
@@ -407,8 +388,6 @@ A red **"Not saved. …"** line with **Try again** means that change was **not**
 - Before using **Delete household**.
 
 The database is backed up every night, and a backup can be restored if something is deleted by mistake.
-
----
 
 # Chapter 8: Words used in the app
 
