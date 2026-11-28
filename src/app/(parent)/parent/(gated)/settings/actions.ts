@@ -1,12 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { currentPinMatches, setGuardianPin } from "@/app/(parent)/parent/actions";
+import { PARENT_GATE_COOKIE } from "@/lib/auth/gate";
 import { authorizeGuardian } from "@/lib/auth/guard";
+import { requireGuardianSession } from "@/lib/auth/guardian-session";
 import { generatePairingCode, getAuthContext, hashPairingCode } from "@/lib/auth/session";
+import { deleteHousehold } from "@/lib/data/account-deletion";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createServerClientInstance } from "@/lib/supabase/server";
 
 export type SettingsState = { error?: string; message?: string } | null;
 export type PairingState = { error?: string; code?: string; expiresAt?: string; deviceName?: string } | null;
@@ -189,4 +195,32 @@ export async function revokeDeviceAction(formData: FormData) {
     .is("revoked_at", null);
 
   revalidatePath(SETTINGS_PATH);
+}
+
+const deletionSchema = z.object({
+  confirm: z.string().trim(),
+  pin: z.string().trim().regex(/^\d{4,6}$/, "Enter the guardian PIN."),
+});
+
+/**
+ * Phase 8: deletes the whole household, its files and every account in it. Needs a signed-in
+ * guardian, the PIN again, and the word DELETE typed out; afterwards this device is signed out.
+ */
+export async function deleteHouseholdAction(_previous: SettingsState, formData: FormData): Promise<SettingsState> {
+  const guardian = await requireGuardianSession();
+  if (!guardian.ok) return { error: guardian.error };
+
+  const parsed = deletionSchema.safeParse({ confirm: formData.get("confirm"), pin: formData.get("pin") });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the form." };
+  if (parsed.data.confirm !== "DELETE") return { error: "Type DELETE in capitals to confirm." };
+  if (!(await currentPinMatches(parsed.data.pin))) return { error: "That is not the guardian PIN." };
+
+  const result = await deleteHousehold(guardian.session.householdId);
+  if (!result.ok) return { error: result.error };
+
+  const supabase = await createServerClientInstance();
+  await supabase.auth.signOut();
+  const store = await cookies();
+  store.delete(PARENT_GATE_COOKIE);
+  redirect("/login?deleted=1");
 }

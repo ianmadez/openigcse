@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { hashPairingCode } from "@/lib/auth/session";
+import { checkRateLimit, clientIp } from "@/lib/data/rate-limit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createServerClientInstance } from "@/lib/supabase/server";
 
@@ -33,6 +34,11 @@ export async function signInWithPasswordAction(_previous: AuthState, formData: F
 
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check your details." };
 
+  const ip = await clientIp();
+  const limited =
+    (await checkRateLimit("sign-in-ip", ip)) ?? (await checkRateLimit("sign-in", ip, parsed.data.email));
+  if (limited) return { error: limited };
+
   const supabase = await createServerClientInstance();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
@@ -53,6 +59,9 @@ export async function sendMagicLinkAction(_previous: AuthState, formData: FormDa
   const email = z.string().trim().toLowerCase().email().safeParse(formData.get("email"));
 
   if (!email.success) return { error: "Enter a valid email address." };
+
+  const limited = await checkRateLimit("magic-link", await clientIp(), email.data);
+  if (limited) return { error: limited };
 
   const supabase = await createServerClientInstance();
   const base = await origin();
@@ -84,6 +93,9 @@ export async function redeemPairingCodeAction(_previous: AuthState, formData: Fo
   const code = String(formData.get("code") ?? "").replace(/\s+/g, "");
 
   if (!/^\d{6}$/.test(code)) return { error: "Enter the six-digit code from the parent device." };
+
+  const limited = await checkRateLimit("pairing", await clientIp());
+  if (limited) return { error: limited };
 
   const admin = createAdminClient();
   const { data: device, error: lookupError } = await admin

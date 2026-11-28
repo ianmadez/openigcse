@@ -1,0 +1,20 @@
+# Phase 8 uptime check. A failed run makes GitHub email the repository owner.
+name: Uptime
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: GET /api/health
+        run: |
+          for attempt in 1 2 3; do
+            code=$(curl -s -o body.json -w "%{http_code}" --max-time 20 https://openigcse.vercel.app/api/health) && [ "$code" = 200 ] && { cat body.json; exit 0; }
+            echo "attempt $attempt: HTTP $code $(cat body.json 2>/dev/null)"; sleep 20
+          done
+          exit 1

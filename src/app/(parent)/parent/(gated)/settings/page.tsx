@@ -3,6 +3,7 @@ import { ArrowLeft, ShieldCheck, Smartphone } from "lucide-react";
 
 import { revokeDeviceAction } from "@/app/(parent)/parent/(gated)/settings/actions";
 import {
+  HouseholdDataForms,
   HouseholdRegionForm,
   LearnerProfileForm,
   PairingCodePanel,
@@ -147,6 +148,13 @@ export default async function ParentSettingsPage() {
             description="Push notifications wait outside this window, in the household's time zone. The bell in the top bar still lists everything."
           >
             <QuietHoursForm start={quiet.start} end={quiet.end} />
+          </Panel>
+
+          <Panel
+            title="Household data"
+            description="Take a copy of everything this household has stored, or delete the household and every account in it."
+          >
+            <HouseholdDataForms />
           </Panel>
         </div>
       )}

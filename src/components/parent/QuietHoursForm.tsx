@@ -1,10 +1,11 @@
 "use client";
 
 import { Moon } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { saveQuietHoursAction } from "@/app/shell-actions";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 
 /** Quiet hours (Step 5.3): pushes are held in this window; the in-app centre still lists them. */
 export function QuietHoursForm({ start, end }: { start: string | null; end: string | null }) {
@@ -12,8 +13,10 @@ export function QuietHoursForm({ start, end }: { start: string | null; end: stri
   const [to, setTo] = useState(end ?? "");
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
 
   const save = (clear = false) => {
+    last.current = () => save(clear);
     setResult(null);
     startTransition(async () => {
       const outcome = await saveQuietHoursAction({ start: clear ? null : from || null, end: clear ? null : to || null }).catch(() => ({
@@ -59,11 +62,12 @@ export function QuietHoursForm({ start, end }: { start: string | null; end: stri
           </button>
         )}
       </div>
-      {result && (
-        <p role={result.ok ? "status" : "alert"} className={result.ok ? "text-caption text-success-text" : "text-caption text-danger-text"}>
-          {result.ok ? result.text : `Not saved: ${result.text}`}
+      {result?.ok && (
+        <p role="status" className="text-caption text-success-text">
+          {result.text}
         </p>
       )}
+      <WriteError error={result && !result.ok ? result.text : null} onRetry={() => last.current?.()} pending={pending} />
     </div>
   );
 }

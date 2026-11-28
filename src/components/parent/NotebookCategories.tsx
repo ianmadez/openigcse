@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 
 import { recategoriseMistakeAction } from "@/app/(parent)/parent/(gated)/marking-desk/actions";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 import { EmptyState, Status } from "@/components/ui/primitives";
 import { ERROR_TAGS } from "@/lib/assessment/marking";
 import type { ErrorTag, Mistake } from "@/lib/data/mistakes";
@@ -85,9 +86,7 @@ export function NotebookCategories({ items }: { items: Mistake[] }) {
           </div>
 
           {error?.id === item.id && (
-            <p role="alert" className="mt-1.5 text-caption text-danger-text">
-              Not saved: {error.message}
-            </p>
+            <WriteError error={error.message} onRetry={() => save(item.id)} pending={pending} className="mt-1.5" />
           )}
         </li>
       ))}

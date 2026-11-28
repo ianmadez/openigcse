@@ -95,8 +95,8 @@ Lighthouse accessibility run. Summary: [phases/phase-7.md](phases/phase-7.md).
 
 ## What still looks finished but is not
 
-- **Real household terms 2 and 3** carry Term 1's mid-term and final weeks (old onboarding bug, now fixed); the term
-  planner flags them and refuses to save until a parent corrects them.
+- **The live database is empty** (2026-11-28, Ian's ruling): the family sets up the household, terms and enrolment
+  from scratch. All testing happens on the Docker staging copy.
 - **AO tagging** waits for assessment objectives to be imported (none are yet).
   creates a typed request with a decision, and there are no messages, realtime subscription, push or `/parent/live`.
 - **Curriculum (Phase 6).** Done 2026-11-26: ten verified packages imported with entry routes, AOs and command words
@@ -111,7 +111,8 @@ Lighthouse accessibility run. Summary: [phases/phase-7.md](phases/phase-7.md).
    go when the focus policy gains a real form.
 2. `ARCHITECTURE_MAP.txt` predates Phases 0-2 and still describes bundled JSON curriculum and a demo seam.
 3. Phase 7 holds `/today`'s Start, Finish, Skip and study time offline and replays them; checkpoint answers and
-   "I'm stuck" still need a connection, and Phase 8 owns a visible retry for every other write.
+   "I'm stuck" still need a connection; every other failed write now says Not saved with a Try again button (Phase 8).
+4. Phase 8's CI, migration and backup jobs need GitHub secrets before they can run (see [phase-8](phases/phase-8.md)).
 
 ## Polish pass before Phase 8 (Ian, 2026-11-27, done)
 
@@ -172,6 +173,5 @@ and belongs with Phase 7's installable app (iOS only delivers push to a home-scr
 
 ## Next, in order
 
-Phase 7 (mobile pass and installable app, which also carries the real-phone push
-check).
-It also repeats the browser walk of `/parent/curriculum` at 390 and 1280 px that Phase 6 could not finish.
+Phase 9 (device lockdown app). First, Step 9.1: check the study device's Windows edition. Before the family sets up
+the live household: add the GitHub secrets listed in [phase-8](phases/phase-8.md) and the Vercel URL to Supabase Auth.

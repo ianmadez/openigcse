@@ -3,7 +3,7 @@
 import { Clapperboard, PencilLine, Plus, Save, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { deleteTriviaModuleAction, saveTriviaModuleAction } from "@/app/(parent)/parent/(gated)/trivia/actions";
 import { ActionButton } from "@/components/ui/Button";
@@ -135,6 +135,7 @@ export function TriviaEditor({ modules }: { modules: TriviaEditorModule[] }) {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [result, setResult] = useState<Result>(null);
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
 
   const areas = [...new Set(modules.map((module) => module.topicArea))];
 
@@ -169,6 +170,7 @@ export function TriviaEditor({ modules }: { modules: TriviaEditorModule[] }) {
     );
 
   const save = () => {
+    last.current = save;
     if (!draft) return;
     const payload = toPayload(draft);
     if (!payload.ok) {
@@ -192,6 +194,7 @@ export function TriviaEditor({ modules }: { modules: TriviaEditorModule[] }) {
 
   const removeModule = (module: TriviaEditorModule) => {
     if (!window.confirm(`Delete "${module.title}" and its checkpoints?`)) return;
+    last.current = () => removeModule(module);
     setResult(null);
     startTransition(async () => {
       const deleted = await deleteTriviaModuleAction(module.id).catch(() => ({
@@ -453,7 +456,7 @@ export function TriviaEditor({ modules }: { modules: TriviaEditorModule[] }) {
               >
                 {draft.id ? "Save changes" : "Publish module"}
               </ActionButton>
-              <FormMessage result={result} />
+              <FormMessage result={result} onRetry={() => last.current?.()} pending={pending} />
             </div>
           </div>
         )}

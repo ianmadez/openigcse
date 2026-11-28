@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowDown, ArrowUp, Check, Loader2, Play, PlayCircle, SkipForward } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { reportStudyState } from "@/lib/live/studyState";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/app/(student)/learning-actions";
 import { useOfflineWrites } from "@/components/student/OfflineWrites";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 import { Status } from "@/components/ui/primitives";
 import type { DayPlanItem } from "@/lib/data/timetable-shared";
 import type { LessonResource } from "@/lib/data/workspace";
@@ -38,6 +39,7 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
   const [busy, setBusy] = useState<{ id: string; action: Busy } | null>(null);
   const [error, setError] = useState<{ id: string; message: string } | null>(null);
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
   const offline = useOfflineWrites();
 
   useEffect(() => setPlan(items), [items]);
@@ -53,6 +55,7 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
     setPlan((current) => current.map((entry) => (entry.id === id ? { ...entry, ...change } : entry)));
 
   const run = (id: string, action: Busy, work: () => Promise<{ ok: boolean; error?: string }>) => {
+    last.current = () => run(id, action, work);
     setError(null);
     setBusy({ id, action });
     startTransition(async () => {
@@ -125,6 +128,7 @@ export function TodayPeriods({ items, resources }: { items: DayPlanItem[]; resou
                     pending={pending}
                     busy={busy?.id === item.id ? busy.action : null}
                     error={error?.id === item.id ? error.message : null}
+                    onRetry={() => last.current?.()}
                     canMoveUp={index > 0 && item.status !== "done"}
                     canMoveDown={index < period.items.length - 1 && item.status !== "done"}
                     onStart={() => start(item)}
@@ -148,6 +152,7 @@ function TaskCard({
   pending,
   busy,
   error,
+  onRetry,
   canMoveUp,
   canMoveDown,
   onStart,
@@ -160,6 +165,7 @@ function TaskCard({
   pending: boolean;
   busy: Busy | null;
   error: string | null;
+  onRetry: () => void;
   canMoveUp: boolean;
   canMoveDown: boolean;
   onStart: () => void;
@@ -269,11 +275,7 @@ function TaskCard({
         </div>
       )}
 
-      {error && (
-        <p role="alert" className="mt-2 text-caption text-danger-text">
-          Not saved: {error}
-        </p>
-      )}
+      <WriteError error={error} onRetry={onRetry} pending={pending} className="mt-2" />
 
       {asking && open && (
         <div role="group" aria-label="Why skip?" className="mt-2 flex flex-wrap gap-1.5">

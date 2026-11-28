@@ -12,3 +12,8 @@ raw-syllabuses/*.pdf
 .superpowers/
 
 .next-prod/
+.next-staging/
+.vercel
+.env*
+!.env.example
+supabase/.branches/

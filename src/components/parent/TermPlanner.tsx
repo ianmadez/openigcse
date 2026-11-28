@@ -3,7 +3,7 @@
 import { AlertTriangle, Plus, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { saveTermPlanAction, type TermPlanResult } from "@/app/(parent)/parent/(gated)/term-planner/actions";
 import { ActionButton } from "@/components/ui/Button";
@@ -77,6 +77,7 @@ function outsideTerm(row: TermRow) {
 export function TermPlanner({ terms, termId, options, enrollments, seriesOptions, defaultSeries, today }: TermPlannerProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
   const [result, setResult] = useState<TermPlanResult | null>(null);
   const [applyToAllTerms, setApplyToAllTerms] = useState(true);
 
@@ -123,6 +124,7 @@ export function TermPlanner({ terms, termId, options, enrollments, seriesOptions
     ]);
 
   const save = () => {
+    last.current = save;
     setResult(null);
     startTransition(async () => {
       const response = await saveTermPlanAction({
@@ -381,7 +383,7 @@ export function TermPlanner({ terms, termId, options, enrollments, seriesOptions
         <ActionButton pending={pending} pendingLabel="Saving" icon={<Save aria-hidden="true" className="size-4" strokeWidth={2} />}>
           Save plan
         </ActionButton>
-        <FormMessage result={result} />
+        <FormMessage result={result} onRetry={() => last.current?.()} pending={pending} />
       </div>
     </form>
   );

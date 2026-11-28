@@ -1,9 +1,10 @@
 "use client";
 
-import { KeyRound, Link2, RotateCcw, Save, TabletSmartphone } from "lucide-react";
+import { Download, KeyRound, Link2, RotateCcw, Save, TabletSmartphone, Trash2 } from "lucide-react";
 import { useActionState } from "react";
 
 import {
+  deleteHouseholdAction,
   generatePairingCodeAction,
   rotateGuardianPinAction,
   updateLearnerAction,
@@ -344,6 +345,65 @@ export function PairingCodePanel() {
         <RotateCcw aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" strokeWidth={2} />
         Pairing a new device revokes the previous one, so a learner only ever has one active device.
       </p>
+    </div>
+  );
+}
+
+/** Phase 8: the household's data as a file, and deleting the household for good. */
+export function HouseholdDataForms() {
+  const [state, formAction, pending] = useActionState<SettingsState, FormData>(deleteHouseholdAction, null);
+
+  return (
+    <div className="space-y-5">
+      <div className="space-y-2">
+        <a href="/api/export" download className="btn-secondary touch-target inline-flex items-center gap-2">
+          <Download aria-hidden="true" className="size-4" strokeWidth={2} />
+          Download household data
+        </a>
+        <p className="text-caption text-muted">
+          One JSON file with every timetable, plan, mark, message and request, plus links to each photo, voice note and
+          evidence file. The links work for seven days. Needs the guardian account signed in on this device.
+        </p>
+      </div>
+
+      <form onSubmit={keepInput(formAction)} className="space-y-3 border-t border-subtle pt-4">
+        <p className="text-caption text-secondary">
+          Deleting removes the learner, every record, every stored file and every sign-in account in this household,
+          including paired devices. It cannot be undone. Download the data first if you want to keep it.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div>
+            <label htmlFor="delete-confirm" className="label">
+              Type DELETE to confirm
+            </label>
+            <input id="delete-confirm" name="confirm" autoComplete="off" required className={inputClass} />
+          </div>
+          <div>
+            <label htmlFor="delete-pin" className="label">
+              Guardian PIN
+            </label>
+            <input
+              id="delete-pin"
+              name="pin"
+              type="password"
+              inputMode="numeric"
+              autoComplete="off"
+              required
+              maxLength={6}
+              className={inputClass}
+            />
+          </div>
+        </div>
+        <ActionButton
+          pending={pending}
+          pendingLabel="Deleting"
+          variant="danger"
+          icon={<Trash2 aria-hidden="true" className="size-4" strokeWidth={2} />}
+        >
+          Delete household
+        </ActionButton>
+        <Feedback state={state} />
+      </form>
     </div>
   );
 }

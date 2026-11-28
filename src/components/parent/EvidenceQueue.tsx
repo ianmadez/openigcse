@@ -2,7 +2,7 @@
 
 import { Check, FileText, Undo2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { reviewEvidenceAction } from "@/app/(parent)/parent/(gated)/evidence-actions";
 import { ActionButton } from "@/components/ui/Button";
@@ -14,15 +14,18 @@ type Message = { ok: true; message: string } | { ok: false; error: string } | nu
 function Review({ item }: { item: EvidenceItem }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
   const [feedback, setFeedback] = useState("");
   const [message, setMessage] = useState<Message>(null);
 
-  const decide = (decision: "Approved" | "NeedsCorrection") =>
+  const decide = (decision: "Approved" | "NeedsCorrection") => {
+    last.current = () => decide(decision);
     startTransition(async () => {
       const result = await reviewEvidenceAction({ id: item.id, decision, feedback });
       setMessage(result);
       if (result.ok) router.refresh();
     });
+  };
 
   return (
     <li className="space-y-2 p-4">
@@ -53,7 +56,7 @@ function Review({ item }: { item: EvidenceItem }) {
         <ActionButton type="button" variant="secondary" pending={pending} onClick={() => decide("NeedsCorrection")} icon={<Undo2 aria-hidden="true" className="size-4" strokeWidth={2} />}>
           Request changes
         </ActionButton>
-        <FormMessage result={message} />
+        <FormMessage result={message} onRetry={() => last.current?.()} pending={pending} />
       </div>
     </li>
   );

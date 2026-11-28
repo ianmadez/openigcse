@@ -12,6 +12,7 @@ import {
 } from "@/app/(sitting)/assessments/[id]/actions";
 import { MoreTimeButton } from "@/components/live/MoreTimeButton";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 import { MathMarkdown } from "@/components/ui/MathMarkdown";
 import { Callout, Status } from "@/components/ui/primitives";
 import { pendingResponses, secondsLeft } from "@/lib/assessment/sitting";
@@ -57,6 +58,7 @@ export function SittingRunner({ view, serverNow, learnerId }: { view: SittingVie
   const dirty = useRef(new Set<string>());
   const saving = useRef(false);
   const submitting = useRef(false);
+  const last = useRef<(() => void) | null>(null);
   const answersRef = useRef(answers);
   answersRef.current = answers;
 
@@ -95,6 +97,7 @@ export function SittingRunner({ view, serverNow, learnerId }: { view: SittingVie
   const handIn = useCallback(
     (automatic: boolean) => {
       if (submitting.current) return;
+      last.current = () => handInRef.current(automatic);
       submitting.current = true;
       const pending = takePending();
       startTransition(async () => {
@@ -111,6 +114,8 @@ export function SittingRunner({ view, serverNow, learnerId }: { view: SittingVie
     },
     [takePending, router],
   );
+  const handInRef = useRef(handIn);
+  handInRef.current = handIn;
 
   useEffect(() => {
     if (!running || !view.sitting) return;
@@ -140,6 +145,7 @@ export function SittingRunner({ view, serverNow, learnerId }: { view: SittingVie
   };
 
   const upload = async (questionId: string, file: File) => {
+    last.current = () => void upload(questionId, file);
     setUploadingFor(questionId);
     setProblem(null);
     const form = new FormData();
@@ -176,21 +182,17 @@ export function SittingRunner({ view, serverNow, learnerId }: { view: SittingVie
             pendingLabel="Starting"
             icon={<Play aria-hidden="true" className="size-4" strokeWidth={2} />}
             onClick={() =>
-              startTransition(async () => {
+              (last.current = () => startTransition(async () => {
                 const result = await startSittingAction(view.assessmentId);
                 if (result.ok) router.refresh();
                 else setProblem(result.error);
-              })
+              }))()
             }
           >
             Start
           </ActionButton>
         </div>
-        {problem && (
-          <p role="alert" className="text-caption font-medium text-danger-text">
-            {problem}
-          </p>
-        )}
+        <WriteError error={problem} onRetry={() => { setProblem(null); last.current?.(); }} pending={pending} />
       </div>
     );
   }
@@ -376,9 +378,7 @@ export function SittingRunner({ view, serverNow, learnerId }: { view: SittingVie
         <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center justify-between gap-3 border-t border-subtle bg-page/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-panel sm:border">
           <span className="text-caption tabular">
             {save.kind === "error" ? (
-              <span role="alert" className="font-medium text-danger-text">
-                Not saved: {save.message}
-              </span>
+              <WriteError error={save.message} onRetry={() => void flush()} />
             ) : (
               <span role="status" aria-live="polite" className="text-muted">
                 {save.kind === "saving" ? "Saving..." : save.kind === "saved" ? `Saved at ${save.at}` : "Answers save every 10 seconds"}
@@ -400,11 +400,7 @@ export function SittingRunner({ view, serverNow, learnerId }: { view: SittingVie
         </div>
       )}
 
-      {problem && (
-        <p role="alert" className="text-caption font-medium text-danger-text">
-          {problem}
-        </p>
-      )}
+      <WriteError error={problem} onRetry={() => { setProblem(null); last.current?.(); }} pending={pending} />
       {!running && view.state !== "marked" && (
         <p className="flex items-center gap-1.5 text-caption text-secondary">
           <CheckCircle2 aria-hidden="true" className="size-4" strokeWidth={2} />

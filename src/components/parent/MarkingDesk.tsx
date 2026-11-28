@@ -6,6 +6,7 @@ import { useMemo, useRef, useState, useTransition } from "react";
 
 import { saveMarksAction, type SaveMarksResult } from "@/app/(parent)/parent/(gated)/marking-desk/actions";
 import { ActionButton } from "@/components/ui/Button";
+import { WriteError } from "@/components/ui/WriteError";
 import { MathMarkdown } from "@/components/ui/MathMarkdown";
 import { Status } from "@/components/ui/primitives";
 import { ERROR_TAGS, type SheetMark } from "@/lib/assessment/marking";
@@ -17,6 +18,7 @@ import { cn } from "@/lib/utils/cn";
 export function MarkingDesk({ sheet }: { sheet: MarkingSheet }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
   const [marks, setMarks] = useState<Record<string, SheetMark>>(sheet.marks);
   const [feedback, setFeedback] = useState(sheet.assessment.feedback ?? "");
   const [result, setResult] = useState<SaveMarksResult | null>(null);
@@ -34,6 +36,7 @@ export function MarkingDesk({ sheet }: { sheet: MarkingSheet }) {
     setMarks((current) => ({ ...current, [questionId]: { ...current[questionId]!, ...patch, auto: false } }));
 
   const save = () => {
+    last.current = save;
     const entries = sheet.items.map((item) => ({ questionId: item.questionId, available: item.available, ...marks[item.questionId]! }));
     const check = validateMarks(entries);
     if (!check.ok) {
@@ -268,11 +271,7 @@ export function MarkingDesk({ sheet }: { sheet: MarkingSheet }) {
           >
             {sheet.assessment.state === "marked" ? "Save changes" : "Save marks"}
           </ActionButton>
-          {result && !result.ok && (
-            <p role="alert" className="text-caption font-medium text-danger-text">
-              {result.error}
-            </p>
-          )}
+          <WriteError error={result && !result.ok ? result.error : null} onRetry={() => last.current?.()} pending={pending} />
           {result?.ok && (
             <p role="status" className="text-caption text-success-text">
               {result.message}

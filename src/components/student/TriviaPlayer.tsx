@@ -3,6 +3,8 @@
 import { Check, Clapperboard, Play } from "lucide-react";
 import { useState } from "react";
 
+import { YouTubeNotice } from "@/components/player/SandboxedVideoPlayer";
+
 import { addTriviaMistakeAction, answerTriviaCheckpointAction } from "@/app/(student)/learning-actions";
 import { AddToNotebook } from "@/components/student/AddToNotebook";
 import { Status } from "@/components/ui/primitives";
@@ -24,7 +26,6 @@ export function TriviaPlayer({ module }: { module: TriviaModule }) {
   const [checking, setChecking] = useState<number | null>(null);
 
   const params = new URLSearchParams({
-    modestbranding: "1",
     rel: "0",
     iv_load_policy: "3",
     playsinline: "1",
@@ -51,7 +52,7 @@ export function TriviaPlayer({ module }: { module: TriviaModule }) {
             src={`https://www.youtube-nocookie.com/embed/${module.youtubeVideoId}?${params.toString()}`}
             title={module.title}
             className="size-full border-0"
-            sandbox="allow-scripts allow-same-origin allow-presentation"
+            sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"
             referrerPolicy="strict-origin-when-cross-origin"
             allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -70,6 +71,7 @@ export function TriviaPlayer({ module }: { module: TriviaModule }) {
           </button>
         )}
       </div>
+      <YouTubeNotice />
 
       <div className="space-y-2">
         {module.questions.map((question, index) => {

@@ -33,13 +33,18 @@ export type SetupState =
   | { status: "signed-out"; reason: string }
   | { status: "unconfigured"; reason: string; householdName?: string };
 
+/** True on the live Vercel deployment, where the bypass, the demo workspace and every DemoNote are off (Phase 8). */
+export function isLiveProduction() {
+  return process.env.VERCEL_ENV === "production";
+}
+
 export function onboardingBypass() {
-  return process.env.ONBOARDING_BYPASS === "true";
+  return !isLiveProduction() && process.env.ONBOARDING_BYPASS === "true";
 }
 
 /** The demo workspace is for screenshots only; it never reads Postgres. */
 export function demoMode() {
-  return process.env.DEMO_MODE === "true";
+  return !isLiveProduction() && process.env.DEMO_MODE === "true";
 }
 
 export const getSetupState = cache(async (): Promise<SetupState> => {

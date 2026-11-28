@@ -69,6 +69,7 @@ const BLANK: QuestionInput = {
 export function QuestionEditor({ initial, tree, assessmentObjectives }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<Message>(null);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -105,6 +106,7 @@ export function QuestionEditor({ initial, tree, assessmentObjectives }: Props) {
   });
 
   const save = () => {
+    last.current = save;
     setMessage(null);
     startTransition(async () => {
       const result = await saveQuestionAction(payload());
@@ -116,6 +118,7 @@ export function QuestionEditor({ initial, tree, assessmentObjectives }: Props) {
 
   const remove = () => {
     if (!initial || !window.confirm("Delete this question from the bank?")) return;
+    last.current = remove;
     startTransition(async () => {
       const result = await deleteQuestionAction(initial.id);
       if (result.ok) router.replace("/parent/questions");
@@ -493,7 +496,7 @@ export function QuestionEditor({ initial, tree, assessmentObjectives }: Props) {
               Delete
             </ActionButton>
           )}
-          <FormMessage result={message} />
+          <FormMessage result={message} onRetry={() => last.current?.()} pending={pending} />
         </div>
         {initial && initial.usedIn > 0 && (
           <p className="text-caption text-muted">

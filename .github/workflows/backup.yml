@@ -1,0 +1,58 @@
+# Phase 8: nightly backup of the live database, proved restorable in the same run.
+# The dump holds household data, so it is encrypted before it is stored as an artifact.
+name: Nightly backup
+
+on:
+  schedule:
+    - cron: "30 16 * * *" # 02:30 in Sydney (AEST), when nobody is studying
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Dump roles, schema and data
+        run: |
+          mkdir -p backup
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/roles.sql --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/schema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/data.sql --use-copy --data-only --schema public
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/auth.sql --use-copy --data-only --schema auth
+          ls -l backup
+
+      - name: Restore into a fresh database and compare row counts
+        run: |
+          supabase start -x studio,imgproxy,vector,logflare,edge-runtime,realtime,storage-api,mailpit,postgrest,gotrue,kong,postgres-meta,supavisor
+          LOCAL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+          psql "$LOCAL" -v ON_ERROR_STOP=0 -q -f backup/roles.sql >/dev/null 2>&1 || true
+          psql "$LOCAL" -c "drop schema public cascade; create schema public;" >/dev/null
+          psql "$LOCAL" -v ON_ERROR_STOP=1 -q -f backup/schema.sql
+          psql "$LOCAL" -v ON_ERROR_STOP=1 -q -c "set session_replication_role = replica;" -f backup/data.sql
+          count='select string_agg(format($$%s=%s$$, relname, n), $$ $$ order by relname) from (select c.relname, (xpath($$/row/n/text()$$, query_to_xml(format($$select count(*) as n from public.%I$$, c.relname), false, true, $$$$)))[1]::text::int as n from pg_class c join pg_namespace s on s.oid = c.relnamespace where s.nspname = $$public$$ and c.relkind = $$r$$) t'
+          live=$(psql "$SUPABASE_DB_URL" -tAc "$count")
+          restored=$(psql "$LOCAL" -tAc "$count")
+          echo "live:     $live"
+          echo "restored: $restored"
+          [ "$live" = "$restored" ] || { echo "Restored row counts differ from live"; exit 1; }
+
+      - name: Encrypt
+        run: |
+          tar czf backup.tgz backup
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" -c -o "openigcse-$(date -u +%F).tgz.gpg" backup.tgz
+          rm -rf backup backup.tgz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openigcse-backup-${{ github.run_id }}
+          path: openigcse-*.tgz.gpg
+          retention-days: 30

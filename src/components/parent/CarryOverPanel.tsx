@@ -2,7 +2,7 @@
 
 import { ArrowRightLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { carryOverProgressAction } from "@/app/(parent)/parent/(gated)/curriculum/actions";
 import { ActionButton } from "@/components/ui/Button";
@@ -13,6 +13,15 @@ import { Panel } from "@/components/ui/primitives";
 export function CarryOverPanel({ links, waiting }: { links: number; waiting: number }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const last = useRef<(() => void) | null>(null);
+  const move = () => {
+    last.current = move;
+    startTransition(async () => {
+      const outcome = await carryOverProgressAction();
+      setResult(outcome);
+      if (outcome.ok) router.refresh();
+    });
+  };
   const [result, setResult] = useState<{ ok: true; message: string } | { ok: false; error: string } | null>(null);
 
   return (
@@ -25,17 +34,11 @@ export function CarryOverPanel({ links, waiting }: { links: number; waiting: num
         pending={pending}
         pendingLabel="Moving…"
         icon={<ArrowRightLeft aria-hidden="true" className="size-4" />}
-        onClick={() =>
-          startTransition(async () => {
-            const outcome = await carryOverProgressAction();
-            setResult(outcome);
-            if (outcome.ok) router.refresh();
-          })
-        }
+        onClick={move}
       >
         Move progress
       </ActionButton>
-      <FormMessage result={result} className="mt-2" />
+      <FormMessage result={result} className="mt-2" onRetry={() => last.current?.()} pending={pending} />
     </Panel>
   );
 }
