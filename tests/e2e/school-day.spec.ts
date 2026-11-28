@@ -116,7 +116,11 @@ test("a full school day", async ({ browser }) => {
   await guardian.getByText("E2E weekly quiz").first().click();
   const mark = guardian.getByRole("group", { name: "Mark" });
   await tapUntil(mark.getByRole("button", { name: "2", exact: true }), mark.locator('button[aria-pressed="true"]', { hasText: "2" }));
-  await tapUntil(guardian.getByRole("button", { name: "Save marks" }), guardian.getByRole("heading", { name: "To mark (0)" }));
+  // Either the confirmation or the emptied list proves the save; the list can refresh a moment after.
+  await tapUntil(
+    guardian.getByRole("button", { name: "Save marks" }),
+    guardian.getByText(/^Marked: 2 of 2/).or(guardian.getByRole("heading", { name: "To mark (0)" })).first(),
+  );
 
   // ---- review: the learner sees the mark and the mistake waiting
   await learner.goto("/assessments", { waitUntil: "networkidle" });
