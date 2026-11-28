@@ -73,7 +73,7 @@ on secure addresses. Everything else works over your Wi-Fi.
 1. **Timetable** (parent): pick a subject chip, then click (or tap) the week to place blocks. Drag to move and pull the
    bottom edge to resize. On a phone or tablet, tap a block to change its day and times. Add breaks, revision and free
    study the same way.
-2. **Copy Monday to weekdays** saves time if most days are alike. **Generate plan** builds today's study list from the
+2. **Copy Monday to weekdays** saves time if most days are alike. **Build today's plan** builds today's study list from the
    timetable.
 3. **Term planner:** spread each subject's topics across the term's weeks and mark the assessment weeks.
 4. **Focus:** the session length and allowed hours. **Later (Phase 9):** these are enforced by the lockdown app; in a
@@ -101,7 +101,7 @@ package, then open **Curriculum** in the parent area, confirm the links between 
   current term.
 - **"The server could not be reached":** the server is off or the device left the Wi-Fi.
 - **The PIN is refused five times:** the gate locks for a while. Wait, then try again.
-- **Today's plan is empty:** draw the timetable, then press **Generate plan**. Without a timetable, Today shows a ranked
+- **Today's plan is empty:** draw the timetable, then press **Build today's plan**. Without a timetable, Today shows a ranked
   list from the enrolled subjects instead.
 - **A change made offline is listed as "held on this device":** it is sent automatically when the connection returns,
   or press **Send now**. If the database refuses it, the banner says why.
