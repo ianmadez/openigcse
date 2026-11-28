@@ -12,3 +12,6 @@ raw-syllabuses/*.pdf
 .superpowers/
 
 .next-prod/
+.vercel
+.env*
+!.env.example
