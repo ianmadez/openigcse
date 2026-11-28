@@ -12,9 +12,9 @@ export const metadata = { title: "Sign in" };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; deleted?: string }>;
 }) {
-  const { error } = await searchParams;
+  const { error, deleted } = await searchParams;
   const context = await getAuthContext();
 
   if (context && (context.role === "parent_educator" || context.role === "developer_admin")) {
@@ -36,6 +36,14 @@ export default async function LoginPage({
           Guardians sign in here to reach marking, term dates and the learner's plan. Learners pair their own device
           with a six-digit code instead of a password.
         </p>
+
+        {deleted === "1" && (
+          <div className="mt-4">
+            <Callout tone="success" title="The household has been deleted">
+              Every record, file and account in it is gone. You can set up a new household by signing up again.
+            </Callout>
+          </div>
+        )}
 
         {error === "link" && (
           <div className="mt-4">

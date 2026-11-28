@@ -1,6 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
+import { deleteHousehold } from "../src/lib/data/account-deletion";
+import { HOUSEHOLD_TABLES } from "../src/lib/data/export";
+import { BUCKET } from "../src/lib/storage/rules";
 import { loadEnv } from "./lib/env";
 
 loadEnv();
@@ -101,7 +104,7 @@ async function run() {
   check("a PIN unlock is audited", (await auditFor(a.guardian, "parent.unlock")).length === 1);
 
   const { data: assessment, error: assessmentError } = await admin
-    .from("term_assessments").insert({ student_id: a.learner.profileId, title: `${TAG} quiz`, status: "Draft", assessment_category: "WeeklyQuiz", total_marks: 5 })
+    .from("term_assessments").insert({ student_id: a.learner.profileId, academic_term_id: a.termId, title: `${TAG} quiz`, status: "Draft", assessment_category: "WeeklyQuiz", total_marks: 5 })
     .select("id").single();
   if (assessmentError) throw new Error(`assessment: ${assessmentError.message}`);
   const { data: template, error: templateError } = await admin
@@ -125,6 +128,40 @@ async function run() {
   check("a guardian cannot write into another household's log", Boolean(forged.error));
   const erase = await a.guardian.client.from("audit_log").delete().eq("household_id", a.id).select("id");
   check("the log cannot be erased through the API", (erase.data ?? []).length === 0);
+
+  // ============================================================ export
+  // The export reads these tables through the guardian's own session, as /api/export does.
+  const unreadable: string[] = [];
+  const leaked: string[] = [];
+  for (const table of HOUSEHOLD_TABLES) {
+    const { data, error } = await a.guardian.client.from(table).select("*").limit(500);
+    if (error) unreadable.push(`${table}: ${error.message}`);
+    const rows = (data ?? []) as Record<string, unknown>[];
+    if (rows.some((row) => row.household_id === b.id || row.id === b.id)) leaked.push(table);
+  }
+  check("every export table is readable by the guardian", unreadable.length === 0, unreadable.join("; "));
+  check("the export holds nothing from another household", leaked.length === 0, leaked.join(", "));
+  const { data: ownMarks } = await a.guardian.client.from("assessment_item_marks").select("id");
+  check("the export includes the household's marks", (ownMarks ?? []).length === 1);
+
+  // ============================================================ deletion
+  const filePath = `${a.id}/evidence/${a.learner.profileId}/${TAG}.png`;
+  const upload = await admin.storage.from(BUCKET).upload(filePath, new Blob([new Uint8Array([137, 80, 78, 71])], { type: "image/png" }), { contentType: "image/png" });
+  check("a stored file exists before deletion", !upload.error, upload.error?.message);
+  const deleted = await deleteHousehold(a.id);
+  check("the household deletes", deleted.ok, deleted.ok ? "" : deleted.error);
+  const { data: gone } = await admin.from("households").select("id").eq("id", a.id);
+  check("the household row is gone", (gone ?? []).length === 0);
+  const { data: orphans } = await admin.from("profiles").select("id").eq("household_id", a.id);
+  check("its profiles are gone", (orphans ?? []).length === 0);
+  const { data: auditLeft } = await admin.from("audit_log").select("id").eq("household_id", a.id);
+  check("its audit log is gone", (auditLeft ?? []).length === 0);
+  const { data: files } = await admin.storage.from(BUCKET).list(`${a.id}/evidence/${a.learner.profileId}`);
+  check("its stored files are gone", (files ?? []).length === 0, JSON.stringify(files));
+  const signIn = await client().auth.signInWithPassword({ email: `${TAG}-a-guardian@example.com`, password: PASSWORD });
+  check("its accounts can no longer sign in", Boolean(signIn.error));
+  const { data: untouched } = await admin.from("households").select("id").eq("id", b.id);
+  check("the other household is untouched", (untouched ?? []).length === 1);
 }
 async function cleanup() {
   for (const id of created.households) await admin.from("households").delete().eq("id", id);
